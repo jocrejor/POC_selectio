@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Llistat de països</title>
+    
+    <!-- Enllaços a fitxers externs -->
+    <script src="../../../api-json/location.json"></script>
+    <script src="../../apiAccess/crud.js"></script>
+    <script src="index.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Capçalera principal -->
+    <h1>Llistat de països</h1>
+    
+    <!-- Secció per afegir nous països -->
+    <section id="seccio-afegir">
+        <!-- Camp per introduir el nom del país -->
+        <input type="text" id="country" placeholder="Afegir nou país"
+            maxlength="30" minlength="3" required pattern="^[A-Za-zÀ-ÿ\\s]{3,30}$">
+        
+        <!-- Missatge d'error per validacions -->
+        <span id="mensajeError"></span>
+        
+        <!-- Botó per afegir o modificar països -->
+        <button id="afegir"></button>
+    </section>
+    
+    <!-- Secció de cerca -->
+    <section id="seccio-cerca">
+        <!-- Cercador de països -->
+        <input type="text" id="buscar" placeholder="🔍 Buscar país">
+    </section>
+    
+    <!-- Secció de llistat de països -->
+    <section id="seccio-llistat">
+        <!-- Llista ordenada de països -->
+        <ol id="llista"></ol>
+    </section>
+    
+    <!-- Element ocult per guardar l'índex en mode edició -->
+    <input type="hidden" id="index" value="-1">
+</body>
+</html>

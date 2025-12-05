@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="va">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comanda Finalitzada - Selectio</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="../BBDD/TendaFakeDades.js"></script>
+    <script src="js/finalitzar.js"></script>
+</head>
+
+<body>
+    <div class="container">
+
+        <h1>¡Gràcies per la teua compra!</h1>
+        <p class="subtitle">La teua comanda s'ha processat correctament</p>
+
+        <div id="clientInfo" class="client-info"></div>
+
+        <div class="order-info">
+            <h2>Resum de la comanda</h2>
+            <div id="orderNumber">
+                <span>Número de comanda:</span>
+                <span id="numComanda"></span>
+            </div>
+            <div class="info-row">
+                <span>Data:</span>
+                <span id="dataComanda"></span>
+            </div>
+            <div class="info-row">
+                <span>Productes:</span>
+                <span id="numProductes"></span>
+            </div>
+            <div id="productsList"></div>
+            <div class="info-row">
+                <span >Total:</span>
+                <span  id="totalComanda"></span>
+            </div>
+        </div>
+
+        <p id = "textNoti">
+            Rebràs un correu electrònic amb els detalls de la teua comanda
+        </p>
+
+        <div class="buttons">
+            <a href="listarproductes.html" class="btn btn-primary">Tornar a la tenda</a>
+        </div>
+    </div>
+</body>
+
+</html>

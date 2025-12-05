@@ -1,0 +1,154 @@
+
+
+
+    
+   <!DOCTYPE html>
+   <html lang="ca">
+   <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eliminar Client</title>
+    <link rel="stylesheet" href="../css/normalize.css">
+    <link rel="stylesheet" href="../css/template_grid3.css">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/common-table.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://kit.fontawesome.com/f653e778a0.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+        <link rel="icon" type="image/png" href="../img/logo_tendafake.png">
+    <script src="../js/common.js"></script>
+    <script src="../../apiAccess/crud.js"></script>
+    <script src="./js/index.js"></script>
+      <script src="clientEliminar.js"></script>
+        
+    <script src="index.js"></script>
+
+    <!--jQuery-->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+</head>
+<body>
+    <!-- Header -->
+    <div class="container-fluid sense-separacio">
+        <div class="row header">
+            <div class="col-12 centrar_header">
+                <div id="menu_hamburguesa">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+                <div id="logotip">
+                    <img src="../img/logo_tendafake.png" alt="No s'ha pogut carregat l'imatge">
+                </div>
+                <div id="sessioUsuari">
+                    <div class="headerUsuari">
+                        <img src="../img/foto_persona.png" alt="No s'ha pogut carregar l'imatge">
+                        <span>Manolo Garibolo</span>
+                        <span class="separador">&nbsp;</span>
+                    </div>
+                    <div class="tancarSessio">
+                        <a href="#">
+                            <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Titol de la pàgina -->
+        <div class="row pagina">
+            <div class="col-12">
+                <p>Eliminar Client</p>
+            </div>
+        </div>
+        <!-- Menu lateral -->
+        <div class="row main">
+            <div id="menu_lateral" class="col-2">
+                <a href="../Productes/index.html" class="opcio_menu">
+                    <i class="fa-solid fa-paperclip"></i>
+                    Atributs
+                </a>
+                <a href="../GestioCarret/index.html" class="opcio_menu">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    Carrets
+                </a>
+                <div class="opcio_seleccionada">
+                    <i class="fa-solid fa-person"></i>
+                    Clients
+                </div>
+                <a href="../Configuracions/index.html" class="opcio_menu">
+                    <i class="fa-solid fa-sliders"></i>
+                    Configuracions
+                </a>
+                <a href="../Comandes/index.html" class="opcio_menu">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    Comandes
+                </a>
+                <a href="../Historic/index.html" class="opcio_menu">
+                    <i class="fa-solid fa-chart-line"></i>
+                    Estadístiques
+                </a>
+                <a href="../Productes/Familia.html" class="opcio_menu">
+                    <i class="fa-solid fa-list"></i>
+                    Families
+                </a>
+                <a href="#" class="opcio_menu">
+                    <i class="fa-solid fa-star"></i>
+                    Favorits
+                </a>
+                <a href="../Localitzacio/index.html" class="opcio_menu">
+                    <i class="fa-solid fa-location-dot"></i>
+                    Localitzacions
+                </a>
+                <a href="../Ofertes/index.html" class="opcio_menu">
+                    <i class="fa-solid fa-tag"></i>
+                    Ofertes
+                </a>
+                <a href="../Productes/index.html" class="opcio_menu">
+                    <i class="fa-solid fa-city"></i>
+                    Productes
+                </a>
+
+                <a href="../Usuaris/usuaris.html" class="opcio_menu">
+                    <i class="fa-solid fa-user"></i>
+                    Usuaris
+                </a>
+                <a href="#" id="tancarSessioLateral" class="opcio_menu eixir_menu">
+                    <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
+                    Eixir
+                </a>
+            </div>
+        
+            <!-- Filtres -->
+            <div class="col-10">
+                <div class="container-fluid sense-separacio">
+                    <div class="row">
+                        <div class="col-12">
+                             <div class="contingut">
+                                <div id="contenedor">
+                                    <p id="missatge"></p>
+                                    <div id="detallsClient"></div>
+                                    <button id="confirmar">Sí, eliminar</button>
+                                    <button id="cancelar">Cancel·lar</button>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</body>
+</html>
+
+   
+  
+
+
+
+
+
+

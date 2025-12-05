@@ -1,0 +1,102 @@
+/* Taula de comandes */
+.comandes-container {
+    padding: 2em 3em;
+}
+
+.titol-comandes {
+    font-size: 1.8em;
+    margin-bottom: 1em;
+    color: var(--color-primari);
+    font-weight: bold;
+}
+
+.taula-comandes {
+    width: 100%;
+    border-collapse: collapse;
+    border: 2px solid var(--color-quaternari);
+    font-size: 0.95em;
+}
+
+.taula-comandes thead {
+    background-color: var(--color-primari);
+    color: var(--color-quinari);
+}
+
+.taula-comandes th {
+    padding: 1em 0.8em;
+    text-align: left;
+    font-weight: bold;
+    border-right: 1px solid var(--color-quinari);
+}
+
+.taula-comandes th:last-child {
+    border-right: none;
+}
+
+.taula-comandes tbody tr {
+    border-bottom: 1px solid var(--color-quaternari);
+}
+
+.taula-comandes tbody tr:nth-child(even) {
+    background-color: var(--color-terciari);
+}
+
+.taula-comandes tbody tr:hover {
+    background-color: #e0e0e0;
+}
+
+.taula-comandes td {
+    padding: 1em 0.8em;
+    border-right: 1px solid #ddd;
+}
+
+.taula-comandes td:last-child {
+    border-right: none;
+}
+
+.accions-comanda {
+    display: flex;
+    gap: 1em;
+}
+
+.accions-comanda a {
+    color: var(--color-quaternari);
+    transition: color 0.3s ease;
+}
+
+.accions-comanda .editar:hover {
+    color: var(--color-primari);
+}
+
+.accions-comanda .eliminar:hover {
+    color: #d32f2f;
+}
+
+/* Estils per a mòbil */
+@media only screen and (max-width: 360px) {
+    .comandes-container {
+        padding: 1em;
+    }
+    
+    .titol-comandes {
+        font-size: 1.5em;
+        text-align: center;
+    }
+    
+    .taula-comandes {
+        font-size: 0.85em;
+    }
+    
+    .taula-comandes th,
+    .taula-comandes td {
+        padding: 0.8em 0.5em;
+    }
+    
+    .accions-comanda {
+        gap: 0.7em;
+    }
+    
+    .accions-comanda i {
+        font-size: 1.1em;
+    }
+}

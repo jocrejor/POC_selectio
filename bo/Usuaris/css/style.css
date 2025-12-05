@@ -1,0 +1,154 @@
+/* Rols i altaUsuaris*/
+
+#taula_rols {
+    width: 50%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid var(--color-vores);
+    border-radius: 5px;
+}
+
+#taula_rols tr:nth-child(odd){
+    background-color: #eee;
+}
+
+#taula_rols th{
+    border: 1px solid var(--color-vores);
+    background-color: var(--color-secundari);
+    color: var(--color-quaternari);
+}
+
+#taula_rols td {
+    border: 1px solid var(--color-vores);
+    padding: 5px;
+    color: black;
+}
+
+#nouRol {
+    width: 50%;
+}
+
+#taula_usuari {
+    width: 100%;
+}
+
+#taula_usuari label {
+    font-weight: bold;
+    color: var(--color-secundari);
+    padding-right: 25px;
+}
+
+select, option {
+    color: black;
+    padding: 5px 0 5px 10px;
+}
+
+#taula_usuari td {
+    display: flex;
+    padding-top: 10px;
+}
+
+#taula_usuari select {
+    margin: 0 !important;
+}
+
+#botoContrasenya {
+    margin-left: 10px;
+    padding: 0px 12px 0px 12px;
+}
+
+#botoContrasenya i {
+    padding: 0;
+    text-align: center;
+}
+
+.botons_form {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 15%;
+}
+
+#missatge {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+#missatgeError, .missatgeError{
+    color: red;
+    font-weight: bold;
+}
+
+.missatge {
+    color: green;
+}
+
+.separacio  {
+    padding-left: 10px;
+}
+
+/* Estils autocompletar */
+
+.ui-autocomplete {
+    background-color: var(--color-general-lletra);
+    border: 1px solid var(--color-vores);
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 99;
+}
+
+.ui-autocomplete li {
+    list-style: none;
+}
+
+.ui-menu-item-wrapper  {
+    color: var(--color-vores);
+    padding: 5px 0px 5px 0px;
+}
+
+/* Si l'ample de la pantalla es menor o igual a 767px */
+@media only screen and (max-width: 767px) {
+
+    #opcions {
+        padding-left: 30px;
+    }
+
+    .element_main {
+        width: 100%;
+        padding-right: 15px;
+        padding-bottom: 8px;
+    }
+
+    .botons_accio {
+        flex-wrap: wrap;
+        padding-top: 16px;
+        gap: 10px;
+    }
+
+    .botons_accio button {
+        width: 100%;
+        margin-left: 15px;
+    }
+
+    #taula_rols {
+        width: 100%;
+
+    }
+
+    #taula_usuari {
+        width: 100%;
+    }
+
+    #nouRol {
+        width: 65%;
+    }
+
+    .paginacio {
+        position: static;
+        display: flex;
+        gap: 10px;
+        padding-top: 30px;
+        justify-content: end;
+    }
+}

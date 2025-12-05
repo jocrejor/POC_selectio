@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Gestió de Comandes | Selectio</title>
+    <!-- Estils -->
+    <link rel="stylesheet" href="./css/normalize.css">
+    <link rel="stylesheet" href="./css/grid.css">
+    <link rel="stylesheet" href="./css/common.css">
+    <link rel="stylesheet" href="css/comandes.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com"> 
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet"> 
+
+    <!-- Scripts -->
+    <script src="https://kit.fontawesome.com/d9f0c40e4f.js" crossorigin="anonymous"></script> <!-- Font Awesome -->
+    <script src="./js/common.js"></script>
+
+</head>
+
+<body class="roboto-font">
+
+    <div class="container-fluid header">
+        <div class="row">
+            <div class="col-1">
+                <div class="logo_header">
+                    <div class="obrir-menu"><i class="fa-solid fa-bars"></i></div>
+                    <img src="./img/logo_selectio.png" alt="Logo Selectio">
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="menu-box">
+                    <div class="tancar-menu"><i class="fa-solid fa-xmark"></i></div>
+                    <ul class="menu">
+                        <li>
+                            <div class="selector"></div>
+                            <a href="../index.html">Inici</a>
+                        </li>
+                        <li>
+                            <div class="selector"></div>
+                            <a href="../Product.html ">Producte</a>
+                        </li>
+                        <li>
+                            <div class="selector"></div>
+                            <a href="../Families.html">Famílies</a>
+                        </li>
+                        <li>
+                            <div class="selector"></div>
+                            <a href="../Comparador/comparador.html">Comparador</a>
+                        </li>
+                    </ul>
+                    <ul class="menu">
+                        <li class="actual">
+                            <div class="selector"></div>
+                            <a href="./comandesFE.html">Comandes</a>
+                        </li>
+                        <li class="registre">
+                            <div class="selector"></div>
+                            <a href="../Registre.html">Registre</a>
+                        </li>
+                        <li class="login">
+                            <div class="selector"></div>
+                            <a href="../Login.html">Iniciar sessió</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="buscador-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="search" name="buscador" id="buscador" placeholder="Buscar">
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="links-header-box">
+                    <ul class="links-header">
+                        <li class="contacte"><a href="../Contacta/contact.html "><i class="fa-solid fa-phone"></i></a>
+                        </li>
+                        <li class="usuari"><a href="../AreaPersonal/index.html "><i class="fa-regular fa-user"></i></a>
+                        </li>
+                        <li class="carret"><a href="../Carret/carret.html "><i
+                                    class="fa-solid fa-cart-shopping"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid main">
+        <div class="row">
+            <div class="col-12 comandes-container">
+                <h1 class="titol-comandes">Gestió de Comandes</h1>
+                <table class="taula-comandes">
+                    <thead>
+                        <tr>
+                            <th>Client</th>
+                            <th>ID Comanda</th>
+                            <th>Preu</th>
+                            <th>Data realització</th>
+                            <th>Correu electrònic</th>
+                            <th>Accions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Efrén Andrés</td>
+                            <td>#ORD-2025-001</td>
+                            <td>899,99 €</td>
+                            <td>15/03/2025</td>
+                            <td>client@exemple.es</td>
+                            <td>
+                                <div class="accions-comanda">
+                                    <a href="#" class="editar" title="Editar comanda">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                    <a href="#" class="eliminar" title="Eliminar comanda">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Alejandro Dalmau</td>
+                            <td>#MON-2025-045</td>
+                            <td>349,50 €</td>
+                            <td>10/03/2025</td>
+                            <td>client@exemple.es</td>
+                            <td>
+                                <div class="accions-comanda">
+                                    <a href="#" class="editar" title="Editar comanda">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                    <a href="#" class="eliminar" title="Eliminar comanda">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Adrià Navarro</td>
+                            <td>#TEC-2025-123</td>
+                            <td>89,99 €</td>
+                            <td>05/03/2025</td>
+                            <td>client@exemple.es</td>
+                            <td>
+                                <div class="accions-comanda">
+                                    <a href="#" class="editar" title="Editar comanda">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                    <a href="#" class="eliminar" title="Eliminar comanda">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Kirsha Morán</td>
+                            <td>#RAT-2025-078</td>
+                            <td>45,00 €</td>
+                            <td>28/02/2025</td>
+                            <td>client@exemple.es</td>
+                            <td>
+                                <div class="accions-comanda">
+                                    <a href="#" class="editar" title="Editar comanda">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                    <a href="#" class="eliminar" title="Eliminar comanda">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Miguel Cabrera</td>
+                            <td>#ALT-2025-056</td>
+                            <td>120,00 €</td>
+                            <td>20/02/2025</td>
+                            <td>client@exemple.es</td>
+                            <td>
+                                <div class="accions-comanda">
+                                    <a href="#" class="editar" title="Editar comanda">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                    <a href="#" class="eliminar" title="Eliminar comanda">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid footer">
+        <div class="row">
+            <div class="col-4">
+                <div class="logo_footer">
+                    <img src="./img/logo_selectio.png" alt="Logo Selectio">
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="xarxes-box">
+                    <ul class="xarxes-socials">
+                        <li><a href="https://www.x.com/" target="_blank"><i class="fa-brands fa-x-twitter"></i></a></li>
+                        <li><a href="https://www.facebook.com/" target="_blank"><i
+                                    class="fa-brands fa-facebook"></i></a></li>
+                        <li><a href="https://www.instagram.com/" target="_blank"><i
+                                    class="fa-brands fa-instagram"></i></a></li>
+                        <li><a href="https://es.linkedin.com/" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-4 buit"></div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="links-footer-box">
+                    <ul class="links-footer">
+                        <li><a href="#">Condicions generals</a></li>
+                        <li><a href="#">Política de Privadesa</a></li>
+                        <li><a href="#">Política de Cookies</a></li>
+                        <li><a href="#">Preferències de cookies</a></li>
+                        <li><a href="#">Serveis postvenda</a></li>
+                        <li><a href="#">Avís legal</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="copyright">
+                    <p>Copyright &copy; 2025 | Selectio</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

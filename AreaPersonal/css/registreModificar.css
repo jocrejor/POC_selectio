@@ -1,0 +1,10 @@
+/* Estils del cos de la pàgina */
+
+#guarda{
+    background-color: var(--color-secundari);
+}
+
+#torna{
+    background-color: var(--color-primari);
+    color: var(--color-terciari);
+}

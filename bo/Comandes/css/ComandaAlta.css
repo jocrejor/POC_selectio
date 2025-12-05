@@ -1,0 +1,201 @@
+:root {
+    --color-primari: #539041;
+    --color-secundari: #47488e;
+    --color-terciari: #f6b01f;
+    --color-quaternari: #ececec;
+    --color-boto-netejar: #94949d;
+    --color-general-lletra: #ffffff;
+}
+*{
+    font-family: Roboto;
+}
+.colorLletra {
+    color: var(--color-secundari);
+}
+
+select,
+option {
+    color: black;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+}
+
+.field label {
+    margin-left: 2em;
+    margin-bottom: .3rem;
+}
+
+.field input,
+.field select {
+    margin-left: 2em;
+    max-width: 15em;
+}
+
+.colorBoto {
+    background-color: var(--color-secundari);
+
+}
+
+.taulaAfegir {
+    background-color: rgb(226, 221, 221);
+}
+
+.tornar {
+    margin: 1em;
+    margin-left: 2em;
+    background-color: var(--color-secundari);
+
+}
+
+.total-text {
+    color: black;
+}
+
+.taulaAfegir {
+    margin-left: 2em;
+    max-width: 80em;
+}
+.taulaAfegir {
+    border: 1px solid black;     
+    border-collapse: collapse;   
+}
+
+.taulaAfegir td, 
+.taulaAfegir th {
+    padding: 4px;               
+    border: 1px solid black;     
+}
+
+#totalComanda {
+    text-align: left; 
+    display: flex;
+    justify-content: flex-end;
+    margin-right: -70em;
+}
+
+/* Si l'ample de la pantalla es menor o igual a 767px */
+@media screen and (max-width: 767px) {
+
+    #contingutTaulaa{
+        margin-right: 4em;
+    }
+    /* Amagar la capçalera */
+    #contingutTaulaa table thead {
+        display: none;
+    }
+
+    /* Fer la taula i les files blocs verticals */
+    #contingutTaulaa table,
+    #contingutTaulaa tbody,
+    #contingutTaulaa tr,
+    #contingutTaulaa td {
+        display: block;
+        width: 100%;
+    }
+
+    /* Files més compactes amb bordes i marges petits */
+    #contingutTaulaa tr {
+        margin-bottom: 0.3rem;
+        border: 1px solid #ccc;
+        padding: 0.2rem;
+    }
+
+    /* Cel·les amb padding reduït i posició relativa per labels */
+    #contingutTaulaa td {
+        text-align: right;
+        padding-left: 45%;
+        position: relative;
+        border: none;
+        margin-bottom: 0.2rem;
+        font-size: 0.9rem; /* més compacte */
+    }
+
+    /* Labels dins de cada cel·la */
+    #contingutTaulaa td::before {
+        position: absolute;
+        left: 0;
+        width: 40%;
+        padding-left: 0.3rem;
+        font-weight: bold;
+        text-align: left;
+        color: var(--color-secundari);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Etiquetes segons columna */
+    #contingutTaulaa tbody tr td:nth-child(1)::before { content: "ID: "; }
+    #contingutTaulaa tbody tr td:nth-child(2)::before { content: "Producte: "; }
+    #contingutTaulaa tbody tr td:nth-child(3)::before { content: "Quantitat: "; }
+    #contingutTaulaa tbody tr td:nth-child(4)::before { content: "Preu: "; }
+    #contingutTaulaa tbody tr td:nth-child(5)::before { content: "Descompte %: "; }
+    #contingutTaulaa tbody tr td:nth-child(6)::before { content: "Preu Final: "; }
+    #contingutTaulaa tbody tr td:nth-child(7)::before { content: "Acció: "; }
+
+    /* Inputs, selects i botons més estrets i compactes */
+    #contingutTaulaa select,
+    #contingutTaulaa input,
+    #contingutTaulaa button {
+        width: 100%;
+        max-width: 90%;
+        padding: 0.15rem;
+        box-sizing: border-box;
+    }
+
+    /* Botó afegir més petit */
+    #contingutTaulaa button.addProduct {
+        padding: 0.15rem 0.3rem;
+    }
+
+    #productesAfegits tr {
+    display: block;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+  }
+
+  #productesAfegits td {
+    display: block;
+    text-align: left;
+    position: relative;
+    padding-left:20%;
+  }
+
+  #productesAfegits td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 10px;
+    width: 45%;
+    text-align: left;
+    font-weight: bold;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  #taula td {
+    display: flex;
+    align-items: center;
+  }
+
+  #taula td::before {
+    content: attr(data-label) " ";
+    font-weight: bold;
+    margin-right: 0.5em; 
+    white-space: nowrap;  
+  }
+
+  #taula input,
+  #taula select {
+    flex: 1;            
+    max-width: 150px;   
+    box-sizing: border-box;
+  }
+  #totalComanda {
+        text-align: right;
+    }
+}
+

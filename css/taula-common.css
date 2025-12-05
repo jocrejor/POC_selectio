@@ -1,0 +1,116 @@
+:root {
+    --color-boto-netejar : #94949d;
+    --color-borrar : #931621;
+}
+
+.noElements {
+    display: none;
+}
+
+.contingut {    
+    margin-top: 20px;
+}
+
+#taula {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 5px;
+    border: 1px solid var(--color-vores);
+}
+
+#taula tr:nth-child(odd) {
+  background-color: #eee;
+}
+
+#taula th {
+    border: var(--color-vores);
+    background-color: var(--color-secundari);
+    color: var(--color-quaternari);
+    padding: 5px;
+    border-spacing: 0;
+}
+
+table th:first-child {
+    border-radius: 5px 0 0 0;
+}
+
+table th:last-child {
+    border-radius: 0 5px 0 0 ;
+}
+
+table tr:last-child td:last-child {
+    border-radius: 0 0 5px 0;
+}
+
+table tr:last-child td:first-child {
+    border-radius: 0 0 0 5px;
+}
+
+.capcalera_movil th {
+    display: none;
+}
+
+#taula td {
+    border: 1px solid var(--color-vores);
+    padding: 8px;
+    color: black;
+}
+
+.icon-borrar, .icon-editar, .icon-visualitzar {
+    font-size: 1.2em;
+    padding-right: 5px;
+    cursor: pointer;
+}
+
+.icon-editar i,
+.icon-visualitzar i {
+    color: var(--color-primari) !important;
+}
+
+.icon-borrar i {
+    color: var(--color-borrar) !important;
+}
+
+/* Si l'ample de la pantalla es menor o igual a 767px */
+@media only screen and (max-width: 767px) {
+
+    #taula th {
+        display: none;
+    }
+
+    #taula tr:first-child th {
+        border-radius: 5px 5px 0 0 ;
+    }
+
+    #taula td {
+        display: block;
+    }
+
+    #taula tr:last-child td:first-child {
+        border-radius: 0;
+    }
+
+    #taula tr:last-child td:last-child {
+        border-radius: 0 0 5px 5px;
+    }
+
+    #taula td::before {
+        content: attr(data-cell) "";
+        font-weight: 700;
+        text-transform: capitalize;
+    }
+
+    #taula td[data-no-colon="true"]::before {
+        content: "";
+    }
+
+    #menu_lateral {
+        display: none;
+    }
+
+    .capcalera_movil th {
+        display: block !important;
+    }
+
+}

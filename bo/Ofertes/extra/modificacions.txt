@@ -1,0 +1,26 @@
+listOfer.js:
+    Vaig eliminar el codi duplicat en *editData()
+
+    Vaig corregir l'estructura de la taula usant *appendChild correctament
+
+    Vaig separar els botons en cel·les diferents per a millor organització
+
+    Vaig corregir l'índex perquè comence en 1 en lloc de 0
+
+Validacions millorades:
+
+    Validació d'oferta: mínim 2 caràcters
+
+    Validació de percentatge: millor maneig de números
+
+    Validació de dates: la data d'inici no pot ser anterior al dia actual
+
+    Millor comparació de dates
+
+Estructura consistent:
+
+    Els dos arxius ara usen *DOMContentLoaded
+
+    Maneig consistent d'errors
+
+    Ús correcte de appendChild en lloc de innerHTML

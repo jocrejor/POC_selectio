@@ -1,0 +1,544 @@
+:root {
+    --color-primari : #539041;
+    --color-secundari : #47488e;
+    --color-terciari : #f6b01f;
+    --color-quaternari : #ececec;
+    --color-boto-netejar : #94949d;
+    --color-general-lletra : #ffffff;
+    --color-vores : #495057;
+    --color-boto-netejar : #94949d;
+    --color-borrar : #931621;
+    --color-lletra-taula: #000000;
+    --color-2-taula: #FFFFFF;
+    --color-paginacio: #fff;
+    --color-pagina-seleccionada: #47488e;
+    --color-letra-paginacio: #000;
+    --color-paginacio-seleccionada: #fff;
+}
+
+* {
+    font-family: Roboto;
+    color: var(--color-general-lletra);
+}
+
+/* Estils del header */
+
+.contingut {
+    margin: 30px;
+}
+
+.centrar_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#menu_hamburguesa {
+    display: none;
+}
+
+#logotip {
+    display: flex;
+    align-items: center;
+}
+
+#logotip img {
+    width: 100px;
+    padding: 7px;
+    margin-left: 10px;
+}
+
+#sessioUsuari {
+    display: flex;
+}
+
+.headerUsuari {
+    display: flex;
+    align-items: center;
+    color: var(--color-secundari);
+}
+
+.headerUsuari img {
+    width: 80px;
+    border-radius: 250px;
+    margin-right: 15px;
+}
+
+.separador {
+    padding: 15px;
+    padding-left: 12px;
+    padding-right: 0px;
+    border-right: 1px solid var(--color-boto-netejar);
+}
+
+.tancarSessio {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-right: 27px;
+}
+
+.tancarSessio i, .headerUsuari span  {
+    color: var(--color-secundari);  
+}
+
+.iconaTancarSessio {
+    margin-left: 15px;  
+}
+
+/* Estils dels filtres i dels botons de cambiar de pagina */
+
+input[type="text"] {
+    padding: 6px;
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid var(--color-vores);
+    color: var(--color-lletra-taula);
+}
+input #buscar, #country, #poblacio, #province{
+    padding: 8px;
+    border: 1px solid var(--color-secundari);
+    border-radius: 4px;
+    margin: 10px;
+}
+
+button {
+    background-color: var(--color-secundari);
+    color: var(--color-general-lletra);
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 10px;
+}
+
+
+
+#opcions {
+    padding-top: 20px;
+    padding-left: 30px;
+}
+
+#opcions button {
+    margin-right: 10px;
+}
+
+/* Estils nous */
+
+h1, h2, h3 {
+    color:var(--color-secundari);
+}
+
+.contingut_main {
+    display: flex;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
+    background-color: var(--color-quaternari);
+    padding-bottom: 15px;
+}
+
+.contingut_main2 {
+    background-color: var(--color-2-taula);
+}
+
+.element_main {
+    padding-top: 10px;
+    padding-left: 15px;
+    padding-right: 14px;
+    padding-bottom: 14px;
+}
+
+.element_main input {
+    margin-top: 13px;
+    padding-left: 12px;
+}
+
+.botons_accio {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    gap: 16px;
+    padding-right: 14px;
+    margin-top: -2px;
+}
+
+button:hover {
+    font-weight: bold;
+}
+
+button i {
+    padding-right: 24px;
+}
+
+.cercar {
+    background-color: var(--color-terciari);
+}
+
+.netejar {
+    background-color: var(--color-boto-netejar);
+}
+
+.netejar i {
+    font-size: 0.75em;
+}
+
+form {
+    padding-top: 10px;
+}
+
+/* Estils titol de la página */
+
+.pagina {
+    background-color: var(--color-secundari);
+}
+
+.pagina p {
+    padding: 1px;
+    text-align: center;
+    font-weight: 400;
+    font-size: 1em;
+}
+
+/* Estils per al main */
+
+#menu_lateral {
+    display: block;
+    background-color: var(--color-primari);
+}
+
+.opcio_menu {
+    display: block;
+}
+
+.opcio_menu, .opcio_seleccionada {
+    text-decoration: none;
+    padding-left: 21px;
+    padding-top: 15px;
+    padding-bottom: 17px;
+    border-bottom: 1px solid var(--color-general-lletra);
+}
+
+.opcio_menu:hover {
+    background-color: var(--color-secundari);
+    font-weight: bold;
+}
+
+.opcio_menu i {
+    padding-right: 22px;
+}
+
+.opcio_seleccionada {
+    background-color: var(--color-secundari);
+}
+
+.opcio_seleccionada i {
+   margin-right: 5px;
+}
+
+.eixir_menu {
+    display: none;
+}
+
+.contingut_main {
+    display: flex;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
+    padding-bottom: 15px;
+}
+
+.element_main {
+    padding-top: 10px;
+    padding-left: 15px;
+    padding-right: 14px;
+    padding-bottom: 14px;
+}
+
+.element_main input {
+    margin-top: 13px;
+    padding-left: 12px;
+}
+
+.botons_accio {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    gap: 16px;
+    padding-right: 14px;
+    margin-top: -2px;
+}
+
+.botons_accio2 {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    padding-left: 14px;
+    margin-top: -2px;
+}
+.botons_accio3 {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    padding-left: 35px;
+    margin-top: -2px;
+}
+
+button:hover {
+    font-weight: bold;
+}
+
+button i {
+    padding-right: 24px;
+}
+
+.cercar {
+    background-color: var(--color-terciari);
+}
+
+.netejar {
+    background-color: var(--color-boto-netejar);
+}
+.netejar i {
+    font-size: 0.75em;
+}
+
+/* Estils per a la taula */
+
+.noElements {
+    display: none;
+}
+
+.contingut {    
+    margin-top: 20px;
+}
+
+#taula {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 5px;
+    border: 1px solid var(--color-vores);
+}
+
+#llista tr:nth-child(odd) {
+    background-color: var(--color-quaternari);
+}
+
+#llista tr:nth-child(even) {
+    background-color: var(--color-2-taula);
+}
+
+
+#taula th {
+    border: var(--color-vores);
+    background-color: var(--color-secundari);
+    color: var(--color-quaternari);
+    padding: 5px;
+    border-spacing: 0;
+}
+
+table th:first-child {
+    border-radius: 5px 0 0 0;
+}
+
+table th:last-child {
+    border-radius: 0 5px 0 0 ;
+}
+
+table tr:last-child td:last-child {
+    border-radius: 0 0 5px 0;
+}
+
+table tr:last-child td:first-child {
+    border-radius: 0 0 0 5px;
+}
+
+.capcalera_movil th {
+    display: none;
+}
+
+#taula td {
+    border: 1px solid var(--color-vores);
+    padding: 8px;
+    color: var(--color-lletra-taula);
+}
+
+.icon-borrar, .icon-editar, .icon-visualitzar {
+    font-size: 1.2em;
+    padding-right: 5px;
+    cursor: pointer;
+}
+
+.icon-editar i,
+.icon-visualitzar i {
+    color: var(--color-primari) !important;
+}
+
+.icon-borrar i {
+    color: var(--color-borrar) !important;
+}
+
+/* Estils generals */
+
+input {
+    padding: 6px;
+    padding-left: 10px;
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid var(--color-vores);
+    color: var(--color-lletra-taula);
+}
+
+button {
+    border-radius: 5px;
+    padding: 9px;
+    padding-left: 12px;
+    padding-right: 12px;
+    border: none;
+}
+
+label {
+    color : var(--color-secundari);
+    margin-left: 10px;
+}
+
+.filtre_select {
+    width: 100%;
+    margin-top: 12px;
+    background-color: var(--color-quaternari);
+    color: var(--color-lletra-taula);
+    border-radius: 5px;
+    border: 1px solid var(--color-vores);
+    padding: 6px;
+    padding-left: 12px;
+}
+
+.filtre_select option {
+    background-color: var(--color-2-taula);
+}
+
+/* Estils genèrics de la paginació */
+div .paginacio{
+    float: inline-end;
+    margin-right: 25px;
+}
+
+.btn-paginacio {
+    background-color: var(--color-paginacio);
+    color: var(--color-letra-paginacio);
+    border: 1px solid var(--color-vores);
+    padding: 8px 12px;
+    margin: 0 4px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-bottom: 30px;
+}
+
+.btn-paginacio.activa {
+    background-color: var(--color-pagina-seleccionada);
+    color: var(--color-paginacio);    
+}
+
+
+/* Si l'ample de la pantalla es menor o igual a 767px */
+@media only screen and (max-width: 767px) {
+
+    /* Estils del header en telefon */
+
+    #menu_hamburguesa {
+        display: flex;
+    }
+
+    #menu_hamburguesa i {
+        color: var(--color-secundari);
+        font-size: 2.5em;
+        padding-left: 15px;
+    }
+
+    .headerUsuari img {
+        width: 65px;
+    }
+
+    .tancarSessio, .headerUsuari span {
+        display: none;
+    }
+
+    /* Estils menú lateral */
+
+    #menu_lateral {
+        display: none;
+        position: absolute;
+        height: 70%;
+        left: 0;
+        top: 20;
+        z-index: 2;
+        height: 666px;
+    }
+
+    .eixir_menu {
+        display: block;
+        padding-left: 5px;
+    }
+
+    .element_main {
+        width: 100%;
+        padding-right: 15px;
+        padding-bottom: 8px;
+    }
+
+    .botons_accio {
+        flex-wrap: wrap;
+        padding-top: 16px;
+        gap: 10px;
+    }
+
+    .botons_accio button {
+        width: 100%;
+        margin-left: 15px;
+    }
+
+    /* Estils taula */
+
+    #taula th {
+        display: none;
+    }
+
+    #taula tr:first-child th {
+        border-radius: 5px 5px 0 0 ;
+    }
+
+    #taula td {
+        display: block;
+    }
+
+    #taula tr:last-child td:first-child {
+        border-radius: 0;
+    }
+
+    #taula tr:last-child td:last-child {
+        border-radius: 0 0 5px 5px;
+    }
+
+    #taula td::before {
+        content: attr(data-cell) "";
+        font-weight: 700;
+        text-transform: capitalize;
+    }
+
+    #taula td[data-no-colon="true"]::before {
+        content: "";
+    }
+
+    #menu_lateral {
+        display: none;
+    }
+
+    .capcalera_movil th {
+        display: block !important;
+    }
+}

@@ -1,0 +1,50 @@
+:root {
+    --color-primari: #539041;
+    --color-secundari: #47488e;
+    --color-terciari: #f6b01f;
+    --color-quaternari: #ececec;
+    --color-boto-netejar: #94949d;
+    --color-general-lletra: #ffffff;
+}
+
+.colorBlanc{
+    color: var(--color-quaternari);
+}
+p {
+    color: var(--color-secundari);
+    padding-left: 2em;
+}
+
+.botoTronarVisualitza{
+    margin:1em;
+    background-color: var(--color-secundari);
+}
+.tornar{
+    margin:1em;
+    margin-left: 2em;
+    background-color: var(--color-secundari);
+}
+@media screen and (max-width: 767px) {
+  #taula, #taula tbody, #taula tr, #taula td {
+    display: block;
+    width: 100%;
+  }
+
+  #taula thead {
+    display: none; /* amaguem header en mòbil */
+  }
+
+  #taula td {
+    text-align: left;
+    padding: 5px 0;
+    position: relative;
+  }
+
+  #taula td::before {
+    content: attr(data-label) ; /* només apareix en mòbil */
+    font-weight: bold;
+    display: inline-block;
+  }
+}
+
+

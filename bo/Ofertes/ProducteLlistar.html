@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ca">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productes de l'Oferta</title>
+    <link rel="stylesheet" href="../css/normalize.css">
+    <link rel="stylesheet" href="../css/template_grid3.css">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/common-table.css">
+    <link rel="stylesheet" href="../css/common-paginacio.css">
+    <link rel="stylesheet" href="../css/common-modal.css">
+    <link rel="stylesheet" href="css/ofertes.css">
+
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.js"
+        integrity="sha256-UgvvN8vBkgO0luPSUl2s8TIlOSYRoGFAX4jlCIm9Adc=" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/f653e778a0.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <script src="../../apiAccess/crud.js"></script>
+    <script src="../js/common.js"></script>
+    <script src="../js/common-paginacio.js"></script>
+    <script src="../js/logout.js"></script>
+    <script src="js/ProducteLlistar.js"></script>
+</head>
+
+<body>
+    <!-- Header -->
+    <div class="container-fluid sense-separacio">
+        <div class="row header">
+            <div class="col-12 centrar_header">
+                <div id="menu_hamburguesa">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+                <div id="logotip">
+                    <img src="../img/logo_tendafake.png" alt="No s'ha pogut carregat l'imatge">
+                </div>
+                <div id="sessioUsuari">
+                    <div class="headerUsuari">
+                        <img src="../img/foto_persona.png" alt="No s'ha pogut carregar l'imatge">
+                        <span id="usuariNom"></span>
+                        <span class="separador">&nbsp;</span>
+                    </div>
+                    <div class="tancarSessio" id="botoTancarSessio">
+                        <a href="#">
+                            <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Titol de la pàgina CON EL NOMBRE DE LA OFERTA -->
+        <div class="row pagina">
+            <div class="col-12">
+                <p id="pageTitle">Llistat productes de l'oferta</p>
+            </div>
+        </div>
+
+        <!-- Menu lateral -->
+        <div class="row main">
+            <div id="menu_lateral" class="col-2">
+                <a href="../Productes/Atributs.html" class="opcio_menu">
+                    <i class="fa-solid fa-paperclip"></i>
+                    Atributs
+                </a>
+                <a href="../../Carret/carret.html" class="opcio_menu">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    Carrets
+                </a>
+                <a href="../Clients/index.html" class="opcio_menu">
+                    <i class="fa-solid fa-person"></i>
+                    Clients
+                </a>
+                <a href="Configuracions/Configuracio.html" class="opcio_menu">
+                    <i class="fa-solid fa-sliders"></i>
+                    Configuracions
+                </a>
+                <a href="../Comandes/index.html" class="opcio_menu">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    Comandes
+                </a>
+                <a href="../Historic/index.html" class="opcio_menu">
+                    <i class="fa-solid fa-chart-line"></i>
+                    Estadístiques
+                </a>
+                <a href="../Productes/Familia.html" class="opcio_menu">
+                    <i class="fa-solid fa-list"></i>
+                    Families
+                </a>
+                <a href="../Localitzacio/index.html" class="opcio_menu">
+                    <i class="fa-solid fa-location-dot"></i>
+                    Localitzacions
+                </a>
+                <div class="opcio_seleccionada">
+                    <i class="fa-solid fa-tag"></i>
+                    Ofertes
+                </div>
+                <a href="../Productes/index.html" class="opcio_menu">
+                    <i class="fa-solid fa-city"></i>
+                    Productes
+                </a>
+                <a href="../Usuaris/usuaris.html" class="opcio_menu">
+                    <i class="fa-solid fa-user"></i>
+                    Usuaris
+                </a>
+                <a href="#" class="opcio_menu eixir_menu" id="tancarSessioLateral">
+                    <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
+                    Eixir
+                </a>
+            </div>
+
+            <div class="col-10">
+                <div class="container-fluid sense-separacio">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="contingut">
+                                <button id="addProductButton" class="boto_afegir">
+                                    Afegir Productes a l'Oferta
+                                </button>
+                                <button type="button" onclick="window.location.href='index.html'"
+                                    class="boto_afegir boton-tornar">
+                                    Tornar a Ofertes
+                                </button>
+
+                                <!-- Contenidor taula -->
+                                <div id="contingutTaula">
+                                    <table id="taula" class="crud_table">
+                                        <thead>
+                                            <th>ID</th>
+                                            <th>Nom del Producte</th>
+                                            <th>Preu</th>
+                                            <th>Preu amb Descompte</th>
+                                            <th>Descripció</th>
+                                            <th>Família</th>
+                                            <th>Accions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="capcalera_movil">
+                                                <th>Llistat</th>
+                                            </tr>
+                                        </tbody>
+                                        <tbody id="tableBody">
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="paginacio">
+                                    <button id="anterior" class="no_mostrar">Anterior</button>
+                                    <div id="pagines"></div>
+                                    <button id="posterior" class="no_mostrar">Següent</button>
+                                </div>
+                                <div class="pagination-info" id="paginationInfo"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalOferta" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h3>Productes disponibles</h3>
+            <div id="modalOfertaContent"></div>
+        </div>
+    </div>
+</body>
+
+</html>

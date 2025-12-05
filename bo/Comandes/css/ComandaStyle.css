@@ -1,0 +1,99 @@
+/*Alta comanda*/
+:root {
+    --color-primari: #539041;
+    --color-secundari: #47488e;
+    --color-terciari: #f6b01f;
+    --color-quaternari: #ececec;
+    --color-boto-netejar: #94949d;
+    --color-general-lletra: #ffffff;
+}
+
+.colorLletra {
+    color: var(--color-secundari);
+}
+
+select,
+option {
+    color: black;
+}
+.field {
+    display: flex;
+    flex-direction: column; 
+    margin-bottom: 1rem;
+}
+
+.field label {
+    margin-left: 1em; 
+    margin-bottom: .3rem;
+}
+
+.field input,
+.field select {
+    margin-left: 1em;
+    max-width: 15em;
+}
+.colorBoto{
+    background-color: var(--color-secundari);
+
+}
+.taulaAfegir{
+    background-color: rgb(226, 221, 221);
+}
+.tornar{
+    margin:1em;
+    background-color: var(--color-secundari);
+
+}
+.total-text {
+  color: black;
+}
+
+.element_main select {
+  margin-top: 13px;
+  padding-left: 12px;
+  height: 35px;
+  width: 100%;
+  border: 1px solid #495057;
+  border-radius: 4px;
+  font-size: 14px;
+  color: black;
+}
+
+#payment {
+  color: black;
+}
+
+.color {
+  color: black;
+}
+
+#filtrar_client option {
+  color: black;
+}
+
+/*Llistar Comanda*/
+#afegirPedido{
+  margin-bottom: 1em;
+}
+
+
+/*Llistar Comanda*/
+.novaComanda{
+  background-color: #47488e;
+
+}
+/* Color normal dels elements */
+.ui-autocomplete .ui-menu-item-wrapper {
+    color: black;            
+    padding: 6px 10px;
+}
+
+/* Quan el cursor passa per damunt o està actiu amb teclat */
+.ui-autocomplete .ui-state-active {
+    color: #000 !important;
+}
+
+
+
+
+

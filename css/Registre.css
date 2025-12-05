@@ -1,0 +1,82 @@
+/* Estils del cos de la pàgina */
+.textCentrat{
+  margin-top: 2em;
+  margin-bottom: 1em;
+  text-align: center;
+  justify-content: center;
+}
+
+.formulari{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 3em;
+}
+
+
+.divDosCamps{
+  display: flex;
+}
+
+label{
+    display: flex;
+    padding-bottom: 0.5em;
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+    margin-bottom: 1em;
+    border-radius: 5px;
+    padding-top: 0.3em;
+    padding-bottom: 0.3em;
+}
+
+button{
+    width: 100%;
+    cursor: pointer;
+    padding-right: 1em;
+    padding-left: 1em;
+    padding-bottom: 0.5em;
+    padding-top: 0.5em;
+    border-radius: 5px;
+    border: none;
+}
+
+button:hover{
+    opacity: 0.9;
+}
+
+select{
+  width: 100%;
+  border-radius: 5px;
+  padding-top: 0.3em;
+  padding-bottom: 0.3em;
+}
+
+.separaSelect{
+  margin-bottom: 0.8em;
+}
+
+input, select{
+  border: 1px solid #ced4da;
+}
+
+#missatgeError{
+    font-weight: bold;
+    color: #cc0000;
+    font-size: 1.2em;
+}
+
+
+#alta{
+    background-color: var(--color-secundari);
+}
+
+/* Estils responsive */
+
+@media only screen and (max-width: 767px) {
+    select, button{
+        margin-bottom: 1em;
+    }
+}

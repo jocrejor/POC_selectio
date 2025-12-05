@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Llistat usuaris</title>
+    <link rel="stylesheet" href="../css/normalize.css">
+    <link rel="stylesheet" href="../css/template_grid3.css">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/common-table.css">
+    <link rel="stylesheet" href="../css/common-paginacio.css">
+    <link rel="icon" href="../img/logo_tendafake.png" type="image/png">
+    <script src="https://kit.fontawesome.com/f653e778a0.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <script src="../js/common.js"></script>
+    <script src="../../apiAccess/crud.js"></script>
+    <script src="./js/index.js"></script>
+    <script src="./js/ComandaEliminar.js"></script>
+    <link rel="stylesheet" href="./css/ComandaStyle.css">
+
+    <!--jQuery-->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+</head>
+
+<body>
+    <!-- Header -->
+    <div class="container-fluid sense-separacio">
+        <div class="row header">
+            <div class="col-12 centrar_header">
+                <div id="menu_hamburguesa">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+                <div id="logotip">
+                    <a href="../../index.html"> <img src="../img/logo_tendafake.png"
+                            alt="No s'ha pogut carregat l'imatge"> </a>
+                </div>
+                <div id="sessioUsuari">
+                    <div class="headerUsuari">
+                        <img src="../img/foto_persona.png" alt="No s'ha pogut carregar l'imatge">
+                        <span>Manolo Garibolo</span>
+                        <span class="separador">&nbsp;</span>
+                    </div>
+                    <div class="tancarSessio">
+                        <a href="#">
+                            <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Titol de la pàgina -->
+        <div class="row pagina">
+            <div class="col-12">
+                <p>Llistat de Comanda</p>
+            </div>
+        </div>
+        <!-- Menu lateral -->
+        <div class="row main">
+            <div id="menu_lateral" class="col-2">
+                <a href="../Productes/Atributs.html" class="opcio_menu">
+                    <i class="fa-solid fa-paperclip"></i>
+                    Atributs
+                </a>
+                <a href="#" class="opcio_menu">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    Carrets
+                </a>
+                <a href="#" class="opcio_menu">
+                    <i class="fa-solid fa-person"></i>
+                    Clients
+                </a>
+                <a href="#" class="opcio_menu">
+                    <i class="fa-solid fa-sliders"></i>
+                    Configuracions
+                </a>
+                <a href="../Comandes/index.html" class="opcio_menu opcio_seleccionada">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    Comandes
+                </a>
+                <a href="../Historic/index.html" class="opcio_menu">
+                    <i class="fa-solid fa-chart-line"></i>
+                    Estadístiques
+                </a>
+                <a href="../Productes/Familia.html" class="opcio_menu">
+                    <i class="fa-solid fa-list"></i>
+                    Families
+                </a>
+                <a href="../Localitzacio/index.html" class="opcio_menu">
+                    <i class="fa-solid fa-location-dot"></i>
+                    Localitzacions
+                </a>
+                <a href="../Ofertes/index.html" class="opcio_menu">
+                    <i class="fa-solid fa-tag"></i>
+                    Ofertes
+                </a>
+                <a href="../Productes/index.html" class="opcio_menu">
+                    <i class="fa-solid fa-city"></i>
+                    Productes
+                </a>
+                <a href="../Usuaris/usuaris.html" class="opcio_menu">
+                    <i class="fa-solid fa-user"></i>
+                    Usuaris
+                </a>
+                <a href="#" class="opcio_menu eixir_menu">
+                    <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
+                    Eixir
+                </a>
+            </div>
+            <!-- Filtres -->
+            <div class="col-10">
+                <form action="" class="contingut_main">
+                    <div class="container-fluid sense-separacio">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="element_main">
+                                    <label>Data: Des de</label>
+                                    <input id="data_desde" name="dataDesDe" type="text" placeholder="dd-mm-yyyy">
+                                </div>
+                                <div class="element_main">
+                                    <label>Pagament</label>
+                                    <select id="payment" name="payment">
+                                        <option class="color" value="">Tots</option>
+                                        <option class="color" value="Credit Card">Targeta de Crèdit</option>
+                                        <option class="color" value="bizum">Bizum</option>
+                                        <option class="color" value="paypal">PayPal</option>
+                                        <option class="color" value="bank transfer">Transferència Bancària</option>
+                                    </select>
+                                </div>
+
+                            </div>
+                            <div class="col-4">
+                                <div class="element_main">
+                                    <label>Fins a</label>
+                                    <input id="data_fins" name="dataFinsA" type="text" placeholder="dd-mm-yyyy">
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="element_main">
+                                    <label>Client</label>
+                                    <input id="filtrar_client" type="text" name="filtrar_client"
+                                        placeholder="Nom del client" required>
+                                    <input type="hidden" id="clientIdFiltrat">
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="botons_accio">
+                                    <button class="cercar" type="submit">
+                                        <i class="fa-solid fa-magnifying-glass"></i>
+                                        Cercar
+                                    </button>
+                                    <button class="netejar" type="reset">
+                                        <i class="fa-solid fa-xmark"></i>
+                                        Netejar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="container-fluid sense-separacio">
+                    <div class="row">
+                        <div class="col-12">
+
+                            <div class="noElements">
+                                <p>No hi ha comandes registrats</p>
+                            </div>
+                            <div class="contingut">
+                                <button class="novaComanda" id="afegirPedido">Nova Comanda</button>
+                                <div id="contingutTaula">
+                                    <table id="taula">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Data</th>
+                                                <th>Client</th>
+                                                <th>Forma de pagament</th>
+                                                <th>Enviament (€)</th>
+                                                <th>Total (€)</th>
+                                                <th>Accions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="capcalera_movil">
+                                                <th>Llistat</th>
+                                            </tr>
+                                        </tbody>
+                                        <tbody id="llistaComandes">
+
+                                        </tbody>
+                                    </table>
+                                    <div class="paginacio"> <button id="anterior" class="no_mostrar">Anterior</button>
+                                        <div id="pagines"><button
+                                                class="paginaSeleccionada">1</button><button>2</button><button>3</button><button>4</button>
+                                        </div> <button id="posterior">Següent</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

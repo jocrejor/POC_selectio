@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Llistat de provincies</title>
+    
+    <!-- Enllaços a fitxers externs -->
+    <script src="../../../api-json/location.json"></script>
+    <script src="../../apiAccess/crud.js"></script>
+    <!-- Fitxer JavaScript amb les províncies -->
+    <script src="./provincia.js"></script>
+    
+    <!-- Full d'estil específic per a la pàgina de províncies -->
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+    <!-- Capçalera principal -->
+    <header>
+        <h1>Llistat de provincies</h1>
+    </header>
+
+    <!-- Secció d'informació del context -->
+    <section id="seccio-context">
+        <!-- Mostra el país seleccionat -->
+        <h2 id="id">País seleccionat:</h2>
+    </section>
+
+    <!-- Secció de navegació -->
+    <section id="seccio-navegacio">
+        <!-- Botó per tornar a la pàgina principal (llistat de països) -->
+        <a href="./index.html">
+            <button id="torna">⬅️ Torna</button>
+        </a>
+    </section>
+
+    <!-- Secció per afegir noves províncies -->
+    <section id="seccio-afegir">
+        <!-- Camp de text per introduir una província nova -->
+        <input type="text" id="province" placeholder="Afegir nova Província" 
+               maxlength="30" minlength="3" required 
+               pattern="^[A-Za-zÀ-ÿ\s]{3,30}$">
+        
+        <!-- Missatge d'error per validacions -->
+        <span id="mensajeError"></span>
+        
+        <!-- Botó per afegir o modificar una província -->
+        <button id="afegir"></button>
+    </section>
+
+    <!-- Secció de cerca -->
+    <section id="seccio-cerca">
+        <!-- Cercador de províncies -->
+        <input type="text" id="buscar" placeholder="🔍 Buscar província">
+    </section>
+
+    <!-- Secció del llistat de províncies -->
+    <section id="seccio-llistat">
+        <!-- Llista ordenada on es mostraran les províncies -->
+        <ol id="llista"></ol>
+    </section>
+
+    <!-- Element ocult per guardar l'índex en mode edició -->
+    <input type="hidden" id="index" value="-1">
+</body>
+</html>

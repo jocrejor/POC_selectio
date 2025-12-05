@@ -1,0 +1,153 @@
+/* Fondo blanco */
+.otro{
+    background-color: white;
+}
+
+/* Boton crear */
+#btnCrear {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+/* Autocomplete Filtros */
+.ui-menu-item div {
+    color: black;
+}
+
+/* Img 100 del div */
+img {
+    width: 100%;
+}
+
+/* TAULA INDEX */
+
+/* Accions */
+.acciones-container {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+/* Links*/
+.link-images,
+.link-attributes {
+    color: var(--color-secundari);
+    cursor: pointer;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+/* Mensajes de errores*/
+.error-message {
+    color: var(--color-borrar) !important;
+}
+
+/* VISUALIZAR*/
+/* Info Productos */
+.producto-detalles .info-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Titulos atributos*/
+.producto-detalles .info-item strong {
+    color: var(--color-secundari);
+    font-weight: 600;
+}
+
+.producto-detalles .info-item p {
+    color: black;
+}
+
+/* IMÁGENES */
+.imagen-producto {
+    width: 70%;
+}
+
+.producto-detalles h3 {
+padding-top: 30px;
+}
+
+/* Contenedores COL-4 */
+.producto-detalles .col-4 {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+}
+
+.col-4 p {
+    color: black;
+    text-align: center;
+}
+
+/* Span nombre imagenes */
+.col-4 span {
+    color: black;
+}
+
+/* Atributos del producto */
+.atributo {
+    color: black;
+    border-radius: 8px;
+    padding: 12px 18px;
+    display: flex;
+    gap: 10px;
+}
+
+.atributo strong {
+    color: var(--color-secundari);
+}
+
+option {
+    color: black;
+}
+
+
+/* Estado del producto */
+.estado-activo {
+    color: #2e7d32;
+    font-weight: 600;
+}
+
+.estado-inactivo {
+    color: #c62828;
+    font-weight: 600;
+}
+
+/* Telefono movil*/
+@media only screen and (max-width: 767px) {
+
+    /* TAULA INDEX */
+    /* Accions */
+    .acciones-container {
+        justify-content: start;
+    }
+
+    /* Links */
+    .link-images,
+    .link-attributes {
+        justify-content: start;
+    }
+
+    /* VISUALITZAR */
+    .producto-detalles {
+        padding: 20px 15px;
+    }
+
+    .atributo {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .producto-detalles .info-item {
+        gap: 0px;
+    }
+
+    .col-4 p {
+        text-align: left;
+    }
+}

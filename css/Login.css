@@ -1,0 +1,94 @@
+.centrarLogin{
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.border{
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    background-color: rgb(243, 243, 243);
+    max-width: 500px;
+    padding: 1em;
+    padding-left: 3em;
+    padding-right: 3em;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.contrasena, .usuari {
+    padding-top: 1em;
+}
+
+label{
+    display: flex;
+    padding-bottom: 0.5em;
+    font-weight: bold;
+}
+
+/*
+input {
+    width: 100%;
+    margin-bottom: 1em;
+    border-radius: 5px;
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+}
+
+*/
+.botonsLogin{
+    padding-top: 1em;
+    display: flex;
+    gap: 20px;
+}
+
+/*
+button{
+    width: 100%;
+    cursor: pointer;
+    padding-right: 1em;
+    padding-left: 1em;
+    padding-bottom: 0.5em;
+    padding-top: 0.5em;
+    border-radius: 5px;
+}
+*/
+
+input, button {
+    width: 100%;
+    padding: 5px;
+}
+
+button{
+    cursor: pointer;
+}
+
+button:hover{
+    opacity: 0.9;
+}
+
+#missatgeError{
+  font-weight: bold;
+  color: #cc0000;
+  margin: 0;
+  margin-top: 15px;
+}
+
+#login{
+    background-color: var(--color-secundari);
+    border: none;
+
+}
+
+#registrarButton{
+    background-color: var(--color-quinari);
+}
+
+.link, .link a {
+  cursor: pointer;
+  text-decoration: underline !important;
+  color: var(--color-primari) !important;
+  margin-top: 15px;
+}

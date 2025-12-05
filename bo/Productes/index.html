@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Llistat usuaris</title>
+    <link rel="stylesheet" href="../css/normalize.css">
+    <link rel="stylesheet" href="../css/template_grid3.css">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/common-table.css">
+    <link rel="stylesheet" href="../css/common-paginacio.css">
+    <link rel="stylesheet" href="css/productes.css">
+    <script src="https://kit.fontawesome.com/f653e778a0.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <script src="../../apiAccess/crud.js"></script>
+    <script src="../js/common.js"></script>
+    <script src="../js/common-paginacio.js"></script>
+    <script src="../js/logout.js"></script>
+    <script src="js/index.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <div class="container-fluid sense-separacio">
+        <div class="row header">
+            <div class="col-12 centrar_header">
+                <div id="menu_hamburguesa">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+                <a href="../index.html" id="logotip">
+                    <img src="img/logo_tendafake.png" alt="No s'ha pogut carregat l'imatge">
+                </a>
+                <div id="sessioUsuari">
+                    <div class="headerUsuari">
+                        <img src="img/foto_persona.png" alt="No s'ha pogut carregar l'imatge">
+                        <span>Manolo Garibolo</span>
+                        <span class="separador">&nbsp;</span>
+                    </div>
+                    <div class="tancarSessio">
+                        <a id="botoTancarSessio" href="#">
+                            <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Titol de la pàgina -->
+        <div class="row pagina">
+            <div class="col-12">
+                <p>Llistat de productes</p>
+            </div>
+        </div>
+        <!-- Menu lateral -->
+        <div class="row main">
+            <div id="menu_lateral" class="col-2">
+                <a href="../Productes/Atributs.html" class="opcio_menu">
+                    <i class="fa-solid fa-paperclip"></i>
+                    Atributs
+                </a>
+                <a href="../Comandes/index.html" class="opcio_menu">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    Carrets
+                </a>
+                <a href="../Clients/index.html" class="opcio_menu">
+                    <i class="fa-solid fa-person"></i>
+                    Clients
+                </a>
+                <a href="../Configuracions/Configuracio.html" class="opcio_menu">
+                    <i class="fa-solid fa-sliders"></i>
+                    Configuracions
+                </a>
+                <a href="../Comandes/index.html" class="opcio_menu">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    Comandes
+                </a>
+                <a href="../Historic/index.html" class="opcio_menu">
+                    <i class="fa-solid fa-chart-line"></i>
+                    Estadístiques
+                </a>
+                <a href="../Productes/Familia.html" class="opcio_menu">
+                    <i class="fa-solid fa-list"></i>
+                    Families
+                </a>
+                <a href="../Localitzacio/index.html" class="opcio_menu">
+                    <i class="fa-solid fa-location-dot"></i>
+                    Localitzacions
+                </a>
+                <a href="../Ofertes/index.html" class="opcio_menu">
+                    <i class="fa-solid fa-tag"></i>
+                    Ofertes
+                </a>
+                <a href="../Productes/index.html" class="opcio_menu opcio_seleccionada">
+                    <i class="fa-solid fa-city"></i>
+                    Productes
+                </a>
+                <a href="../Usuaris/index.html" class="opcio_menu">
+                    <i class="fa-solid fa-user"></i>
+                    Usuaris
+                </a>
+                <a href="#" id="tancarSessioLateral" class="opcio_menu eixir_menu">
+                    <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
+                    Eixir
+                </a>
+            </div>
+            <!-- Filtres-->
+            <div class="col-10">
+                <form action="" class="contingut_main">
+                    <div class="container-fluid sense-separacio">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="element_main">
+                                    <label for="searchName">Nom</label>
+                                    <input type="text" id="searchName" placeholder="Nom del producte...">
+                                </div>
+                                <div class="element_main">
+                                    <label for="filterStatus">Estat:</label>
+                                    <select id="filterStatus" class="filtre_select">
+                                        <option value="all">Tots els estats</option>
+                                        <option value="active">Actius</option>
+                                        <option value="inactive">Inactius</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="element_main">
+
+                                    <label for="filterFamily">Família:</label>
+                                    <select id="filterFamily" class="filtre_select">
+                                        <option value="all">Totes les famílies</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="element_main">
+                                    <label for="filterSort">Ordenar per:</label>
+                                    <select id="filterSort" class="filtre_select">
+                                        <option value="id_asc" selected>ID (Antic - Nou)</option>
+                                        <option value="id_desc">ID (Nou - Antic)</option>
+                                        <option value="name_asc">Nom (A-Z)</option>
+                                        <option value="name_desc">Nom (Z-A)</option>
+                                        <option value="price_asc">Preu (Baix - Alt)</option>
+                                        <option value="price_desc">Preu (Alt - Baix)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="botons_accio">
+                                    <button class="cercar" type="submit">
+                                        <i class="fa-solid fa-magnifying-glass"></i>
+                                        Cercar
+                                    </button>
+                                    <button class="netejar" type="reset">
+                                        <i class="fa-solid fa-xmark"></i>
+                                        Netejar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="container-fluid sense-separacio">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="contingut">
+                                <div id="contingutTaula">
+                                    <button id="btnCrear">Crear producte</button>
+                                    <table id="taula">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Nom</th>
+                                                <th>Preu</th>
+                                                <th>Descripció</th>
+                                                <th>Família</th>
+                                                <th>Imatges</th>
+                                                <th>Característiques</th>
+                                                <th>Estat</th>
+                                                <th>Accions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="capcalera_movil">
+                                                <th>Llistat</th>
+                                            </tr>
+                                        </tbody>
+                                        <tbody id="tableBody">
+
+                                        </tbody>
+                                    </table>
+                                    <!-- La paginación -->
+                                    <div aria-label="Paginació de productes" class="mt-4">
+                                        <div class="paginacio">
+                                            <button id="anterior" class="no_mostrar">Anterior</button>
+                                            <div id="pagines"></div>
+                                            <button id="posterior" class="no_mostrar">Següent</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+</body>
+
+</html>

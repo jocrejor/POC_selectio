@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparador de Productes</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="text/javascript" src="Product.class.js"></script>
+    <script type="text/javascript" src="Family.class.js"></script>
+    <script type="text/javascript" src="Attribute.class.js"></script>
+    <script type="text/javascript" src="ProductAttribute.js"></script>
+    <script type="text/javascript" src="ProductImage.class.js"></script>
+    <script type="text/javascript" src="Comparatorproduct.class.js"></script>
+    <script type="text/javascript" src="comparador.class.js"></script>
+    <script type="text/javascript" src="comparadorFuncions.js"></script>
+    <script src="https://kit.fontawesome.com/5fab2c3da2.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="comparador-page">
+        <div class="comparador-header">
+            <h1>Comparador de Productes</h1>
+            <button onclick="window.location.href='llistarProductes.html'" class="btn-tornar">Tornar</button>
+        </div>
+        
+        <!-- Barra de control del comparador -->
+        <div class="comparador-controls">
+            <div class="controls-left">
+                <input type="text" id="nomComparador" class="nom-comparador-input" placeholder="Nom del comparador" value="El meu comparador">
+                <button class="btn-icon" id="btnFavorit" title="Afegir a preferits">
+                    <i class="fa-solid fa-star"></i>
+                </button>
+                <button class="btn-guardar" onclick="guardarComparadorAPI()" title="Guardar comparador">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                </button>                </button>
+            </div>
+            <div class="controls-right">
+                <button class="btn-exportar" title="Exportar a Excel">
+                    <i class="fa-solid fa-file-excel"></i>
+                    Excel
+                </button>
+                <button class="btn-exportar" title="Exportar a PDF">
+                    <i class="fa-solid fa-file-pdf"></i>
+                    PDF
+                </button>
+                <button class="btn-afegir-producte" onclick="window.location.href='llistarProductes.html'">
+                    <i class="fa-solid fa-plus"></i>
+                    Afegir producte
+                </button>
+            </div>
+        </div>
+        
+        <div class="table-wrapper">
+            <button class="scroll-btn scroll-btn-left" id="scrollLeft" onclick="scrollTable(-1)">
+                &#8249;
+            </button>
+            
+            <div class="table-scroll-container" id="tableContainer">
+                <div id="comparadorContingut"></div>
+            </div>
+            
+            <button class="scroll-btn scroll-btn-right" id="scrollRight" onclick="scrollTable(1)">
+                &#8250;
+            </button>
+        </div>
+        
+        <!-- Carrusel de productes relacionats -->
+        <div class="carrusel-wrapper">
+            <h2>Podria interessar-te també:</h2>
+            <div class="carrusel-container">
+                <button class="scroll-btn scroll-btn-left" id="carruselLeft" onclick="scrollCarrusel(-1)">
+                    &#8249;
+                </button>
+                
+                <div class="carrusel-scroll" id="carruselContingut">
+                    <!-- Els productes es carregaran aquí -->
+                </div>
+                
+                <button class="scroll-btn scroll-btn-right" id="carruselRight" onclick="scrollCarrusel(1)">
+                    &#8250;
+                </button>
+            </div>
+        </div>
+
+        <h2>Comparadors Anteriors:</h2>
+
+        <ul>
+            <li>Fuonts d'alimentació</li>
+            <li>Nou Comparador2</li>
+            <li>Perilles</li>
+            <li>Portatils</li>
+            
+        </ul>
+    </div>
+</body>
+</html>

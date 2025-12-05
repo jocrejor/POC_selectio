@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Gestió de Característiques </title>
+            <script src="../../apiAccess/crud.js"></script>
+        <link rel="stylesheet" href="../../backoffice/css/normalize.css">
+        <link rel="stylesheet" href="../../backoffice/css/template_grid3.css">
+        <link rel="stylesheet" href="../../backoffice/css/common.css">
+
+        <script src="https://kit.fontawesome.com/f653e778a0.js" crossorigin="anonymous"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" 
+        rel="stylesheet">
+            
+     <script src="./js/AtributsModificar.js"></script>
+<link rel="stylesheet" href="./css/Atributs.css">
+  <script src="../../backoffice/js/common.js"></script>
+</head>
+<body>
+    
+ <div class="container-fluid sense-separacio">
+            <div class="row header">
+                <div class="col-12 centrar_header">
+                    <div id="menu_hamburguesa">
+                        <i class="fa-solid fa-bars"></i>
+                    </div>
+                    <div id="logotip">
+                        <img src="img/logo_tendafake.png" alt="No s'ha pogut carregat l'imatge">
+                    </div>
+                    <div id="sessioUsuari">
+                        <div class="headerUsuari">
+                            <img src="img/foto_persona.png" alt="No s'ha pogut carregar l'imatge">
+                            <span>Manolo Garibolo</span>
+                            <span class="separador">&nbsp;</span>
+                        </div>
+                        <div class="tancarSessio">
+                            <a href="#">
+                                <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Titol de la pàgina -->
+            <div class="row pagina">
+                <div class="col-12">
+                    <p>Gestió de caracteristiques</p>
+                </div>
+            </div>
+            <!-- Menu lateral -->
+            <div class="row main">
+                <div id="menu_lateral" class="col-2">
+                    <a href="./Atributs.html" class="opcio_menu">
+                        <i class="fa-solid fa-paperclip"></i>
+                        Atributs
+                    </a>
+                    <a href="#" class="opcio_menu">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        Carrets
+                    </a>
+                    <a href="../Clients/index.html" class="opcio_menu">
+                        <i class="fa-solid fa-person"></i>
+                        Clients
+                    </a>
+                    <a href="#" class="opcio_menu">
+                        <i class="fa-solid fa-sliders"></i>
+                        Configuracions
+                    </a>
+                    <a href="../Comandes/index.html" class="opcio_menu">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        Comandes
+                    </a>
+                    <a href="../Historic/index.html" class="opcio_menu">
+                        <i class="fa-solid fa-chart-line"></i>
+                        Estadístiques
+                    </a>
+                    <a href="./Familia.html" class="opcio_menu">
+                        <i class="fa-solid fa-list"></i>
+                        Families
+                    </a>
+                    <a href="../Favorits/Favorits.html" class="opcio_menu">
+                        <i class="fa-solid fa-star"></i>
+                        Favorits
+                    </a>
+                    <a href="../Localitzacio/in100dex.html" class="opcio_menu">
+                        <i class="fa-solid fa-location-dot"></i>
+                        Localitzacions
+                    </a>
+                    <a href="../Ofertes/index.html" class="opcio_menu">
+                        <i class="fa-solid fa-tag"></i>
+                        Ofertes
+                    </a>
+                    <a href="./index.html" class="opcio_menu">
+                        <i class="fa-solid fa-city"></i>
+                        Productes
+                    </a>
+                    <div class="opcio_seleccionada">
+                        <i class="fa-solid fa-user"></i>
+                        Usuaris
+                    </div>
+                    <a href="#" class="opcio_menu eixir_menu">
+                        <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
+                        Eixir
+                    </a>
+                </div>
+
+                <div class="col-10">
+                
+  <form id="elFormulari" class="">
+   <div class="container-fluid sense-separacio">
+
+   <div class="row ">
+      <div class="col-2"></div>
+      <div class="col-8">
+        <div class="element_main ">
+            <label for="nom">Nom de la característica</label>
+        <input type="text" name="nom" id="nom" maxlength="30"
+            pattern="[A-Za-zÀ-ÿñÑ\s().+]{2,100}"
+               title="Introdueix entre 2 i 100 lletres" 
+               required
+            />
+           </div>
+      
+           <div class="element_main">
+             <label for="familia" >Família</label>
+        <select id="familia" class="filtre_select" required>
+          <option value=""> </option>
+        </select>
+           </div>
+      </div>
+      <div class="col-2"></div>
+    </div>
+<div class="row ">
+  <div class="col-12 centrarguardar">
+    
+    <button  type="submit"  id="enviar" class="">
+      Modificar
+    </button>
+
+    <button type="button"  id="cancelar" class="">
+      Cancelar
+    </button>
+
+  </div>
+</div>
+
+    <div class="row">
+      <div class="col-12">
+        <p id="missatgeError"></p>
+      </div>
+    </div>
+
+   </div>
+
+  </form>
+                </div>
+            </div>
+        </div>
+
+
+</body>
+</html>

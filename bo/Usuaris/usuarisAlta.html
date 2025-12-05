@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ca">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alta d'Usuaris</title>
+    <link rel="stylesheet" href="../css/normalize.css">
+    <link rel="stylesheet" href="../css/template_grid3.css">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/common-table.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="shortcut icon" href="../img/logo_tendafake.png" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <!-- Inclou el fitxer JavaScript que gestionarà la llista d'usuaris -->
+    <script type="text/javascript" src="../../apiAccess/crud.js"></script>
+    <script type="text/javascript" src="./js/altaUsuaris.js"></script>
+    <script type="text/javascript" src="../js/logout.js"></script>    
+    <script type="text/javascript" src="../js/common.js"></script>
+    <script type="text/javascript" src="../js/common-table.js"></script>
+    <script src="https://kit.fontawesome.com/f653e778a0.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <!-- Header -->
+    <div class="container-fluid sense-separacio">
+        <div class="row header">
+            <div class="col-12 centrar_header">
+                <div id="menu_hamburguesa">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+                <div id="logotip">
+                    <a href="../index.html">
+                        <img src="../img/logo_tendafake.png" alt="No s'ha pogut carregat l'imatge">
+                    </a>
+                </div>
+                <div id="sessioUsuari">
+                    <div class="headerUsuari">
+                        <img src="../img/foto_persona.png" alt="No s'ha pogut carregar l'imatge">
+                        <span id="usuariNom"></span>
+                        <span class="separador">&nbsp;</span>
+                    </div>
+                    <div class="tancarSessio">
+                        <a id="botoTancarSessio" href="#">
+                            <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Titol de la pàgina -->
+        <div class="row pagina">
+            <div class="col-12">
+                <p>Alta d'usuaris</p>
+            </div>
+        </div>
+        <!-- Menu lateral -->
+        <div class="row main">
+             <div id="menu_lateral" class="col-2">
+                <a href="../Productes/index.html" class="opcio_menu">
+                    <i class="fa-solid fa-paperclip"></i>
+                    Atributs
+                </a>
+                <a href="../GestioCarrets/index.html" class="opcio_menu">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    Carrets
+                </a>
+                <a href="../Clients/index.html" class="opcio_menu">
+                    <i class="fa-solid fa-person"></i>
+                    Clients
+                </a>
+                <a href="../Configuracions/index.html" class="opcio_menu">
+                    <i class="fa-solid fa-sliders"></i>
+                    Configuracions
+                </a>
+                <a href="../Comandes/index.html" class="opcio_menu">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    Comandes
+                </a>
+                <a href="../Historic/index.html" class="opcio_menu">
+                    <i class="fa-solid fa-chart-line"></i>
+                    Estadístiques
+                </a>
+                <a href="../Productes/Familia.html" class="opcio_menu">
+                    <i class="fa-solid fa-list"></i>
+                    Families
+                </a>
+                <a href="../Localitzacio/index.html" class="opcio_menu">
+                    <i class="fa-solid fa-location-dot"></i>
+                    Localitzacions
+                </a>
+                <a href="../Ofertes/index.html" class="opcio_menu">
+                    <i class="fa-solid fa-tag"></i>
+                    Ofertes
+                </a>
+                <a href="../Productes/index.html" class="opcio_menu">
+                    <i class="fa-solid fa-city"></i>
+                    Productes
+                </a>
+                <div class="opcio_seleccionada">
+                    <i class="fa-solid fa-user"></i>
+                    Usuaris
+                </div>
+                <a href="#" id="tancarSessioLateral" class="opcio_menu eixir_menu">
+                    <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
+                    Eixir
+                </a>
+            </div>
+
+            <div class="col-10">
+                <div class="container-fluid sense-separacio">
+                    <div class="row">
+                        <div class="col-5">
+                            <div class="contingut">
+                                <!-- Botó per tornar a la pàgina de llista d'usuaris -->
+                                <button id="usuaris">Tornar a la Llista</button>
+                                <!-- Formulari principal per donar d'alta usuaris -->
+                                <form id="formulariUsuari" novalidate>
+                                    <table id="taula_usuari">
+                                        <tr>
+                                            <td>
+                                                <label>Nom d'usuari:</label>
+                                            </td>
+                                            <td>
+                                                <!-- Camp amb validació per nom d'usuari (3-50 lletres) -->
+                                                <input type="text" name="nomUsuari" id="nomUsuari"
+                                                    pattern="[a-z]{3,50}" required/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label>Nom:</label>
+                                            </td>
+                                            <td>
+                                                <!-- Camp amb validació per nom (3-100 lletres) -->
+                                                <input type="text" name="nom" id="nom"
+                                                    pattern="[A-Za-zÀ-ÖØ-öø-ÿ\s]{3,100}" required/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label>Correu:</label>
+                                            </td>
+                                            <td>
+                                                <!-- Validació d'email amb pattern i longitud (5-100 caràcters) -->
+                                                <input type="email" name="correu" id="correu"
+                                                pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" required />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                               <label>Contrasenya:</label>
+                                            </td>
+                                            <td>
+                                                <!-- Contrasenya segura: 5-30 caràcters, amb majúscules, minúscules, número i símbol -->
+                                                <input type="password" name="contrasenya" id="contrasenya" 
+                                                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&._\-#])[A-Za-z\d@$!%*?&._\-#]{5,30}$"
+                                                required />
+                                                <button type="button" id="botoContrasenya"><i class="fa-solid fa-lock"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label>Rol:</label>
+                                            </td>
+                                            <td>
+                                                <!-- Selector de rol -->
+                                                <select id="rol" class="filtre_select">
+                                                    <option value=""></option>                
+                                                </select>
+                                            </td> 
+                                        </tr>
+                                    </table>
+                                    <div class="botons_form">
+                                        <button id="enviar" name="submit">Enviar</button>
+                                        <button id="limpiar" name="reset">Reiniciar</button>
+                                    </div>
+                                    <!-- Àrea per mostrar missatges d'error a l'usuari -->
+                                    <div id="missatgeError"></div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-7">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

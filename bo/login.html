@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ca">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Inici de Sessió</title>    
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/template_grid3.css">
+        <link rel="stylesheet" href="css/common.css">
+        <link rel="stylesheet" href="css/login/style.css">
+        <link rel="shortcut icon" href="./img/logo_tendafake.png" type="image/x-icon">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+            rel="stylesheet">
+        <script src="../apiAccess/crud.js"></script>
+        <script src="./js/login.js"></script>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 centrar-login">
+                    <div class="login">
+                        <h2>Inici de Sessió</h2>
+                        <form id="formulariLogin" novalidate>
+                            <div class="apartats_form">
+                                <label for="nomUsuari">Nom d'usuari:</label>
+                                <input type="text" id="nomUsuari" name="nomUsuari"
+                                    pattern="[a-z]{3,50}" required/>
+                            </div>
+
+                            <div class="apartats_form">
+                                <label for="contrasenya">Contrasenya:</label>
+                                <div class="password-group">
+                                    <input type="password" id="contrasenya" name="contrasenya"
+                                        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&._\-#])[A-Za-z\d@$!%*?&._\-#]{5,30}$"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="apartats_form">
+                                <a href="#">He oblidat la contrasenya</a>
+                            </div>
+                            <button type="submit" id="entrar">Entrar</button>
+                        </form>
+
+                        <p id="missatgeError" style="color:red;"></p>
+                        <p>user: mangar - password: Admin.123</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

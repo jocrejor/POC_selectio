@@ -1,0 +1,371 @@
+/* Utilidades de espaciado */
+.mb-30 {
+  margin-bottom: 30px;
+}
+
+.mb-50 {
+  margin-bottom: 50px;
+}
+
+.mt-20 {
+  margin-top: 20px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+/* Imágenes generales */
+.img-fluid {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+.rounded-sm {
+  border-radius: 4px;
+}
+
+/* === SECCIÓN 1: HERO & PRO CLUB (Ajustado) === */
+
+.main-hero-img {
+  height: 800px; /*Altura fija para las imágenes*/
+  width: 100%;  /* El ancho siempre se adapta al contenedor */
+  object-fit: cover;  /* Las imágenes se ajustan al tamaño sin perder su relación de aspecto */
+  margin: auto;
+}
+
+
+.bloque-1 {
+  border: 1px solid var(--color-quaternari);
+  background-color: #EEEEEE;
+}
+
+.bloque-1 img {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+/* === SECCIÓN 2: Categorías (Ajustado) === */
+.section-title {
+  font-weight: 700;
+  margin-bottom: 20px;
+  
+}
+
+
+.bloque-2 h1 {
+  margin-bottom: 50px;
+}
+
+.cat-item img {
+  margin-bottom: 10px;
+  max-height: 250px;
+  width: auto;
+}
+
+.cat-item p {
+  font-weight: 500;
+  font-size: 1.1em;
+}
+
+.cat-item:hover p {
+  color: var(--color-primari);
+}
+
+/* === SECCIÓN 3: Ofertas y Banners (Ajustado) === */
+
+.bloque-3 {
+  border: 1px solid var(--color-quaternari);
+  background-color: #EEEEEE;
+  
+}
+
+.bloque-3 h1{
+  margin-bottom: 50px;
+}
+
+/* Banner ancho de Ofertas */
+.banner-wide {
+  width: 100%;
+  height: 500px;
+
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+}
+
+.banner-content-center {
+  text-align: center;
+  color: white;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+
+.ofertas-title {
+  font-size: 2.5em;
+  /* Título más pequeño */
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.banner-content-center p {
+  font-size: 1.5em;
+  margin-top: 50%;
+}
+
+.btn-white {
+  background-color: white;
+  color: black;
+  padding: 8px 20px;
+  font-weight: 400;
+  font-size: 1.6em;
+  border: 1px solid white;
+  position: absolute;
+  bottom: 25px;   /* Ajusta a tu gusto */
+  right: 30px;    /* Ajusta a tu gusto */
+}
+
+.btn-white:hover {
+  background-color: transparent;
+  color: white;
+}
+
+/* Cajas Blancas y sus Imágenes laterales */
+.promo-box-white {
+  border: 1px solid #ddd;
+  padding: 25px;
+  /* Menos padding */
+  height: 350px;
+  /* Altura fija más pequeña */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  background-color: white;
+}
+
+/* Nueva clase para las imágenes al lado de las cajas blancas */
+.img-side-promo {
+  width: 100%;
+  height: 350px;
+  /* Misma altura que la caja de texto */
+  object-fit: cover;
+  /* Recorta la imagen para que no se deforme */
+  display: block;
+}
+
+.promo-box-white {
+  border: 1px solid var(--color-quaternari);
+}
+
+.promo-box-white h3 {
+  font-size: 1.9em;
+  /* Texto más pequeño */
+  font-weight: 400;
+  margin-bottom: 15px;
+  line-height: 1.3;
+}
+
+.arrow-circle {
+  font-size: 1.8em;
+  color: #666;
+  margin-top: 5px;
+  display: inline-block;
+}
+
+.arrow-circle:hover {
+  color: var(--color-primari);
+}
+
+.border-grey {
+  border: 1px solid #ddd;
+}
+
+/* === SECCIÓN 4: About Selectio (Ajustado) === */
+
+.about-section {
+  background-color: #1a1a1a;
+  color: white;
+  background-size: cover;
+  background-position: center;
+  padding: 40px 30px;
+  position: relative;
+  height: 520px;
+}
+
+.about-title {
+  font-size: 4em;
+  /* Título más pequeño */
+  line-height: 1.1;
+  font-weight: 300;
+  margin: 0;
+}
+
+.blue-accent {
+  color: var(--color-primari);
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.blue-text {
+  color: var(--color-primari);
+  font-weight: 500;
+}
+
+.about-text p {
+  font-size: 1.6em;
+  /* Texto más pequeño */
+  line-height: 1.5;
+  color: #ccc;
+  text-align: justify;
+}
+
+/* === SECCIÓN 5: Iconos Azules (Ajustado) === */
+.icon-circle {
+  width: 110px;
+  /* Círculo más pequeño (antes 80px) */
+  height: 110px;
+  border-radius: 50%;
+  border: 3px solid var(--color-primari);
+  color: var(--color-primari);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 10px auto;
+  font-size: 2.5em;
+  /* Icono más pequeño */
+  transition: all 0.3s;
+}
+
+.icon-text {
+  font-size: 1em;
+  color: var(--color-primari);
+  font-weight: 500;
+}
+
+.col-2:hover .icon-circle {
+  background-color: var(--color-primari);
+  color: white;
+}
+
+/* === SECCIÓN 6: Barra Azul Footer (Ajustado) === */
+.blue-strip-container {
+  background-color: var(--color-primari);
+  color: white;
+  padding-top: 50px;
+  padding-bottom: 50px;
+  margin-top: 30px;
+}
+
+.badge-trust {
+  background: white;
+  color: var(--color-primari);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 110px;
+  /* Badge más pequeño (antes 120px) */
+  height: 110px;
+  border-radius: 50%;
+  font-size: 0.6em;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin: auto;
+}
+
+.badge-trust i {
+  font-size: 1.8em;
+  /* Icono más pequeño */
+  margin-bottom: 3px;
+}
+
+.rating-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
+  max-width: 200px;
+  gap: 10px
+}
+
+.rating-box span {
+  font-size: 1em;
+  font-weight: bold;
+}
+
+.stars {
+  color: var(--color-secundari);
+  margin: 3px 0;
+  font-size: 1em;
+}
+
+.rating-box small {
+  font-size: 1em;
+  opacity: 0.8;
+}
+
+.contact-info-strip {
+  text-align: left;
+  font-size: 1em;
+  /* Texto de contacto más pequeño */
+}
+
+.contact-info-strip p {
+  margin: 5px 0;
+  line-height: 1.3;
+}
+
+.contact-info-strip i {
+  margin-right: 8px;
+}
+
+/* RESPONSIVE BÁSICO */
+@media only screen and (max-width: 767px) {
+
+  .pro-club-card,
+  .promo-box-white {
+    height: auto;
+    /* En móvil dejamos que la altura sea automática */
+    padding: 30px;
+  }
+
+  .img-side-promo {
+    height: 200px;
+    /* En móvil les damos una altura fija para que no desaparezcan */
+  }
+
+  .main-hero-img {
+    max-height: none;
+    /* En móvil que ocupe el ancho */
+  }
+
+  .contact-info-strip,
+  .rating-box,
+  .badge-trust {
+    text-align: center;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
+  }
+
+  .contact-info-strip {
+    text-align: center;
+  }
+}

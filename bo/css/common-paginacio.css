@@ -1,0 +1,43 @@
+:root {
+  --color-paginacio: #fff;
+  --color-pagina-seleccionada: #47488e;
+  --color-letra-paginacio: #000;
+  --color-paginacio-seleccionada: #fff;
+}
+
+.paginacio button {
+    background-color: var( --color-paginacio);
+    color: var(--color-letra-paginacio);
+    border: 1px solid var(--color-letra-paginacio);
+    cursor: pointer;
+}
+
+.paginacio {
+    position: block;
+    display: flex;
+    justify-content: end;
+    gap: 10px;
+    padding-top: 20px;
+}
+
+.paginaSeleccionada {
+    background-color: var(--color-pagina-seleccionada) !important;
+    color: var(--color-paginacio-seleccionada) !important;
+}
+
+#pagines {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    gap: 10px;
+}
+
+#opcions_inferiors {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 25px;
+}
+
+.no_mostrar {
+    display: none;
+}

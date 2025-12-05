@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Llistat de poblacions</title>
+    
+    <script src="../../apiAccess/crud.js"></script> <script src="./poblacio.js"></script>
+    
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+    <header>
+        <h1>Llistat de poblacions</h1>
+    </header>
+
+    <section id="seccio-context">
+        <h2 id="id_country">País seleccionat:</h2>
+        
+        <h2 id="id_province">Provincia seleccionada:</h2>
+    </section>
+
+    <section id="seccio-navegacio">
+        <a href="./index.html">
+            <button id="torna">⬅️ Torna</button>
+        </a>
+    </section>
+
+    <section id="seccio-afegir">
+        <input type="text" id="city" placeholder="Afegir nova Població" 
+               maxlength="30" minlength="3" required 
+               pattern="^[A-Za-zÀ-ÿ\s]{3,30}$">
+        
+        <span id="mensajeError"></span>
+        
+        <button id="afegir"></button>
+    </section>
+
+    <section id="seccio-cerca">
+        <input type="text" id="buscar" placeholder="🔍 Buscar població">
+    </section>
+
+    <section id="seccio-llistat">
+        <ol id="llista"></ol>
+    </section>
+
+    <input type="hidden" id="index" value="-1">
+</body>
+</html>

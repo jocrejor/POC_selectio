@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Llistat usuaris</title>
+    <link rel="stylesheet" href="../css/common-table.css">
+    <link rel="stylesheet" href="css/familia.css">
+    <link rel="stylesheet" href="../css/normalize.css">
+    <link rel="stylesheet" href="../css/template_grid3.css">
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="https://kit.fontawesome.com/f653e778a0.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <script src="../js/common.js"></script>
+    <script src="../js/logout.js"></script>
+    <script src="Familia.js"></script>
+    <title>Formulario Alta Familias</title>
+    <link rel="stylesheet" href="index.css">
+    <script src="../../apiAccess/crud.js"></script>
+    <script src="js/Familia.js"></script>
+
+</head>
+
+<body>
+    <!-- Header -->
+    <div class="container-fluid sense-separacio">
+        <div class="row header">
+            <div class="col-12 centrar_header">
+                <div id="menu_hamburguesa">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+                <div id="logotip">
+                    <a href="../index.html"><img src="../img/logo_tendafake.png"
+                            alt="No s'ha pogut carregat l'imatge"></a>
+                </div>
+                <div id="sessioUsuari">
+                    <div class="headerUsuari">
+                        <img src="../img/foto_persona.png" alt="No s'ha pogut carregar l'imatge">
+                        <span id="usuariNom"></span>
+                        <span class="separador">&nbsp;</span>
+                    </div>
+                    <div class="tancarSessio">
+                        <a id="botoTancarSessio" href="#">
+                            <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Titol de la pàgina -->
+        <div class="row pagina">
+            <div class="col-12">
+                <p>Gestió de Families</p>
+            </div>
+        </div>
+        <!-- Menu lateral -->
+        <div class="row main">
+            <div id="menu_lateral" class="col-2">
+                <a href="#" class="opcio_menu">
+                    <i class="fa-solid fa-paperclip"></i>
+                    Atributs
+                </a>
+                <a href="#" class="opcio_menu">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    Carrets
+                </a>
+                <a href="#" class="opcio_menu">
+                    <i class="fa-solid fa-person"></i>
+                    Clients
+                </a>
+                <a href="#" class="opcio_menu">
+                    <i class="fa-solid fa-sliders"></i>
+                    Configuracions
+                </a>
+                <a href="#" class="opcio_menu">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    Comandes
+                </a>
+                <a href="#" class="opcio_menu">
+                    <i class="fa-solid fa-chart-line"></i>
+                    Estadístiques
+                </a>
+                <div class="opcio_seleccionada">
+                    <i class="fa-solid fa-list"></i>
+                    Families
+                </div>
+                <a href="#" class="opcio_menu">
+                    <i class="fa-solid fa-location-dot"></i>
+                    Localitzacions
+                </a>
+                <a href="#" class="opcio_menu">
+                    <i class="fa-solid fa-tag"></i>
+                    Ofertes
+                </a>
+                <a href="#" class="opcio_menu">
+                    <i class="fa-solid fa-city"></i>
+                    Productes
+                </a>
+                <a href="#" class="opcio_menu">
+                    <i class="fa-solid fa-user"></i>
+                    Usuaris
+                </a>
+                <a id="tancarSessioLateral" href="#" class="opcio_menu eixir_menu">
+                    <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
+                    Eixir
+                </a>
+            </div>
+            <!-- Filtres -->
+            <div class="col-10">
+                <div class="container-fluid sense-separacio">
+                    <div class="row">
+                        <div class="col-12">
+
+                            <div class="noElements">
+                                <p>No hi ha usuaris registrats</p>
+                            </div>
+                            <div class="contingut">
+                                <div id="contingutTaula">
+                                    <h3>Buscar</h3>
+                                    <input type="text" id="buscarFamilia"
+                                        placeholder="Buscar família o subfamília..." />
+                                    <table id="taula">
+                                        <thead>
+                                            <tr>
+                                                <th>Nombre</th>
+                                                <th>Descripción</th>
+                                                <th>Imagen</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="taulaFamilia"></tbody>
+                                    </table>
+                                </div>
+                                </section>
+
+                                <section class="seccion-formulario">
+                                    <div class="cabecera-seccion">
+                                        <h2>Formulario</h2>
+                                    </div>
+
+                                    <input type="hidden" id="index" value="-1">
+
+                                    <div class="formulario-cuadricula">
+                                        <div class="grupo-formulario">
+                                            <label for="nom">Nombre de la familia</label>
+                                            <input type="text" id="nom" placeholder="Introduce el nombre de la familia"
+                                                required minlength="3" maxlength="100"
+                                                pattern="^[A-Za-z0-9áéíóúàèìòùäëïöüñÁÉÍÓÚÀÈÌÒÙÄËÏÖÜÑ\s'']+$">
+                                        </div>
+
+                                        <div class="grupo-formulario">
+                                            <label for="familia_de">Familia padre</label>
+                                            <select id="familia_de">
+                                                <option value="">-- Selecciona una familia padre --</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="grupo-formulario">
+                                            <label for="imatge">Imagen</label>
+                                            <input type="file" id="imatge" accept="image/*">
+                                        </div>
+
+                                        <div class="grupo-formulario ancho-completo">
+                                            <label for="descripcio">Descripción</label>
+                                            <textarea id="descripcio" rows="3" placeholder="Descripción de la familia"
+                                                required minlength="3" maxlength="250"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="acciones-formulario">
+                                        <button id="afegir" class="btn-principal">Añadir</button>
+                                        <button type="button" onclick="netejarFormulari()"
+                                            class="btn-secundario">Limpiar</button>
+                                    </div>
+
+                                    <p id="alerta" class="mensaje-alerta"></p>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+</body>
+
+</html>

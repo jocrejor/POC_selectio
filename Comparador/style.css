@@ -1,0 +1,548 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    padding: 2%;
+}
+
+.comparador-page {
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.comparador-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 0.125rem solid #ddd;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.comparador-header h1 {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    color: #333;
+}
+
+.btn-tornar {
+    padding: 0.625em 1.5em;
+    background-color: #666;
+    color: white;
+    border: none;
+    border-radius: 0.3125em;
+    cursor: pointer;
+    font-size: clamp(0.875rem, 2vw, 1rem);
+    font-weight: 500;
+}
+
+.btn-tornar:hover {
+    background-color: #555;
+}
+
+/* Barra de controls del comparador */
+.comparador-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding-bottom: 
+    1.5rem;
+}
+
+.controls-left,
+.controls-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.nom-comparador-input {
+    padding: 0.625em 1em;
+    font-size: clamp(0.875rem, 2vw, 1rem);
+    border: 0.0625rem solid #ccc;
+    border-radius: 0.3125em;
+    outline: none;
+    min-width: clamp(12rem, 20vw, 15rem);
+    font-weight: 500;
+}
+
+.nom-comparador-input:focus {
+    border-color: #007bff;
+}
+
+.btn-icon {
+    border: none;
+    background-color: transparent;
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.5em;
+    min-height: 2.5em;
+    border-radius: 25px;
+    font-size: 1rem;
+}
+
+.btn-icon:hover {
+    background-color: #f0f0f0;
+    color: hsl(51, 100%, 50%);
+}
+
+
+.btn-guardar {
+    
+    border: none;
+    background-color: transparent;
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    min-width: 2.5em;
+    min-height: 2.5em;
+    border-radius: 25px;
+}
+
+.btn-guardar:hover {
+    background-color: #eaeaea;
+}
+
+.btn-afegir-producte {
+    padding: 0.625em 1.25em;
+    background-color: #393939;
+    color: white;
+    border: none;
+    border-radius: 0.3125em;
+    cursor: pointer;
+    font-size: clamp(0.875rem, 2vw, 1rem);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+
+.btn-afegir-producte:hover {
+    background-color: #0056b3;
+}
+
+.btn-exportar {
+    padding: 0.625em 1.25em;
+    background-color: white;
+    color: #666;
+    border: 0.0625rem solid #ddd;
+    border-radius: 0.3125em;
+    cursor: pointer;
+    font-size: clamp(0.875rem, 2vw, 1rem);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+
+.btn-exportar:hover {
+    background-color: #f0f0f0;
+    border-color: #999;
+}
+
+.btn-exportar .fa-file-pdf {
+    color: #d32f2f;
+}
+
+.btn-exportar .fa-file-excel {
+    color: #1e7e34;
+}
+
+.table-wrapper {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.table-scroll-container {
+    overflow-x: auto;
+    overflow-y: visible;
+    position: relative;
+    scroll-behavior: smooth;
+    width: 100%;
+    border: 0.0625rem solid #ccc;
+}
+
+.table-scroll-container::-webkit-scrollbar {
+    height: 0.625rem;
+}
+
+.table-scroll-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 0.3125rem;
+}
+
+.table-scroll-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 0.3125rem;
+}
+
+.table-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+#comparadorContingut {
+    width: max-content;
+}
+
+.table-scroll-container table {
+    border-collapse: collapse;
+    width: max-content;
+}
+
+.table-scroll-container table th,
+.table-scroll-container table td {
+    padding: clamp(0.75rem, 2vw, 1rem);
+    border: 0.0625rem solid #ddd;
+    white-space: nowrap;
+    min-width: clamp(15rem, 20vw, 17.5rem);
+}
+
+/* Primera columna fixa */
+.sticky-col-1 {
+    position: sticky !important;
+    left: 0 !important;
+    z-index: 2 !important;
+    box-shadow: 0.125rem 0 0.3125rem rgba(0,0,0,0.1);
+}
+
+/* Encapçalat damunt de la columna sticky */
+th.sticky-col-1 {
+    z-index: 3 !important;
+    background: #f8f8f8 !important;
+}
+
+td.sticky-col-1 {
+    background: #f8f8f8 !important;
+}
+
+/* Segona columna fixa */
+.sticky-col-2 {
+    position: sticky !important;
+    left: clamp(15rem, 20vw, 17.5rem) !important;
+    z-index: 2 !important;
+    box-shadow: 0.125rem 0 0.3125rem rgba(0,0,0,0.1);
+}
+
+/* Encapçalat de la segona columna sticky */
+th.sticky-col-2 {
+    z-index: 3 !important;
+    background: white !important;
+}
+
+td.sticky-col-2 {
+    background: white !important;
+}
+
+/* Files parelles */
+.table-scroll-container table tbody tr:nth-child(even) td {
+    background-color: #fafafa;
+}
+
+.table-scroll-container table tbody tr:nth-child(even) td.sticky-col-1 {
+    background-color: #f0f0f0 !important;
+}
+
+.table-scroll-container table tbody tr:nth-child(even) td.sticky-col-2 {
+    background-color: #f5f5f5 !important;
+}
+
+.scroll-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 0.125rem solid #ddd;
+    border-radius: 50%;
+    width: clamp(2.5rem, 6vw, 3.5rem);
+    height: clamp(2.5rem, 6vw, 3.5rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 100;
+    box-shadow: 0 0.125rem 0.5rem rgba(0,0,0,0.2);
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-weight: bold;
+    color: #333;
+}
+
+
+.scroll-btn-left {
+    left: 0.625rem;
+}
+
+.scroll-btn-right {
+    right: 0.625rem;
+}
+
+.scroll-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 3% auto;
+    padding: clamp(1rem, 3vw, 1.5rem);
+    border-radius: 0.5rem;
+    width: 90%;
+    max-width: 90rem;
+    max-height: 90%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem 0.625rem;
+    position: relative;
+}
+
+.product-close {
+    position: absolute;
+    top: 0.3125rem;
+    right: 0.3125rem;
+    font-size: clamp(1.25rem, 3vw, 1.5rem);
+    font-weight: bold;
+    cursor: pointer;
+    color: #999;
+    width: clamp(1.5rem, 4vw, 2rem);
+    height: clamp(1.5rem, 4vw, 2rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.product-close:hover {
+    color: #f44336;
+    background-color: #f5f5f5;
+}
+
+.product-pin {
+    
+    position: absolute;
+    top: 0.35rem;
+    left: 0.3125rem;
+    font-size: 0.7rem;
+    cursor: pointer;
+    color: #999;
+    width: clamp(1.5rem, 4vw, 2rem);
+    height: clamp(1.5rem, 4vw, 2rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.product-pin:hover {
+    color: #2196F3;
+    background-color: #f5f5f5;
+}
+
+.product-image-container {
+    width: clamp(8rem, 15vw, 10rem);
+    height: clamp(8rem, 15vw, 10rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f5f5f5;
+    border: 0.0625rem solid #ddd;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.product-image-container img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.product-name {
+    font-weight: bold;
+    font-size: clamp(0.875rem, 2vw, 1rem);
+    text-align: center;
+    min-height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-buttons {
+    display: flex;
+    gap: 0.625rem;
+    width: 100%;
+    justify-content: center;
+}
+
+.btn-comprar {
+    padding: 0.625em 1.25em;
+    border: none;
+    border-radius: 0.3125rem;
+    cursor: pointer;
+    font-size: clamp(0.75rem, 2vw, 0.875rem);
+    font-weight: 500;
+    background-color: #5dbbf2;
+    color: white;
+}
+
+.btn-comprar:hover {
+    background-color: #45a049;
+}
+
+.attribute-label {
+    font-weight: bold;
+    text-align: left;
+    background-color: #f8f8f8;
+}
+
+.price-row td {
+    font-weight: bold;
+    font-size: clamp(0.875rem, 2.5vw, 1rem);
+    color: #2c5f2d;
+}
+
+.close {
+    position: absolute;
+    right: 1.25rem;
+    top: 0.9375rem;
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 10;
+    color: #666;
+}
+
+.close:hover {
+    color: #000;
+}
+
+/* Carrusel de productes relacionats */
+.carrusel-wrapper {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 0.125rem solid #ddd;
+}
+
+.carrusel-wrapper h2 {
+    font-size: clamp(1.25rem, 3.5vw, 1.5rem);
+    color: #333;
+    margin-bottom: 1.25rem;
+}
+
+.carrusel-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.carrusel-scroll {
+    display: flex;
+    gap: clamp(1rem, 3vw, 1.5rem);
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 1.25rem clamp(2rem, 5vw, 4rem);
+    scrollbar-width: none; /* Firefox */
+}
+
+.carrusel-scroll::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
+}
+
+.carrusel-item {
+    min-width: clamp(12rem, 25vw, 16rem);
+    max-width: clamp(12rem, 25vw, 16rem);
+    background: white;
+    border: 0.0625rem solid #ddd;
+    border-radius: 0.5rem;
+    padding: clamp(0.75rem, 2vw, 1rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.carrusel-item:hover {
+    box-shadow: 0 0.25rem 0.75rem rgba(0,0,0,0.15);
+}
+
+.carrusel-img-container {
+    width: 100%;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f5f5f5;
+    border-radius: 0.375rem;
+    overflow: hidden;
+}
+
+.carrusel-img-container img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.carrusel-nom {
+    font-size: clamp(0.875rem, 2vw, 1rem);
+    font-weight: 600;
+    color: #333;
+    min-height: 2.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.carrusel-preu {
+    font-size: clamp(1rem, 2.5vw, 1.125rem);
+    font-weight: bold;
+    color: #2c5f2d;
+}
+
+.carrusel-botons {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.btn-afegir-carrusel {
+    padding: 0.625em 1.25em;
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 0.3125rem;
+    cursor: pointer;
+    font-size: clamp(0.75rem, 2vw, 0.875rem);
+    font-weight: 500;
+    flex: 1;
+}
+
+.btn-afegir-carrusel:hover {
+    background-color: #1976D2;
+}

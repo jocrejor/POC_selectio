@@ -1,0 +1,15 @@
+:root {
+    --color-primari: #539041;
+    --color-secundari: #47488e;
+    --color-terciari: #f6b01f;
+    --color-quaternari: #ececec;
+    --color-boto-netejar: #94949d;
+    --color-general-lletra: #ffffff;
+}
+
+.contingut p{
+    color: black;
+}
+.contingut strong{
+    color:black;
+}

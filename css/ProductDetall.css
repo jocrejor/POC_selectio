@@ -1,0 +1,365 @@
+/*Universal*/
+.button{
+  background-color: var(--color-quinari);
+  border: 1px black solid;
+  border-radius: 3px;
+  cursor: pointer;
+  padding: 5px 10px 5px 10px;
+}
+.button:hover {
+    background-color:  var(--color-terciari);
+    transform: translateY(-2px);
+}
+
+/*Contenidor principal*/
+.contenidor-detall-producte {
+  padding: 20px 0;
+}
+
+/* ====== MIGAS DE PAN (Breadcrumbs) ====== */
+.row-breadcrumbs {
+  margin-bottom: 15px;
+  padding: 0 75px;
+}
+
+.breadcrumbs {
+  font-size: 0.9rem;
+}
+
+.breadcrumb-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.breadcrumb-item {
+  display: inline-flex;
+  align-items: center;
+}
+
+.breadcrumb-item a {
+  color: #666;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.breadcrumb-item a:hover {
+  color: #000;
+  text-decoration: underline;
+}
+
+.breadcrumb-separator {
+  margin: 0 8px;
+  color: #999;
+}
+
+.breadcrumb-active {
+  color: #333;
+  font-weight: 500;
+}
+
+/* Row del título */
+.row-titol {
+  margin-bottom: 20px;
+}
+
+/* Título del producte - arriba de todo */
+.titol-producte {
+  text-align: center;
+  margin: 0;
+  font-size: 2rem;
+}
+
+/* Row de imagen, precio y botones */
+.row-imatge-accions {
+  margin-bottom: 30px;
+}
+
+/*Contenidor de la imagen*/
+.contenidor-img{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Carrusel de imágenes */
+.contenidor-carrusel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  max-width: 100%;
+}
+
+.imatge-carrusel {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  object-fit: cover;
+  margin: 0;
+  padding: 0;
+}
+
+/* Botones del carrusel */
+.boto-carrusel {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 32px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ccc;
+  cursor: pointer;
+  padding: 10px 15px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.boto-carrusel:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.boto-carrusel i {
+  color: #333;
+}
+
+.boto-carrusel-anterior {
+  left: 10px;
+}
+
+.boto-carrusel-seguent {
+  right: 10px;
+}
+
+/* Contenidor del preu i botons */
+.contenidor-preu-botons {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 0 35px;
+}
+
+/* Precio */
+.preu-producte {
+  font-weight: bold;
+  font-size: 1.5rem;
+  margin: 0;
+  text-align: center;
+}
+
+.preu-producte-descompte {
+  color: red;
+}
+
+.preu-producte-normal {
+  color: black;
+}
+
+/*Contenidor dels botons*/
+.contenidor-botons-utils{
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Separación entre botones */
+}
+
+/* Botones de acción */
+.boto-afegir-carret,.boto-tornar-inici, .boto-afegir-comparador {
+  width: 100%;
+  padding: 12px 20px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin: 0; /* Eliminar márgenes para usar solo gap */
+}
+
+/* Row de descripción (nueva row) */
+.row-descripcio {
+  margin-bottom: 30px;
+}
+
+/* Descripción */
+.contenidor-descripcio {
+  padding: 0 75px;
+}
+
+.titol-descripcio {
+  text-align: left;
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+}
+
+.text-descripcio {
+  text-align: left;
+  line-height: 1.6;
+}
+
+/* Row de atributos (nueva row separada) */
+.row-atributs {
+  margin-top: 20px;
+}
+
+/* Atributos */
+.contenidor-atributs {
+  padding: 0 75px;
+}
+
+.titol-atributs {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+}
+
+.llista-atributs {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.item-atribut {
+  text-align: left;
+  margin-bottom: 8px;
+  padding: 5px 0;
+  border-bottom: 1px solid #eee;
+}
+
+/* Mensaje de error */
+.missatge-error {
+  text-align: center;
+  color: #d32f2f;
+  font-size: 1.2rem;
+  padding: 20px;
+}
+
+/* Responsive para tablets */
+@media (max-width: 992px) {
+  .contenidor-img {
+    margin-bottom: 20px;
+  }
+  
+  .contenidor-preu-botons {
+    padding: 0 15px;
+  }
+  
+  .titol-producte {
+    font-size: 1.75rem;
+  }
+
+  .row-breadcrumbs {
+    padding: 0 50px;
+  }
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+  /* Breadcrumbs en móvil */
+  .row-breadcrumbs {
+    padding: 0 15px;
+    margin-bottom: 10px;
+  }
+
+  .breadcrumbs {
+    font-size: 0.85rem;
+  }
+
+  .breadcrumb-separator {
+    margin: 0 5px;
+  }
+
+  /* Ajustar el título */
+  .titol-producte {
+    font-size: 1.5rem;
+    padding: 0 15px;
+  }
+  
+  /* La row de imagen y acciones se convierte en columna */
+  .row-imatge-accions {
+    flex-direction: column;
+  }
+  
+  /* Imagen ocupa todo el ancho en móvil */
+  .contenidor-img, .contenidor-preu-botons {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  
+  /* Ajustar tamaño de imagen en móvil */
+  .imatge-carrusel {
+    max-width: 100%;
+  }
+  
+  /* Espacio entre imagen y botones */
+  .contenidor-preu-botons {
+    margin-top: 25px;
+    padding: 0 35px;
+  }
+  
+  /* Ajustar tamaño de precio */
+  .preu-producte {
+    font-size: 1.3rem;
+  }
+  
+  /* Botones más grandes en móvil para mejor usabilidad */
+  .boto-afegir-carret, .boto-tornar-inici, .boto-afegir-comparador {
+    padding: 15px 20px;
+    font-size: 1.1rem;
+  }
+  
+  /* Aumentar gap entre botones en móvil */
+  .contenidor-botons-utils {
+    gap: 20px;
+  }
+  
+  /* Ajustar padding de descripción y atributos */
+  .contenidor-descripcio, .contenidor-atributs {
+    padding: 0 15px;
+  }
+  
+  /* Ajustar títulos de secciones */
+  .titol-descripcio, .titol-atributs {
+    font-size: 1.3rem;
+  }
+  
+  /* Ajustar botones del carrusel en móvil */
+  .boto-carrusel {
+    font-size: 28px;
+    padding: 8px 12px;
+  }
+  
+  .boto-carrusel-anterior {
+    left: 5px;
+  }
+  
+  .boto-carrusel-seguent {
+    right: 5px;
+  }
+}
+
+/* Responsive para móviles pequeños */
+@media (max-width: 480px) {
+  .titol-producte {
+    font-size: 1.3rem;
+  }
+  
+  .preu-producte {
+    font-size: 1.2rem;
+  }
+  
+  .boto-carrusel {
+    font-size: 24px;
+    padding: 6px 10px;
+  }
+
+  .breadcrumbs {
+    font-size: 0.8rem;
+  }
+
+  .breadcrumb-separator {
+    margin: 0 4px;
+  }
+}

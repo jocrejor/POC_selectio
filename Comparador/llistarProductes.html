@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Llista de productes</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="text/javascript" src="Product.class.js"></script>
+    <script type="text/javascript" src="Family.class.js"></script>
+    <script type="text/javascript" src="Attribute.class.js"></script>
+    <script type="text/javascript" src="ProductAttribute.js"></script>
+    <script type="text/javascript" src="ProductImage.class.js"></script>
+    <script type="text/javascript" src="Comparatorproduct.class.js"></script>
+    <script type="text/javascript" src="comparador.class.js"></script>
+    <script type="text/javascript" src="comparadorFuncions.js"></script>
+    <script type="text/javascript" src="comparador.js"></script>
+</head>
+<body>
+    <h1>Home</h1>
+
+    <!-- Botó per anar al comparador -->
+    <button onclick="window.location.href='comparador.html'">Veure Comparador</button>
+    <br><br>
+    
+    <!-- Contenidor per la taula de comparació -->
+    <div id="comparadorContingut" style="margin-bottom: 2rem;"></div>
+    
+    <h2>Llista de Productes</h2>
+    <table>
+        <tr>
+            <th>Accions</th>
+            <th>id</th>
+            <th>Nom</th>
+            <th>Descripció</th>
+            <th>Preu</th>
+        </tr>
+        <tbody id="productListTable"></tbody>
+    </table>
+    
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function() {
+            carregarComparadorDesDeAPI(16);
+        });
+    </script>
+</body>
+</html>

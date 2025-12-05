@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ca">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+
+    <!-- Estils -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">     
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>      
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet"> 
+    <link rel="stylesheet" href="./css/normalize.css">
+    <link rel="stylesheet" href="./css/grid.css">
+    <link rel="stylesheet" href="./css/common.css"> 
+    <link rel="stylesheet" href="./css/Login.css">
+    <link rel="icon" href="./img/logo_selectio.png" type="image/x-icon"> 
+    
+    <!-- Js -->
+    <script src="../webFake/apiAccess/crud.js" defer></script>
+    <script src="./js/Login.js" defer></script>
+</head>
+
+<body>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 centrarLogin" >  
+                <div class="border roboto-font">
+                    <h2>Inicia sessió</h2>
+                    <form id="formLogin" novalidate>
+                    <div class="usuari">
+                        <label for="login_user">Usuari:</label>
+                        <input type="email" id="login_user" required minlength="3"><br>
+                    </div>
+
+                    <div class="contrasena">
+                        <label for="login_pass">Contrasenya:</label>
+                        <input type="password" id="login_pass" minlength="5" required pattern="^.{5,}$">
+                    </div>
+
+                    <div class="link">
+                        <a href="#">He oblidat la contrasenya</a>
+                    </div>
+
+                    <p id="missatgeError"></p>
+                    <p>user: jose@example.com - password: Solsolet@123</p>
+
+                    <div class="botonsLogin">
+                        <button type="submit" id="login">Iniciar Sessió</button>
+                        <button id="registrarButton"><a href="./Registre.html" id="registrar">Registra't</a></button>
+                    </div>
+                </form>    
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

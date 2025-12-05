@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ca">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productes | Selectio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/normalize.css">
+    <link rel="stylesheet" href="./css/grid.css">
+    <link rel="stylesheet" href="./css/Product.css">
+    <link rel="stylesheet" href="./css/common.css">
+    <script src="https://kit.fontawesome.com/d9f0c40e4f.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="./apiAccess/crud.js"></script>
+    <script src="./js/common.js"></script>
+    <script src="./js/Product.js"></script>
+</head>
+
+<body class="roboto-font">
+
+    <div class="container-fluid header">
+        <div class="row">
+            <div class="col-1">
+                <div class="logo_header">
+                    <div class="obrir-menu"><i class="fa-solid fa-bars"></i></div>
+                    <img src="./img/logo_selectio.png" alt="Logo Selectio">
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="menu-box">
+                    <div class="tancar-menu"><i class="fa-solid fa-xmark"></i></div>
+                    <ul class="menu">
+                        <li>
+                        <li>
+                            <div class="selector"></div>
+                            <a href="./Index.html">Inici</a>
+                        </li>
+                        <li  class="actual">
+                            <div class="selector"></div>
+                            <a href="./Product.html">Producte</a>
+                        </li>
+                        <li>
+                            <div class="selector"></div>
+                            <a href="./Familia.html">Famílies</a>
+                        </li>
+                        <li>
+                            <div class="selector"></div>
+                            <a href="#">Comparador</a>
+                        </li>
+                    </ul>
+                    <ul class="menu">
+                        <li>
+                            <div class="selector"></div>
+                            <a href="#">Comandes</a>
+                        </li>
+                        <li class="registre">
+                            <div class="selector"></div>
+                            <a href="#">Registre</a>
+                        </li>
+                        <li class="login">
+                            <div class="selector"></div>
+                            <a href="#">Iniciar sessió</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="buscador-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="search" name="buscador" id="buscador" placeholder="Buscar">
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="links-header-box">
+                    <ul class="links-header">
+                        <li class="contacte"><a href="#"><i class="fa-solid fa-phone"></i></a></li>
+                        <li class="usuari"><a href="#"><i class="fa-regular fa-user"></i></a></li>
+                        <li class="carret"><a href="#"><i class="fa-solid fa-cart-shopping"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Migues de pa (breadcrumbs) -->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <!-- Migues de pa unificades -->
+                <nav class="miga-de-pa">
+                    <ul id="llistaMigues" class="llista-migues"></ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <!-- Cos principal -->
+    <main class="main container-fluid">
+        <div class="row">
+            <!-- Columna única para todo el contenido -->
+            <div class="col-12">
+                
+                <!-- SECCIÓN CON ASIDE Y BOTONES DE ORDENAR -->
+                <section class="productes-controls">
+                    <!-- BOTÓN DESPLEGABLE PARA CATEGORÍAS -->
+                    <button id="toggleAside" class="button"><i class="fa-solid fa-bars"></i>Categories</button>
+
+                    <!-- ASIDE (CATEGORÍAS) -->
+                    <aside class="aside">
+                        <!-- Botón cerrar para móvil -->
+                        <button id="closeAside" class="button close-aside"><i class="fa-solid fa-xmark"></i></button>
+
+                        <h4>Categories:</h4>
+                        <ul id="llistaFamilies" class="llistat-families">
+                            <!-- Mostrar las familias de forma dinámica -->
+                        </ul>
+
+                        <div class="botonsUtilAside">
+                            <button class="button"><a href="/webFake/Contacta/contact.html">Pàgina de contacte</a></button>
+                            <button class="button"><a href="#">Veure perfil</a></button>
+                        </div>
+                    </aside>
+
+                    <!-- BOTONES DE ORDENAR -->
+                    <div class="productes-orden" id="botons-ordre">
+                        <button id="ordenarAsc" class="button">Precio más bajo</button>
+                        <button id="ordenarDesc" class="button">Precio más alto</button>
+                    </div>
+                </section>
+                
+                <!-- Llistat de productes -->
+                <section id="productList" class="productList">
+                    <!-- Els productes es carregaran ací amb JavaScript -->
+                </section>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Contenidor de paginació -->
+     <div class="container-fluid">
+        <div class="row">
+            <div id="paginacio" class="paginacio col-12"></div>
+        </div>
+    </div>
+
+    <footer class="container-fluid footer">
+        <div class="row">
+            <div class="col-4">
+                <div class="logo_footer">
+                    <img src="./img/logo_selectio.png" alt="Logo Selectio">
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="xarxes-box">
+                    <ul class="xarxes-socials">
+                        <li><a href="https://www.x.com/" target="_blank"><i class="fa-brands fa-x-twitter"></i></a></li>
+                        <li><a href="https://www.facebook.com/" target="_blank"><i class="fa-brands fa-facebook"></i></a></li>
+                        <li><a href="https://www.instagram.com/" target="_blank"><i class="fa-brands fa-instagram"></i></a></li>
+                        <li><a href="https://es.linkedin.com/" target="_blank"><i class="fa-brands fa-linkedin"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-4 buit"></div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="links-footer-box">
+                    <ul class="links-footer">
+                        <li><a href="#">Condicions generals</a></li>
+                        <li><a href="#">Política de Privadesa</a></li>
+                        <li><a href="#">Política de Cookies</a></li>
+                        <li><a href="#">Preferències de cookies</a></li>
+                        <li><a href="#">Serveis postvenda</a></li>
+                        <li><a href="#">Avís legal</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="copyright">
+                    <p>Copyright &copy; 2025 | Selectio</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>

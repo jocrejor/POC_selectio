@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ca">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Formulari Històric</title>
+  <!--Estils-->
+  <link rel="stylesheet" href="../css/normalize.css">
+  <link rel="stylesheet" href="../css/template_grid3.css">
+  <link rel="stylesheet" href="../css/common.css">
+  <link rel="stylesheet" href="./css/historic.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
+
+  <!--Scripts-->
+  <script src="../../apiAccess/crud.js"></script>
+  <script src="../js/common.js"></script>
+  <script src="./js/HistoricForm.js"></script>
+  <script src="https://kit.fontawesome.com/f653e778a0.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <!-- Header -->
+  <div class="container-fluid sense-separacio">
+    <div class="row header">
+      <div class="col-12 centrar_header">
+        <div id="menu_hamburguesa">
+          <i class="fa-solid fa-bars"></i>
+        </div>
+        <div id="logotip">
+          <img src="../img/logo_tendafake.png" alt="No s'ha pogut carregat l'imatge">
+        </div>
+        <div id="sessioUsuari">
+          <div class="headerUsuari">
+            <img src="../img/foto_persona.png" alt="No s'ha pogut carregar l'imatge">
+            <span>Manolo Garibolo</span>
+            <span class="separador">&nbsp;</span>
+          </div>
+          <div class="tancarSessio">
+            <a href="../../Logout.html">
+              <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Titol de la pàgina -->
+    <div class="row pagina">
+      <div class="col-12">
+        <p>Històric del comparador</p>
+      </div>
+    </div>
+    <!-- Menu lateral -->
+    <div class="row main">
+      <div id="menu_lateral" class="col-2">
+        <a href="../Productes/Atributs.html " class="opcio_menu">
+          <i class="fa-solid fa-paperclip"></i>
+          Atributs
+        </a>
+        <a href="../GestioCarret/index.html " class="opcio_menu">
+          <i class="fa-solid fa-cart-shopping"></i>
+          Carrets
+        </a>
+        <a href="#" class="opcio_menu">
+          <i class="fa-solid fa-person"></i>
+          Clients
+        </a>
+        <a href="../Clients/index.html" class="opcio_menu">
+          <i class="fa-solid fa-sliders"></i>
+          Configuracions
+        </a>
+        <a href="../Comandes/index.html" class="opcio_menu">
+          <i class="fa-solid fa-pen-to-square"></i>
+          Comandes
+        </a>
+        <div class="opcio_seleccionada">
+          <i class="fa-solid fa-chart-line"></i>
+          Estadístiques
+        </div>
+        <a href="../Productes/Familia.html" class="opcio_menu">
+          <i class="fa-solid fa-list"></i>
+          Families
+        </a>
+        <a href="../Localitzacio/index.html" class="opcio_menu">
+          <i class="fa-solid fa-location-dot"></i>
+          Localitzacions
+        </a>
+        <a href="../Ofertes/index.html" class="opcio_menu">
+          <i class="fa-solid fa-tag"></i>
+          Ofertes
+        </a>
+        <a href="../Productes/index.html" class="opcio_menu">
+          <i class="fa-solid fa-city"></i>
+          Productes
+        </a>
+        <a href="../Usuaris/.html" class="opcio_menu">
+          <i class="fa-solid fa-user"></i>
+          Usuaris
+        </a>
+        <a href="../../Logout.html" class="opcio_menu eixir_menu">
+          <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
+          Eixir
+        </a>
+      </div>
+      <!-- Formulari de Registre -->
+      <div class="col-10">
+        <div class="container-fluid sense-separacio">
+          <div class="row">
+            <div class="col-5">
+              <div class="contingut">
+
+                <button class="btnTornar" id="afegirNou">Tornar al
+                  Llistat</button>
+                <form id="formRegistre">
+
+                  <div class="form-group">
+                    <label for="client_id">Client ID:</label>
+                    <select class id="client_id" name="client_id" required>
+                      <option value>-- Selecciona un client --</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="comparator_id">Comparador ID:</label>
+                    <select class id="comparator_id" name="comparator_id" required>
+                      <option value>-- Selecciona un comparador --</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="favorite_id">Favorit ID:</label>
+                    <select class id="favorite_id" name="favorite_id" required>
+                      <option value>-- Selecciona un favorit --</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="date_start">Data inici:</label>
+                    <input type="date" id="date_start" name="date_start" />
+                  </div>
+
+                  <div class="form-group">
+                    <label for="date_end">Data fi:</label>
+                    <input type="date" id="date_end" name="date_end" />
+                  </div>
+
+                  <button class="btnAccio" type="submit">Guardar</button>
+                  <button class="btnAccio" type="button" id="btnCancelar" name="btnCancelar">Cancel·lar</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

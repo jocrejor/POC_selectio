@@ -1,0 +1,225 @@
+/* ============================================
+   ESTILOS DEL FORMULARIO DE CONTACTO (contact.html)
+   ============================================ */
+.contenidor-contacte {
+  max-width: 800px;
+  margin: 20px auto;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.capsalera-contacte {
+  background-color: blueviolet;
+  color: white;
+  padding: 30px;
+  text-align: center;
+  border-radius: 8px 8px 0 0;
+}
+
+.titol-principal {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.subtitol-contacte {
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+.seccio-formulari-contacte {
+  padding: 30px;
+}
+
+.formulari-contacte {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.grup-camp-contacte {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.grup-camp-contacte label {
+  font-weight: 600;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.camp-entrada-contacte,
+.camp-textarea-contacte {
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+.camp-entrada-contacte:focus,
+.camp-textarea-contacte:focus {
+  outline: none;
+  border-color: blueviolet;
+  box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.1);
+}
+
+.camp-textarea-contacte {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.missatge-error-camp {
+  color: #d32f2f;
+  font-size: 0.85rem;
+  display: none;
+}
+
+.missatge-error-camp.actiu {
+  display: block;
+}
+
+.botons-formulari-contacte {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.boto-guardar-contacte,
+.boto-cancelar-contacte {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+}
+
+.boto-guardar-contacte {
+  background-color: blueviolet;
+  color: white;
+}
+
+.boto-guardar-contacte:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(138, 43, 226, 0.4);
+}
+
+.boto-cancelar-contacte {
+  background-color: #e0e0e0;
+  color: #555;
+}
+
+.boto-cancelar-contacte:hover {
+  background-color: #d0d0d0;
+}
+
+.seccio-llista-contactes {
+  padding: 30px;
+  background-color: #f8f9fa;
+}
+
+.titol-llista-contactes {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 3px solid blueviolet;
+}
+
+.llista-contactes {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.item-contacte-llista {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.item-contacte-llista:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.capsalera-item-contacte {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.nom-contacte-llista {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: blueviolet;
+}
+
+.accions-contacte-llista {
+  display: flex;
+  gap: 8px;
+}
+
+.boto-editar-contacte,
+.boto-eliminar-contacte {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.boto-editar-contacte {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.boto-editar-contacte:hover {
+  background-color: #45a049;
+}
+
+.boto-eliminar-contacte {
+  background-color: #f44336;
+  color: white;
+}
+
+.boto-eliminar-contacte:hover {
+  background-color: #da190b;
+}
+
+.info-contacte-llista {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.peu-contacte {
+  padding: 20px 30px;
+  background-color: #f8f9fa;
+  border-top: 1px solid #e0e0e0;
+  border-radius: 0 0 8px 8px;
+}
+
+.enllac-tornar-contacte {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: blueviolet;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.enllac-tornar-contacte:hover {
+  color: #764ba2;
+  transform: translateX(-5px);
+}
