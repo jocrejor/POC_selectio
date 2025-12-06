@@ -52,7 +52,7 @@ async function main() {
 
         // URL imatge
         const urlImatge = familia.image
-            ? `./backoffice/Productes/img/${familia.image}`
+            ? `./bo/Productes/img/${familia.image}`
             : "./img/Productes/defaultImage.jpg";
 
         const contenidorImatge = document.createElement("div");
