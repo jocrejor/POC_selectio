@@ -1,3 +1,9 @@
+/* Commun */
+
+button, select {
+    cursor: pointer !important;
+}
+
 /* Rols i altaUsuaris*/
 
 #taula_rols {
@@ -96,11 +102,19 @@ select, option {
     max-height: 200px;
     overflow-y: auto;
     z-index: 99;
+    padding: 0;
 }
 
 .ui-autocomplete li {
     list-style: none;
+    padding-left: 20px;
 }
+
+.ui-autocomplete li:hover{
+    background-color: var(--color-quaternari);
+    cursor: pointer;
+}
+
 
 .ui-menu-item-wrapper  {
     color: var(--color-vores);
