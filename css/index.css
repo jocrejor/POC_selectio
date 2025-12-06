@@ -38,7 +38,7 @@
 /* === SECCIÓN 1: HERO & PRO CLUB (Ajustado) === */
 
 .main-hero-img {
-  height: 800px; /*Altura fija para las imágenes*/
+  height: 770px; /*Altura fija para las imágenes*/
   width: 100%;  /* El ancho siempre se adapta al contenedor */
   object-fit: cover;  /* Las imágenes se ajustan al tamaño sin perder su relación de aspecto */
   margin: auto;
@@ -91,6 +91,7 @@
 }
 
 .bloque-3 h1{
+  margin-top: 50px;
   margin-bottom: 50px;
 }
 
@@ -199,6 +200,16 @@
 
 /* === SECCIÓN 4: About Selectio (Ajustado) === */
 
+.about-section-t {
+  background-color: #1a1a1a;
+  color: white;
+  background-size: cover;
+  background-position: center;
+  padding: 40px 30px;
+  position: relative;
+  height: 460px;
+}
+
 .about-section {
   background-color: #1a1a1a;
   color: white;
@@ -206,15 +217,24 @@
   background-position: center;
   padding: 40px 30px;
   position: relative;
-  height: 520px;
+  height: 460px;
+}
+
+.about-section-t::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5); /* oscurece el fondo */
+  z-index: 1;
 }
 
 .about-title {
   font-size: 4em;
-  /* Título más pequeño */
   line-height: 1.1;
   font-weight: 300;
   margin: 0;
+  position: relative;
+  z-index: 2;
 }
 
 .blue-accent {
@@ -228,9 +248,12 @@
   font-weight: 500;
 }
 
+.about-text {
+  max-width: 850px;
+}
+
 .about-text p {
-  font-size: 1.6em;
-  /* Texto más pequeño */
+  font-size: 1.5em;
   line-height: 1.5;
   color: #ccc;
   text-align: justify;
