@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+    <!-- Página principal del dominio -->
+    <url>
+        <loc>https://tendafake.daw.iesevalorpego.es/</loc>
+        <priority>1.00</priority>
+    </url>
+
+    <!-- OFERTES (Back Office) -->
+    <url>
+        <loc>https://tendafake.daw.iesevalorpego.es/bo/Ofertes/index.html</loc>
+        <priority>0.85</priority>
+    </url>
+
+    <url>
+        <loc>https://tendafake.daw.iesevalorpego.es/bo/Ofertes/OfertaAlta.html</loc>
+        <priority>0.70</priority>
+    </url>
+
+    <url>
+        <loc>https://tendafake.daw.iesevalorpego.es/bo/Ofertes/OfertaModificar.html</loc>
+        <priority>0.70</priority>
+    </url>
+
+    <url>
+        <loc>https://tendafake.daw.iesevalorpego.es/bo/Ofertes/ProducteLlistar.html</loc>
+        <priority>0.70</priority>
+    </url>
+
+</urlset>
