@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", carregarComandes);
 
 async function carregarComandes() {
     //  Recuperar el client loguejat del localStorage
-    let currentUserStr = localStorage.getItem("clientActiu");
+    let currentUserStr = localStorage.getItem("currentUser");
 
     if (!currentUserStr) {
         alert("Has d'iniciar sessió per veure les comandes.");

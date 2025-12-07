@@ -25,6 +25,13 @@ async function main() {
         window.location.href = "index.html";
     });
 
+    // Botón para reiniciar el formulario
+    const btnLimpiar = document.getElementById("limpiar");
+    btnLimpiar.addEventListener("click", function(event) {
+        event.preventDefault();
+        restaurarValoresOriginales(id);
+    });
+
     // Afegir validació en temps real
     agregarValidacionEnTiempoReal(id);
 }
@@ -262,4 +269,19 @@ async function guardarCambios(id) {
         console.error("Error actualizando producto:", error);
         alert("Error al modificar el producte.");
     }
+}
+
+function restaurarValoresOriginales(id) {
+    // Recargar los valores originales del producto
+    cargarProducto(id);
+    
+    // Limpiar todos los mensajes de error
+    const form = document.getElementById("productForm");
+    const inputs = form.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => {
+        limpiarError(input);
+        input.classList.remove("error");
+    });
+    
+    console.log("Formulario reiniciado a valores originales");
 }

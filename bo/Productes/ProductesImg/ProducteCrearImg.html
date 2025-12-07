@@ -56,47 +56,47 @@
         <!-- Menu lateral -->
         <div class="row main">
             <div id="menu_lateral" class="col-2">
-                <a href="../Productes/Atributs.html" class="opcio_menu">
+                <a href="../../Productes/Atributs.html" class="opcio_menu">
                     <i class="fa-solid fa-paperclip"></i>
                     Atributs
                 </a>
-                <a href="../Comandes/index.html" class="opcio_menu">
+                <a href="../../GestioCarrets/index.html" class="opcio_menu">
                     <i class="fa-solid fa-cart-shopping"></i>
                     Carrets
                 </a>
-                <a href="../Clients/index.html" class="opcio_menu">
+                <a href="../../Clients/index.html" class="opcio_menu">
                     <i class="fa-solid fa-person"></i>
                     Clients
                 </a>
-                <a href="../Configuracions/Configuracio.html" class="opcio_menu">
+                <a href="../../Configuracions/Configuracio.html" class="opcio_menu">
                     <i class="fa-solid fa-sliders"></i>
                     Configuracions
                 </a>
-                <a href="../Comandes/index.html" class="opcio_menu">
+                <a href="../../Comandes/index.html" class="opcio_menu">
                     <i class="fa-solid fa-pen-to-square"></i>
                     Comandes
                 </a>
-                <a href="../Historic/index.html" class="opcio_menu">
+                <a href="../../Historic/index.html" class="opcio_menu">
                     <i class="fa-solid fa-chart-line"></i>
                     Estadístiques
                 </a>
-                <a href="../Productes/Familia.html" class="opcio_menu">
+                <a href="../../Productes/Familia.html" class="opcio_menu">
                     <i class="fa-solid fa-list"></i>
                     Families
                 </a>
-                <a href="../Localitzacio/index.html" class="opcio_menu">
+                <a href="../../Localitzacio/index.html" class="opcio_menu">
                     <i class="fa-solid fa-location-dot"></i>
                     Localitzacions
                 </a>
-                <a href="../Ofertes/index.html" class="opcio_menu">
+                <a href="../../Ofertes/index.html" class="opcio_menu">
                     <i class="fa-solid fa-tag"></i>
                     Ofertes
                 </a>
-                <a href="../Productes/index.html" class="opcio_menu opcio_seleccionada">
+                <a href="../../Productes/index.html" class="opcio_menu opcio_seleccionada">
                     <i class="fa-solid fa-city"></i>
                     Productes
                 </a>
-                <a href="../Usuaris/index.html" class="opcio_menu">
+                <a href="../../Usuaris/index.html" class="opcio_menu">
                     <i class="fa-solid fa-user"></i>
                     Usuaris
                 </a>
@@ -107,51 +107,53 @@
             </div>
             <!-- Contingut principal -->
             <div class="col-10">
-                <div class="contingut_main">
+                <div class="contingut_main otro">
                     <div class="container-fluid sense-separacio">
                         <div class="row">
-                            <div class="col-12">
+                            <div class="col-5">
                                 <div class="contingut">
-                                    <form id="formImagen">
-                                        <div class="container-fluid sense-separacio">
-                                            <div class="row">
-                                                <div class="col-6">
-                                                    <div class="element_main">
-                                                        <label for="nombre">Nom:</label>
-                                                        <input type="text" id="nombre" required />
-                                                    </div>
-                                                </div>
-                                                <div class="col-6">
-                                                    <div class="element_main">
-                                                        <label for="orden">Ordre:</label>
-                                                        <input type="number" id="orden" value="1" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-12">
-                                                    <div class="element_main">
-                                                        <label for="url">URL:</label>
-                                                        <input type="text" id="url" required />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-12">
-                                                    <div class="botons_accio">
-                                                        <button type="submit" class="btnAnadir">
-                                                            Afegir Imatge
-                                                        </button>
-                                                        <button type="button" id="btnVolver" class="btnAnadir">
-                                                            Tornar a la gestió d'imatges
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                    <!-- Botó per tornar a la gestió d'imatges -->
+                                    <button id="btnVolver" class="btnAnadir">
+                                        Tornar a la gestió d'imatges
+                                    </button>
+                                    <!-- Formulari per afegir imatge -->
+                                    <form id="productForm" novalidate>
+                                        <table id="taula_producte">
+                                            <tr>
+                                                <td>
+                                                    <label for="nombre">Nom:</label>
+                                                </td>
+                                                <td>
+                                                    <input type="text" id="nombre" name="nombre" required />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label for="orden">Ordre:</label>
+                                                </td>
+                                                <td>
+                                                    <input type="number" id="orden" name="orden" value="1" />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label for="url">URL:</label>
+                                                </td>
+                                                <td>
+                                                    <input type="text" id="url" name="url" required />
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <div class="botons_form">
+                                            <button id="enviar" name="submit">Enviar</button>
+                                            <button id="limpiar" name="reset" type="button">Reiniciar</button>
                                         </div>
+                                        <!-- Àrea per mostrar missatges d'error a l'usuari -->
+                                        <div id="missatgeError"></div>
                                     </form>
                                 </div>
                             </div>
+                            <div class="col-7"></div>
                         </div>
                     </div>
                 </div>
