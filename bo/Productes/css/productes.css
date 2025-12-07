@@ -170,13 +170,8 @@ option {
     min-height: 100px;
 }
 
-/* Botón volver */
-#btnVolver {
-    margin-bottom: 20px;
-}
-
 #enviar{
-    margin-top: 10px
+    margin-top: 20px
 }
 
 /* Telefono movil*/
