@@ -61,6 +61,7 @@
 .crud_add-button,
 .back-link {
     margin-top: 10px;
+    cursor: pointer;
 }
 
 .crud_form label {
@@ -75,6 +76,7 @@
 
 .submit-button {
     margin-right: 15px;
+    cursor: pointer;
 }
 
 /*Mis estilos - ProducteLlistar.html*/
@@ -132,6 +134,6 @@ table .no-data {
 }
 
 .cercar,
-.netejar {
+.netejar{
     cursor: pointer;
 }
