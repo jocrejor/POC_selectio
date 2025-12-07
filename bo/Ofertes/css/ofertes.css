@@ -54,6 +54,7 @@
 /*Mis estilos - Index.html*/
 .boto_afegir {
     margin-bottom: 20px;
+    cursor: pointer;
 }
 
 /*Mis estilos - OfertaAlta.html y OfertaModificar.html*/
@@ -128,4 +129,9 @@
 table .no-data {
     color: red !important;
     background-color: #fff;
+}
+
+.cercar,
+.netejar {
+    cursor: pointer;
 }
