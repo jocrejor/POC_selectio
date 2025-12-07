@@ -1,12 +1,38 @@
+/* Cursor de manita para todos los elementos interactivos */
+button, 
+select{
+    cursor: pointer;
+}
+
+input{
+    margin-bottom: 10px;
+}
+
+
+label{
+    font-weight: 600;
+}
+
 /* Fondo blanco */
 .otro{
     background-color: white;
+}
+
+.element_main{
+    display: block;
 }
 
 /* Boton crear */
 #btnCrear {
     margin-top: 10px;
     margin-bottom: 10px;
+}
+
+.btnEnviar {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+    
 }
 
 /* Autocomplete Filtros */
@@ -118,6 +144,41 @@ option {
     font-weight: 600;
 }
 
+/* Estils per a la taula d'alta de productes (similar a usuaris) */
+#taula_producte {
+    width: 100%;
+}
+
+#taula_producte label {
+    font-weight: bold;
+    color: var(--color-secundari);
+    padding-right: 25px;
+}
+
+#taula_producte td {
+    display: flex;
+    padding-top: 10px;
+}
+
+#taula_producte select {
+    margin: 0 !important;
+}
+
+/* Ajustos per al textarea */
+#taula_producte textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Botón volver */
+#btnVolver {
+    margin-bottom: 20px;
+}
+
+#enviar{
+    margin-top: 10px
+}
+
 /* Telefono movil*/
 @media only screen and (max-width: 767px) {
 
@@ -149,5 +210,21 @@ option {
 
     .col-4 p {
         text-align: left;
+    }
+    
+    /* Ajustos per a la taula de productes en mòbil */
+    #taula_producte td {
+        flex-direction: column;
+        align-items: flex-start;
+        padding-top: 15px;
+    }
+    
+    #taula_producte label {
+        padding-right: 0;
+        padding-bottom: 5px;
+    }
+    
+    #taula_producte textarea {
+        height: 80px;
     }
 }
