@@ -137,3 +137,13 @@ table .no-data {
 .netejar{
     cursor: pointer;
 }
+
+/* Estil per als missatges de validació en negreta */
+#mensaje {
+    font-weight: bold !important;
+
+}
+
+#mensaje:empty {
+    display: none;
+}
