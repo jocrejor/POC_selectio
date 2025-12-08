@@ -76,29 +76,35 @@ async function afegirProducteAOferta(ofertaId, productId) {
 
 // Funció que elimina un producte d'una oferta específica
 async function eliminarProductoDeOferta(ofertaId, productId) {
-    if (confirm("Estàs segur que vols eliminar aquest producte de l'oferta?")) {
-        try {
-            const productSale = await obtenerProductSale();
+    // Demanar confirmació a l'usuari
+    const confirmacio = confirm("Esteu segur que voleu eliminar aquest element?\nAquesta acció no es pot desfer.");
 
-            const relacion = productSale.find(function (rel) {
-                return rel.sale_id === parseInt(ofertaId) && rel.product_id === parseInt(productId);
-            });
+    // Si l'usuari cancela, no fer res
+    if (!confirmacio) {
+        return;
+    }
 
-            if (relacion && relacion.id) {
-                await deleteData(url, "ProductSale", relacion.id);
+    try {
+        const productSale = await obtenerProductSale();
 
-                if (typeof window.cargarProductosAplicados === 'function') {
-                    await window.cargarProductosAplicados(ofertaId);
-                }
+        const relacion = productSale.find(function (rel) {
+            return rel.sale_id === parseInt(ofertaId) && rel.product_id === parseInt(productId);
+        });
 
-                mostrarMensaje("Producte eliminat correctament de l'oferta", "success");
-            } else {
-                mostrarMensaje("No s'ha trobat la relació per eliminar", "error");
+        if (relacion && relacion.id) {
+            await deleteData(url, "ProductSale", relacion.id);
+
+            if (typeof window.cargarProductosAplicados === 'function') {
+                await window.cargarProductosAplicados(ofertaId);
             }
-        } catch (error) {
-            console.error('Error eliminant producte de oferta:', error);
-            mostrarMensaje("Error eliminant el producte", "error");
+
+            mostrarMensaje("Producte eliminat correctament de l'oferta", "success");
+        } else {
+            mostrarMensaje("No s'ha trobat la relació per eliminar", "error");
         }
+    } catch (error) {
+        console.error('Error eliminant producte de oferta:', error);
+        mostrarMensaje("Error eliminant el producte", "error");
     }
 }
 
@@ -124,6 +130,9 @@ async function main() {
     const tableBody = document.getElementById('tableBody');
     const pageTitle = document.getElementById('pageTitle');
     const addProductButton = document.getElementById('addProductButton');
+    const contingutTaula = document.getElementById('contingutTaula');
+    const paginacio = document.querySelector('.paginacio');
+    const tornarButton = document.querySelector('.boton-tornar');
 
     // Variables para los datos
     let productosAplicados = [];
@@ -131,9 +140,20 @@ async function main() {
     const params = new URLSearchParams(window.location.search);
     const ofertaId = params.get('oferta');
 
+    // Validar si hi ha una oferta seleccionada
     if (!ofertaId) {
-        mostrarError("No s'ha especificat cap oferta");
-        return;
+        mostrarError("Error: No s'ha especificat cap oferta");
+        
+        // Ocultar elements que no es necessiten
+        if (addProductButton) addProductButton.style.display = 'none';
+        if (tornarButton) tornarButton.style.display = 'none';
+        if (paginacio) paginacio.classList.add('no_mostrar');
+        
+        // Redirigir a la llista després d'un temps
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 3000);
+        return; // Sortir de la funció principal
     }
 
     async function carregarOferta() {
@@ -155,8 +175,19 @@ async function main() {
 
     const oferta = await carregarOferta();
 
+    // Si no es pot carregar l'oferta, mostrar error i redirigir
     if (!oferta) {
-        return;
+        mostrarError("Error: No s'ha trobat l'oferta especificada");
+        
+        // Ocultar elements que no es necessiten
+        if (addProductButton) addProductButton.style.display = 'none';
+        if (tornarButton) tornarButton.style.display = 'none';
+        if (paginacio) paginacio.classList.add('no_mostrar');
+        
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 3000);
+        return; // Sortir de la funció principal
     }
 
     if (addProductButton) {
@@ -199,6 +230,7 @@ async function main() {
         window.actualitzarDades();
     }
 
+    // Només carregar productes si tenim una oferta vàlida
     await cargarProductosAplicados(ofertaId);
 
     // Hacer la función cargarProductosAplicados disponible globalmente
@@ -226,7 +258,6 @@ async function main() {
     }
 
     // Event listener para el botón Tornar a Ofertes
-    const tornarButton = document.querySelector('.boton-tornar');
     if (tornarButton) {
         tornarButton.addEventListener('click', function () {
             window.location.href = 'index.html';
