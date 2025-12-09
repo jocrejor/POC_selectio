@@ -83,7 +83,7 @@ async function mostrarPedidos() {
 }
 
 //  ELIMINAR UNA COMANDA 
-async function eliminarPedido(pedidoId) {
+/*async function eliminarPedido(pedidoId) {
     if (!confirm(`Estàs segur/segura que vols eliminar la comanda ID ${pedidoId}?`)) {
         console.log("Eliminació cancel·lada per l'usuari");
         return;
@@ -108,5 +108,39 @@ async function eliminarPedido(pedidoId) {
     } catch (err) {
         console.error("Error eliminant la comanda:", err);
         alert("Hi ha hagut un error en eliminar la comanda");
-    }
+    }*/
+   async function eliminarPedido(pedidoId) {
+    // Obre el modal
+    let modal = document.getElementById("modalEliminar");
+    modal.classList.remove("ocult");
+
+    // Assignar accions als botons
+    document.getElementById("btnConfirmarEliminar").onclick = async () => {
+        try {
+            // Esborrar detalls de la comanda
+            let Orderdetail = await getData(url, "Orderdetail") || [];
+            let detallsComanda = Orderdetail.filter(d => Number(d.order_id) === Number(pedidoId));
+            for (let d of detallsComanda) {
+                await deleteId(url, "Orderdetail", d.id);
+            }
+
+            // Esborrar la comanda
+            await deleteId(url, "Order", pedidoId);
+
+            mostrarMissatge("Comanda eliminada correctament!", "ok");
+
+            // Recarregar taula
+            await mostrarPedidos();
+        } catch (err) {
+            console.error("Error eliminant la comanda:", err);
+            mostrarMissatge("Hi ha hagut un error en eliminar la comanda", "error");
+        } finally {
+            modal.classList.add("ocult");
+        }
+    };
+
+    document.getElementById("btnCancelarEliminar").onclick = () => {
+        modal.classList.add("ocult");
+    };
 }
+
