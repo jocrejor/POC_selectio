@@ -1,27 +1,72 @@
 document.addEventListener("DOMContentLoaded", main);
 
+let clients = [];
+let paginaActual = 1;
+const perPagina = 10;
+
 async function main() {
+
+    clients = await getData(url, "Client");
     thereIsUser('../login.html');
 
     botonsTancarSessio('../login.html');
-    
-    const clients = await getData(url, "Client");
-    clientsGlobals = clients;   // Guardem tots els clients
-    carregarClients(clientsGlobals); // Carreguem la primera pàgina
+
+    crearBuscador();     // ⬅ ahora sí, el DOM ya existe
+    mostrarPaginat();    // ⬅ ahora sí, clients ya tiene datos
 }
 
-function carregarClients(clients) {
+    
+
+
+function crearBuscador() {
+    const contingut = document.querySelector(".contingut");
+
+    const div = document.createElement("div");
+    div.id = "buscadorClients";
+
+    div.innerHTML = `
+        <input type="text" id="textCercar" placeholder="Cercar client...">
+        <button id="btnBuscar">Cercar</button>
+        <button id="btnNetejar">Netejar</button>
+    `;
+
+    contingut.insertBefore(div, contingut.children[1]);
+
+    document.getElementById("btnBuscar").addEventListener("click", filtrarClients);
+    document.getElementById("btnNetejar").addEventListener("click", () => {
+        document.getElementById("textCercar").value = "";
+        mostrarPaginat();
+    });
+}
+
+function filtrarClients() {
+    const txt = document.getElementById("textCercar").value.trim().toLowerCase();
+
+    const filtrats = clients.filter(c =>
+        c.name.toLowerCase().includes(txt) ||
+        c.surname.toLowerCase().includes(txt) ||
+        c.email.toLowerCase().includes(txt)
+    );
+
+    paginaActual = 1;
+    mostrarPaginat(filtrats);
+}
+
+function mostrarPaginat(llista = clients) {
+    const inici = (paginaActual - 1) * perPagina;
+    const final = inici + perPagina;
+    const mostrar = llista.slice(inici, final);
+
+    carregarTaula(mostrar);
+
+    crearPaginacio(llista.length);
+}
+
+function carregarTaula(llista) {
     const taula = document.getElementById("taulaClients");
     taula.innerHTML = "";
 
-    // Calcular rang de la pàgina
-    const inici = (paginaActual - 1) * filesPerPagina;
-    const final = inici + filesPerPagina;
-
-    // Extreure els clients de la pàgina actual
-    const clientsPagina = clients.slice(inici, final);
-
-    clientsPagina.forEach(client => {
+    llista.forEach(client => {
         const fila = document.createElement("tr");
 
         fila.innerHTML = `
@@ -43,38 +88,47 @@ function carregarClients(clients) {
 
         taula.appendChild(fila);
     });
-
-    // Actualitzar paginació
-    mostrarPaginacio(clients.length);
 }
 
-
-
-let paginaActual = 1;
-const filesPerPagina = 10;
-let clientsGlobals = [];
-
-function mostrarPaginacio(total) {
-    const totalPagines = Math.ceil(total / filesPerPagina);
+function crearPaginacio(total) {
     const div = document.getElementById("paginacio");
     div.innerHTML = "";
 
+    const totalPagines = Math.ceil(total / perPagina);
+
+    // Botó anterior
+    const btnAnt = document.createElement("button");
+    btnAnt.textContent = "Anterior";
+    btnAnt.disabled = paginaActual === 1;
+    btnAnt.addEventListener("click", () => {
+        paginaActual--;
+        mostrarPaginat();
+    });
+    div.appendChild(btnAnt);
+
+    // Botons numerats
     for (let i = 1; i <= totalPagines; i++) {
-        const boto = document.createElement("button");
-        boto.textContent = i;
+        const btn = document.createElement("button");
+        btn.textContent = i;
 
-        // Aplicar estil a la pàgina seleccionada
-        if (i === paginaActual) {
-            boto.classList.add("paginaSeleccionada");
-            boto.disabled = true;
-        }
+        if (i === paginaActual) btn.classList.add("activa");
 
-        boto.addEventListener("click", () => {
+        btn.addEventListener("click", () => {
             paginaActual = i;
-            carregarClients(clientsGlobals);
+            mostrarPaginat();
         });
 
-        div.appendChild(boto);
+        div.appendChild(btn);
     }
+
+    // Botó següent
+    const btnSeg = document.createElement("button");
+    btnSeg.textContent = "Següent";
+    btnSeg.disabled = paginaActual === totalPagines;
+    btnSeg.addEventListener("click", () => {
+        paginaActual++;
+        mostrarPaginat();
+    });
+    div.appendChild(btnSeg);
 }
 
