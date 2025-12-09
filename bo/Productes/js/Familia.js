@@ -5,9 +5,12 @@ let families = [];
 let llistaAutocomplete = [];
 
 async function main() {
+
+
+        botonsTancarSessio("../login.html");
+
     try {
         families = await getData(url, "Family");
-        console.log("Familias cargadas:", families);
         
         // Ajuste por si la respuesta viene en un array anidado
         if (Array.isArray(families) && families.length > 0 && Array.isArray(families[0])) {
@@ -73,8 +76,6 @@ function netejarFormulari() {
 function mostrarFamilies(families) {
     const taula = document.getElementById("taulaFamilia");
     taula.innerHTML = "";
-
-    console.log("Mostrando familias:", families);
 
     const childrenMap = {};
 
