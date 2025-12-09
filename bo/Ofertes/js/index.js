@@ -95,6 +95,14 @@ async function main() {
     // Funció per a eliminar una oferta específica
     async function eliminarDada(ofertaId) {
         try {
+            // Demanar confirmació a l'usuari
+            const confirmacio = confirm("Esteu segur que voleu eliminar aquest element?\nAquesta acció no es pot desfer.");
+
+            // Si l'usuari cancela, no fer res
+            if (!confirmacio) {
+                return;
+            }
+
             // Convertir a número
             const idNumerico = parseInt(ofertaId);
 

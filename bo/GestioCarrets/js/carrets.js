@@ -1,385 +1,321 @@
 document.addEventListener("DOMContentLoaded", main);
 
+// Dades
+let carrets = [];
+let detalls = [];
+let clients = [];
+let elementsTaula = [];
+let capcalera = [];
+
+const funcioBorrar = "eliminarCarret";
+
 async function main() {
-    thereIsUser('../Login.html')
 
-    await mostrarInfoCliente();
-    await mostrarCarret();
+    thereIsUser("../login.html");
+    botonsTancarSessio("../login.html");
 
-    // Botó finalitzar comanda
-    const btnFinalitzar = document.getElementById("btnFinalitzar");
-    if (btnFinalitzar) {
-        btnFinalitzar.addEventListener("click", async () => {
-            await finalitzarComanda();
-        });
-    }
+    // inputs filtres
+    const filtreId = document.getElementById("filtreId");
+    const filtreSessio = document.getElementById("filtreSessio");
+    const filtreUsuari = document.getElementById("filtreUsuari");
+    const botoCercar = document.getElementById("cercar");
+    const botoNetejar = document.getElementById("netejar");
 
-    // Botons "Seguir comprant"
-    const btnsSeguirComprant = document.querySelectorAll("#btnSeguirComprant");
-    btnsSeguirComprant.forEach(btn => {
-        btn.addEventListener("click", () => {
-            window.location.href = 'listarproductes.html';
-        });
-    });
+    // Carregar dades API
+    carrets = await getData(url, "Cart");
+    detalls = await getData(url, "CartDetail");
+    clients = await getData(url, "Client");
 
-    // Botó Login 
-    const btnLogin = document.querySelector('button[data-action="login"]');
-    if (btnLogin) {
-        btnLogin.addEventListener("click", mostrarFormularioLogin);
-    }
+    actualitzarDades();
 
-    // Botó Tancar sessió
-    const btnTancarSessio = document.querySelector('button[data-action="logout"]');
-    if (btnTancarSessio) {
-        btnTancarSessio.addEventListener("click", cerrarSesion);
-    }
+    // BOTÓ CERCA
+    botoCercar.addEventListener("click", e => {
+        e.preventDefault();
 
-    // Actualitzar visibilitat dels botons segons l'estat de sessió
-    actualitzarBotonsNav();
-}
+        let filtrats = carrets;
 
-// ====================================================================
-// SESSIÓ I LOGIN
-// ====================================================================
+        if (filtreId.value)
+            filtrats = filtrats.filter(c => String(c.id) === filtreId.value);
 
-function obtenerUser() {
-    const user = localStorage.getItem("currentUser");
-    if (!user) return null;
-    return JSON.parse(user);
-}
+        if (filtreSessio.value)
+            filtrats = filtrats.filter(c => c.session_id.includes(filtreSessio.value));
 
-function obtenerOCrearCartId() {
-    let cartId = localStorage.getItem('cartId');
-    if (!cartId) {
-        cartId = crypto.randomUUID();
-        localStorage.setItem('cartId', cartId);
-    }
-    return cartId;
-}
+        if (filtreUsuari.value) {
+            const valorFiltre = filtreUsuari.value.toLowerCase();
+            
+            filtrats = filtrats.filter(c => {
+                // Si no té user_agent, comprovar si busca "anònim"
+                if (!c.User_agent || !c.User_agent.id) {
+                    return "anònim".includes(valorFiltre) || "anonim".includes(valorFiltre);
+                }
 
-async function obtenerOCrearCart() {
-    const sessionId = obtenerOCrearCartId();
-    const user = obtenerUser();
+                // Buscar el client
+                const client = clients.find(cl => cl.id === c.User_agent.id);
 
-    let carts = await getData(url, "Cart");
-    if (!Array.isArray(carts)) carts = [carts];
-    let cart = carts.find(c => c.session_id === sessionId);
+                // Comprovar si el nom o cognom coincideix amb el filtre
+                if (client) {
+                    const nomComplet = `${client.name} ${client.surname}`.toLowerCase();
+                    return nomComplet.includes(valorFiltre);
+                }
 
-    if (cart) {
-        if (user && (!cart.User_agent || cart.User_agent.id !== user.id)) {
-            cart = await updateId(url, "Cart", cart.id, {
-                User_agent: { id: user.id }
+                return false;
             });
         }
-        return cart;
-    }
-
-    const nou = {
-        session_id: sessionId,
-        total_amount: 0,
-        date: new Date().toISOString()
-    };
-
-    if (user) nou.User_agent = { id: user.id };
-
-    return await postData(url, "Cart", nou);
-}
-
-// ====================================================================
-// FUNCIONS DE NAVEGACIÓ/LOGIN
-// ====================================================================
-
-function mostrarFormularioLogin() {
-    // Redirigir a la pàgina de login
-    window.location.href = '../Login.html';
-}
-
-function cerrarSesion() {
-    if (confirm("Vols tancar sessió?")) {
-        // Esborrar l'usuari actiu del localStorage
-        localStorage.removeItem("currentUser");
         
-        // Missatge de confirmació
-        showModal("Sessió tancada correctament", () => {
-            // Recarregar la pàgina per actualitzar la informació
-            window.location.reload();
-        });
-    }
+        paginaActual = 1; // Reiniciar a la primera pàgina
+        actualitzarDades(filtrats);
+    });
+
+    // BOTÓ NETEJAR
+    botoNetejar.addEventListener("click", e => {
+        e.preventDefault();
+        filtreId.value = "";
+        filtreSessio.value = "";
+        filtreUsuari.value = "";
+        paginaActual = 1; // Reiniciar a la primera pàgina
+        actualitzarDades();
+    });
 }
 
-function actualitzarBotonsNav() {
-    const user = obtenerUser();
-    const btnLogin = document.querySelector('button[data-action="login"]');
-    const btnLogout = document.querySelector('button[data-action="logout"]');
+// Crear elements taula
+function crearElementsTaula(carretsFiltrats = null) {
+    elementsTaula = [];
+    capcalera = ["ID", "Session ID", "Usuari", "Data", "Total (€)", "Accions"];
 
-    if (user) {
-        // Hi ha usuari logat
-        if (btnLogin) btnLogin.style.display = 'none';
-        if (btnLogout) btnLogout.style.display = 'inline-block';
-    } else {
-        // No hi ha usuari logat
-        if (btnLogin) btnLogin.style.display = 'inline-block';
-        if (btnLogout) btnLogout.style.display = 'none';
-    }
-}
+    const arrayCarrets = carretsFiltrats || carrets;
 
-async function mostrarInfoCliente() {
-    const cont = document.getElementById("infoClient");
-    while (cont.firstChild) {
-        cont.removeChild(cont.firstChild);
-    }
-
-    const user = obtenerUser();
-    const cartId = obtenerOCrearCartId();
-
-    const box = document.createElement("div");
-    box.style.cssText = "padding:10px;background:#f0f0f0;border-radius:5px;margin-bottom:20px;";
-
-    const h3 = document.createElement("h3");
-    
-    if (user) {
-        h3.textContent = "Informació del client";
-        box.appendChild(h3);
-
-        const pNom = document.createElement("p");
-        const strongNom = document.createElement("strong");
-        strongNom.textContent = "Nom: ";
-        pNom.appendChild(strongNom);
-        pNom.appendChild(document.createTextNode(`${user.name} ${user.surname}`));
-        box.appendChild(pNom);
-
-        const pEmail = document.createElement("p");
-        const strongEmail = document.createElement("strong");
-        strongEmail.textContent = "Email: ";
-        pEmail.appendChild(strongEmail);
-        pEmail.appendChild(document.createTextNode(user.email));
-        box.appendChild(pEmail);
-
-        const pTelefon = document.createElement("p");
-        const strongTelefon = document.createElement("strong");
-        strongTelefon.textContent = "Telèfon: ";
-        pTelefon.appendChild(strongTelefon);
-        pTelefon.appendChild(document.createTextNode(user.phone));
-        box.appendChild(pTelefon);
-
-        const pAdreca = document.createElement("p");
-        const strongAdreca = document.createElement("strong");
-        strongAdreca.textContent = "Adreça: ";
-        pAdreca.appendChild(strongAdreca);
-        pAdreca.appendChild(document.createTextNode(`${user.address}, ${user.cp}`));
-        box.appendChild(pAdreca);
-    } else {
-        box.style.background = "#fff3cd";
-        h3.textContent = "Sessió anònima";
-        box.appendChild(h3);
-
-        const pId = document.createElement("p");
-        const strongId = document.createElement("strong");
-        strongId.textContent = "ID Carret: ";
-        pId.appendChild(strongId);
-        pId.appendChild(document.createTextNode(cartId));
-        box.appendChild(pId);
-
-        const pEm = document.createElement("p");
-        const em = document.createElement("em");
-        em.textContent = "Per a guardar les comandes, inicia sessió.";
-        pEm.appendChild(em);
-        box.appendChild(pEm);
-    }
-
-    cont.appendChild(box);
-}
-
-
-// ====================================================================
-// MOSTRAR CARRET
-// ====================================================================
-
-async function mostrarCarret() {
-    const cart = await obtenerOCrearCart();
-    if (!cart) return;
-
-    let detalls = await getData(url, "Cartdetail");
-    if (!Array.isArray(detalls)) detalls = [detalls];
-    detalls = detalls.filter(d => d.Cart?.id === cart.id);
-
-    let productes = await getData(url, "Product");
-    let imatges = await getData(url, "Productimage");
-
-    const divBuit = document.getElementById("carretBuit");
-    const divContent = document.getElementById("contingutCarret");
-    const elements = document.getElementById("elementsCarret");
-    const totalSpan = document.getElementById("total");
-
-    if (detalls.length === 0) {
-        divBuit.style.display = "block";
-        divContent.style.display = "none";
-        return;
-    }
-
-    divBuit.style.display = "none";
-    divContent.style.display = "block";
-    while (elements.firstChild) {
-        elements.removeChild(elements.firstChild);
-    }
-
-    let total = 0;
-
-    detalls.forEach(d => {
-        const prod = productes.find(p => p.id === d.Product.id);
-        const img = imatges.find(i => i.product_id === prod.id);
-
-        total += d.price * d.quantity;
-
-        const div = document.createElement("div");
-        div.className = "item-carret";
-        div.style.cssText = `
-            display:flex;align-items:center;gap:15px;
-            border:1px solid #ccc;padding:10px;margin-bottom:10px;
-            border-radius:5px;
-        `;
-
-        // Imatge
-        const imgEl = document.createElement("img");
-        imgEl.src = img?.url ?? "https://freesvg.org/img/Simple-Image-Not-Found-Icon.png";
-        imgEl.width = 80;
-        imgEl.height = 80;
-        imgEl.style.objectFit = "cover";
-        div.appendChild(imgEl);
-
-        // Informació del producte
-        const divInfo = document.createElement("div");
-        divInfo.style.flex = "1";
-
-        const pNom = document.createElement("p");
-        const strongNom = document.createElement("strong");
-        strongNom.textContent = prod.name;
-        pNom.appendChild(strongNom);
-        divInfo.appendChild(pNom);
-
-        const pPreu = document.createElement("p");
-        pPreu.textContent = `Preu: ${d.price.toFixed(2)} €`;
-        divInfo.appendChild(pPreu);
-
-        div.appendChild(divInfo);
-
-        // Controls de quantitat
-        const divControls = document.createElement("div");
-        divControls.style.cssText = "display:flex;align-items:center;gap:10px;";
-
-        const btnRestar = document.createElement("button");
-        btnRestar.className = "btnRestar";
-        btnRestar.textContent = "-";
-        btnRestar.addEventListener("click", async () => {
-            if (d.quantity > 1) {
-                await updateId(url, "Cartdetail", d.id, {
-                    quantity: d.quantity - 1
-                });
-            } else {
-                await deleteData(url, "Cartdetail", d.id);
+    arrayCarrets.forEach(c => {
+        // Buscar el client si existeix user_agent
+        let usuari = "Anònim";
+        if (c.User_agent && c.User_agent.id) {
+            const client = clients.find(cl => cl.id === c.User_agent.id);
+            if (client) {
+                usuari = `${client.name} ${client.surname}`;
             }
-            await mostrarCarret();
+        }
+
+        elementsTaula.push({
+            id: c.id,
+            session_id: c.session_id,
+            usuari: usuari,
+            date: new Date(c.date).toLocaleString(),
+            total_amount: c.total_amount.toFixed(2)
         });
-        divControls.appendChild(btnRestar);
-
-        const spanQuantitat = document.createElement("span");
-        const strongQuantitat = document.createElement("strong");
-        strongQuantitat.textContent = d.quantity;
-        spanQuantitat.appendChild(strongQuantitat);
-        divControls.appendChild(spanQuantitat);
-
-        const btnSumar = document.createElement("button");
-        btnSumar.className = "btnSumar";
-        btnSumar.textContent = "+";
-        btnSumar.addEventListener("click", async () => {
-            await updateId(url, "Cartdetail", d.id, {
-                quantity: d.quantity + 1
-            });
-            await mostrarCarret();
-        });
-        divControls.appendChild(btnSumar);
-
-        div.appendChild(divControls);
-
-        // Preu total
-        const spanTotal = document.createElement("span");
-        spanTotal.style.cssText = "min-width:80px;text-align:right;font-weight:bold;";
-        spanTotal.textContent = `${(d.price * d.quantity).toFixed(2)} €`;
-        div.appendChild(spanTotal);
-
-        // Botó eliminar
-        const btnEliminar = document.createElement("button");
-        btnEliminar.className = "btnEliminar";
-        btnEliminar.style.cssText = "background:#dc3545;color:white;border:none;padding:5px 10px;border-radius:5px;";
-        btnEliminar.textContent = "✖";
-        btnEliminar.addEventListener("click", async () => {
-            await deleteData(url, "Cartdetail", d.id);
-            await mostrarCarret();
-        });
-        div.appendChild(btnEliminar);
-
-        elements.appendChild(div);
-    });
-
-    await updateId(url, "Cart", cart.id, { total_amount: total });
-
-    totalSpan.textContent = total.toFixed(2) + " €";
-}
-
-
-// ====================================================================
-// FINALITZAR COMANDA
-// ====================================================================
-
-async function finalitzarComanda() {
-    const user = obtenerUser();
-    if (!user) {
-        showModal("Has d'iniciar sessió per finalitzar la compra.");
-        return;
-    }
-
-    const cart = await obtenerOCrearCart();
-    if (!cart) return;
-
-    showModal("Compra finalitzada correctament!", () => {
-        window.location.href = 'finalitzar.html';
     });
 }
 
+function mostraTaula(elements) {
+    const taula = document.getElementById("taula");
 
-// ====================================================================
-// MODAL
-// ====================================================================
-
-function showModal(message, onClose = null) {
-    let modalOverlay = document.getElementById('modalOverlay');
-    if (!modalOverlay) {
-        modalOverlay = document.createElement('div');
-        modalOverlay.id = 'modalOverlay';
-        modalOverlay.className = 'modal-overlay';
-        document.body.appendChild(modalOverlay);
+    // Eliminar tots els fills de la taula 
+    while (taula.firstChild) {
+        taula.removeChild(taula.firstChild);
     }
 
-    const modalContent = document.createElement('div');
-    modalContent.className = 'modal';
+    // CAPÇALERA
+    const trCap = document.createElement("tr");
 
-    const messageP = document.createElement('p');
-    messageP.className = 'modal-message';
-    messageP.textContent = message;
-    modalContent.appendChild(messageP);
-
-    const closeButton = document.createElement('button');
-    closeButton.className = 'modal-button';
-    closeButton.textContent = 'Acceptar';
-    closeButton.addEventListener("click", () => {
-        modalOverlay.style.display = 'none';
-        if (onClose) onClose();
+    capcalera.forEach(c => {
+        const th = document.createElement("th");
+        const text = document.createTextNode(c);
+        th.appendChild(text);
+        trCap.appendChild(th);
     });
-    modalContent.appendChild(closeButton);
 
-    while (modalOverlay.firstChild) {
-        modalOverlay.removeChild(modalOverlay.firstChild);
+    taula.appendChild(trCap);
+
+    // FILES 
+    elements.forEach(el => {
+        const tr = document.createElement("tr");
+
+        // Camps normals
+        Object.keys(el).forEach(k => {
+            const td = document.createElement("td");
+            const text = document.createTextNode(el[k]);
+            td.appendChild(text);
+            tr.appendChild(td);
+        });
+
+        // ACCIONS
+        const tdAccions = document.createElement("td");
+
+        // Icona de detalls (visualitzar)
+        const linkDetalls = document.createElement("a");
+        linkDetalls.className = "icon-visualitzar";
+        linkDetalls.href = "#";
+        const iconaDetalls = document.createElement("i");
+        iconaDetalls.className = "fa-solid fa-eye";
+        linkDetalls.appendChild(iconaDetalls);
+        linkDetalls.addEventListener("click", (e) => {
+            e.preventDefault();
+            veureDetalls(el.id);
+        });
+        tdAccions.appendChild(linkDetalls);
+
+        // Icona de borrar
+        const linkBorrar = document.createElement("a");
+        linkBorrar.className = "icon-borrar";
+        linkBorrar.href = "#";
+        const iconaBorrar = document.createElement("i");
+        iconaBorrar.className = "fa-solid fa-trash";
+        linkBorrar.appendChild(iconaBorrar);
+        linkBorrar.addEventListener("click", (e) => {
+            e.preventDefault();
+            eliminarCarret(el.id);
+        });
+        tdAccions.appendChild(linkBorrar);
+
+        tr.appendChild(tdAccions);
+        taula.appendChild(tr);
+    });
+}
+
+// borrar carrets
+async function eliminarCarret(id) {
+    if (confirm("Segur que vols eliminar este carret?")) {
+        await deleteData(url, "Cart", id);
+        carrets = await getData(url, "Cart");
+        actualitzarDades();
     }
-    modalOverlay.appendChild(modalContent);
-    modalOverlay.style.display = 'flex';
+}
+
+// OBIR MODAL AMB ELS DETALLS DEL CARRET
+function veureDetalls(idCarret) {
+    const detallsCarret = detalls.filter(d => d.Cart.id === idCarret);
+
+    // Crear modal
+    const modal = document.createElement("div");
+    modal.className = "modal";
+    modal.id = "modalDetalls";
+    modal.style.display = "block";
+
+    const modalContent = document.createElement("div");
+    modalContent.className = "modal-content";
+
+    // Botó tancar
+    const botoTancar = document.createElement("span");
+    botoTancar.className = "modal-close";
+    botoTancar.textContent = "×";
+    botoTancar.addEventListener("click", tancarModal);
+    modalContent.appendChild(botoTancar);
+
+    // Títol
+    const titol = document.createElement("h3");
+    titol.textContent = `Detalls del carret #${idCarret}`;
+    modalContent.appendChild(titol);
+
+    if (detallsCarret.length === 0) {
+        const missatge = document.createElement("p");
+        missatge.textContent = "No hi ha productes en aquest carret";
+        modalContent.appendChild(missatge);
+    } else {
+        // Crear taula de detalls
+        const taula = document.createElement("table");
+        taula.className = "taula-detalls";
+
+        // Capçalera taula
+        const thead = document.createElement("thead");
+        const trHead = document.createElement("tr");
+        const capsDetalls = ["Producte ID", "Quantitat", "Preu unitari", "Descompte", "Subtotal"];
+        
+        capsDetalls.forEach(cap => {
+            const th = document.createElement("th");
+            th.textContent = cap;
+            trHead.appendChild(th);
+        });
+        
+        thead.appendChild(trHead);
+        taula.appendChild(thead);
+
+        // Cos taula
+        const tbody = document.createElement("tbody");
+        let totalCarret = 0;
+
+        detallsCarret.forEach(d => {
+            const tr = document.createElement("tr");
+            
+            const subtotal = d.quantity * d.price * (1 - d.discount / 100);
+            totalCarret += subtotal;
+
+            // Producte ID
+            const tdProducte = document.createElement("td");
+            tdProducte.textContent = d.Product.id;
+            tr.appendChild(tdProducte);
+
+            // Quantitat
+            const tdQuantitat = document.createElement("td");
+            tdQuantitat.textContent = d.quantity;
+            tr.appendChild(tdQuantitat);
+
+            // Preu
+            const tdPreu = document.createElement("td");
+            tdPreu.textContent = `${d.price.toFixed(2)}€`;
+            tr.appendChild(tdPreu);
+
+            // Descompte
+            const tdDescompte = document.createElement("td");
+            tdDescompte.textContent = `${d.discount}%`;
+            tr.appendChild(tdDescompte);
+
+            // Subtotal
+            const tdSubtotal = document.createElement("td");
+            tdSubtotal.textContent = `${subtotal.toFixed(2)}€`;
+            tr.appendChild(tdSubtotal);
+
+            tbody.appendChild(tr);
+        });
+
+        taula.appendChild(tbody);
+
+        // Total
+        const tfoot = document.createElement("tfoot");
+        const trTotal = document.createElement("tr");
+        const tdTotal = document.createElement("td");
+        tdTotal.colSpan = 4;
+        tdTotal.textContent = "Total:";
+        tdTotal.style.textAlign = "right";
+        tdTotal.style.fontWeight = "bold";
+        
+        const tdTotalAmount = document.createElement("td");
+        tdTotalAmount.textContent = `${totalCarret.toFixed(2)}€`;
+        tdTotalAmount.style.fontWeight = "bold";
+        
+        trTotal.appendChild(tdTotal);
+        trTotal.appendChild(tdTotalAmount);
+        tfoot.appendChild(trTotal);
+        taula.appendChild(tfoot);
+
+        modalContent.appendChild(taula);
+    }
+
+    modal.appendChild(modalContent);
+
+    // Afegir al body
+    document.body.appendChild(modal);
+
+    // Tancar en clicar fora del modal
+    modal.addEventListener("click", (e) => {
+        if (e.target === modal) {
+            tancarModal();
+        }
+    });
+}
+
+function tancarModal() {
+    const modal = document.getElementById("modalDetalls");
+    if (modal) {
+        modal.remove();
+    }
+}
+
+// PAGINACIÓ
+function actualitzarDades(carretsFiltrats = null) {
+    const arrayCarrets = carretsFiltrats || carrets;
+
+    crearElementsTaula(arrayCarrets);
+    carregarArray(elementsTaula);
+    creaPagines();
+
+    const paginats = aplicarPaginacio(elementsTaula);
+    mostraTaula(paginats);
 }

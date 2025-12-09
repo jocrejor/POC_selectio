@@ -12,13 +12,40 @@ async function main() {
         crearProducto(event);
     });
 
+    // Botón volver
     const btnVolver = document.getElementById("btnVolver");
     btnVolver.addEventListener("click", () => {
         window.location.href = "index.html";
     });
 
+    // Botón limpiar (nuevo)
+    const btnLimpiar = document.getElementById("limpiar");
+    btnLimpiar.addEventListener("click", limpiarFormulario);
+
     // Afegir validació en temps real
     agregarValidacionEnTiempoReal();
+}
+
+// Función para limpiar el formulario
+function limpiarFormulario(e) {
+    e.preventDefault();
+    esborrarError();
+    
+    document.getElementById("name").value = "";
+    document.getElementById("price").value = "";
+    document.getElementById("description").value = "";
+    document.getElementById("family_id").value = "";
+}
+
+// Función para limpiar errores (similar a usuaris)
+function esborrarError() {
+    const contError = document.getElementById("missatgeError");
+    contError.replaceChildren();
+
+    let formulari = document.getElementById("productForm");
+    for (let i = 0; i < formulari.elements.length; i++) {
+        formulari.elements[i].classList.remove("error");
+    }
 }
 
 async function cargarFamilias() {
@@ -27,15 +54,7 @@ async function cargarFamilias() {
         const familias = await getData(url, "Family");
 
         // Netejar opcions existents
-        select.innerHTML = '';
-
-        // Afegir opció per defecte
-        const defaultOption = document.createElement("option");
-        defaultOption.value = "";
-        defaultOption.textContent = "Selecciona una família";
-        defaultOption.disabled = true;
-        defaultOption.selected = true;
-        select.appendChild(defaultOption);
+        select.innerHTML = '<option value="">Selecciona una família</option>';
 
         // Afegir famílies
         familias.forEach(familia => {
@@ -46,7 +65,7 @@ async function cargarFamilias() {
         });
     } catch (error) {
         console.error("Error cargando familias:", error);
-        alert("Error al cargar las familias.");
+        mostrarErrorGeneral("Error al cargar las familias.");
     }
 }
 
@@ -100,9 +119,9 @@ function agregarValidacionEnTiempoReal() {
 
     // Validar família
     familySelect.addEventListener("change", function() {
-        const familyId = parseInt(this.value);
-        if (isNaN(familyId)) {
-            mostrarError(this, "Has de seleccionar una família vàlida");
+        const familyId = this.value;
+        if (familyId === "") {
+            mostrarError(this, "Has de seleccionar una família");
         } else {
             limpiarError(this);
         }
@@ -123,6 +142,12 @@ function mostrarError(input, mensaje) {
 
     // Inserir després de l'input
     input.parentNode.insertBefore(errorElement, input.nextSibling);
+}
+
+function mostrarErrorGeneral(mensaje) {
+    const errorDiv = document.getElementById("missatgeError");
+    errorDiv.textContent = mensaje;
+    errorDiv.className = "missatgeError";
 }
 
 function limpiarError(input) {
@@ -152,7 +177,7 @@ async function validarFormulario() {
     const name = document.getElementById("name").value.trim();
     const price = parseFloat(document.getElementById("price").value);
     const description = document.getElementById("description").value.trim();
-    const familyId = parseInt(document.getElementById("family_id").value);
+    const familyId = document.getElementById("family_id").value;
 
     let esValido = true;
 
@@ -193,8 +218,8 @@ async function validarFormulario() {
     }
 
     // Validar família
-    if (isNaN(familyId)) {
-        mostrarError(document.getElementById("family_id"), "Has de seleccionar una família vàlida");
+    if (familyId === "") {
+        mostrarError(document.getElementById("family_id"), "Has de seleccionar una família");
         esValido = false;
     }
 
@@ -202,9 +227,12 @@ async function validarFormulario() {
 }
 
 async function crearProducto(event) {
+    // Limpiar errores anteriores
+    esborrarError();
+    
     // Validar formulari
     if (!await validarFormulario()) {
-        alert("Per favor, corregeix els errors en el formulari");
+        mostrarErrorGeneral("Per favor, corregeix els errors en el formulari");
         return;
     }
 
@@ -229,6 +257,6 @@ async function crearProducto(event) {
         window.location.href = "index.html";
     } catch (error) {
         console.error("Error creant producte:", error);
-        alert("Error al crear el producte. Intenta-ho de nou.");
+        mostrarErrorGeneral("Error al crear el producte. Intenta-ho de nou.");
     }
 }
