@@ -24,6 +24,10 @@ p {
     margin-left: 2em;
     background-color: var(--color-secundari);
 }
+.tornar:hover{
+  cursor: pointer;
+}
+
 @media screen and (max-width: 767px) {
   #taula, #taula tbody, #taula tr, #taula td {
     display: block;
