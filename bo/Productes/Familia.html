@@ -18,9 +18,11 @@
         rel="stylesheet">
     <script src="../js/common.js"></script>
     <script src="../js/logout.js"></script>
-    <title>Formulario Alta Familias</title>
+    <title>Llistat Usuaris</title>
     <script src="../../apiAccess/crud.js"></script>
     <script src="js/Familia.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
 
 </head>
 
@@ -120,8 +122,11 @@
                             <div class="contingut">
                                 <div id="contingutTaula">
                                     <h3>Buscar</h3>
-                                    <input type="text" id="buscarFamilia"
-                                        placeholder="Buscar família o subfamília..." />
+                                    <div class="cercarBOTO">
+                                        <input type="text" id="buscarFamilia"
+                                            placeholder="Buscar família o subfamília..." />
+                                        <button id="btnCercar">Cercar</button>
+                                    </div>
                                     <table id="taula">
                                         <thead>
                                             <tr>
@@ -134,8 +139,6 @@
                                         <tbody id="taulaFamilia"></tbody>
                                     </table>
                                 </div>
-                                </section>
-
                                 <section class="seccion-formulario">
                                     <div class="cabecera-seccion">
                                         <h2>Formulario</h2>
