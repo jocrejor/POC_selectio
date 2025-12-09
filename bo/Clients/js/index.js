@@ -1,6 +1,10 @@
 document.addEventListener("DOMContentLoaded", main);
 
 async function main() {
+    thereIsUser('../login.html');
+
+    botonsTancarSessio('../login.html');
+    
     const clients = await getData(url, "Client");
     clientsGlobals = clients;   // Guardem tots els clients
     carregarClients(clientsGlobals); // Carreguem la primera pàgina
