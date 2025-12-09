@@ -1,6 +1,10 @@
 /* ============================================
    ESTILOS DEL FORMULARIO DE CONTACTO
    ============================================ */
+.title-form-contacte{
+  color: var(--color-primari);
+  border-bottom: var(--color-primari) solid 3px;
+}
 .contenidor-contacte {
   max-width: 800px;
   margin: 20px auto;
