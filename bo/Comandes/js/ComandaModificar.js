@@ -1,6 +1,7 @@
 //El document està carregat, cridem a la funció principal del main
 document.addEventListener("DOMContentLoaded", main);
 
+
 //  Funcions helpers per API 
 async function getData(baseUrl, endpoint) {
     let response = await fetch(`${baseUrl}/${endpoint}`);
@@ -20,6 +21,27 @@ async function postData(baseUrl, endpoint, data) {
     }
     return await response.json();
 }
+
+// Funció per mostrar missatges en pantalla (substitueix ALS ALERT)
+function mostrarMissatge(text, tipus = "info") {
+    let cont = document.getElementById("missatges");
+    if (!cont) {
+        cont = document.createElement("div");
+        cont.id = "missatges";
+        document.body.prepend(cont);
+    }
+
+    cont.innerHTML = `
+        <p class="msg msg-${tipus}">
+            ${text}
+        </p>
+    `;
+
+    // Autoesborrar després de 4 segons
+    setTimeout(() => cont.innerHTML = "", 4000);
+}
+
+
 // Funció per actualitzar una entrada existent (PUT)
 async function updateId(baseUrl, endpoint, id, data) {
     let response = await fetch(`${baseUrl}/${endpoint}/${id}`, {
@@ -52,8 +74,9 @@ async function main() {
     let comandaId = urlParams.get("id");
 
     if (!comandaId) {
-        alert("No s'ha seleccionat cap comanda per modificar.");
-        window.location.href = "index.html";
+        mostrarMissatge("No s'ha seleccionat cap comanda per modificar.", "error");
+        setTimeout(() => window.location.href = "index.html", 1000);
+
         return;
     }
 
@@ -65,8 +88,9 @@ async function main() {
 
     let comanda = Order.find(o => Number(o.id) === Number(comandaId));
     if (!comanda) {
-        alert("Comanda no trobada.");
-        window.location.href = "index.html";
+        mostrarMissatge("Comanda no trobada.", "error");
+        setTimeout(() => window.location.href = "index.html", 1000);
+
         return;
     }
 
@@ -111,7 +135,7 @@ async function main() {
     });
 
     //  Crear fila producte 
-    function crearFilaProducte(p) {
+    /*function crearFilaProducte(p) {
         let tr = document.createElement("tr");
         tr.className = "product-line";
 
@@ -128,7 +152,7 @@ async function main() {
             select.appendChild(op);
         });
         tdProd.appendChild(select);
-    tdProd.setAttribute("data-label", "Producte:"); // afegim etiqueta per mòbil
+        tdProd.setAttribute("data-label", "Producte:"); // afegim etiqueta per mòbil
         tr.appendChild(tdProd);
 
         // Quantitat
@@ -156,7 +180,7 @@ async function main() {
         inputPreu.value = p && (p.price || p.unit_price || p.preu) ? Number(p.price || p.unit_price || p.preu).toFixed(2) : 0;
         inputPreu.classList.add("product-price");
         tdPreu.appendChild(inputPreu);
-            tdPreu.setAttribute("data-label", "Preu: "); // mòbil
+        tdPreu.setAttribute("data-label", "Preu: "); // mòbil
 
         tr.appendChild(tdPreu);
 
@@ -172,7 +196,7 @@ async function main() {
         inputDesc.value = descompteInicial.toFixed(2);
         inputDesc.classList.add("product-discount");
         tdDesc.appendChild(inputDesc);
-            tdDesc.setAttribute("data-label", "Descompte:"); // mòbil
+        tdDesc.setAttribute("data-label", "Descompte:"); // mòbil
 
         tr.appendChild(tdDesc);
 
@@ -185,7 +209,7 @@ async function main() {
         inputFinal.readOnly = true;
         inputFinal.classList.add("product-final-price");
         tdFinal.appendChild(inputFinal);
-            tdFinal.setAttribute("data-label", "Subtotal:"); // mòbil
+        tdFinal.setAttribute("data-label", "Subtotal:"); // mòbil
 
         tr.appendChild(tdFinal);
 
@@ -204,6 +228,7 @@ async function main() {
         tr.appendChild(tdAcc);
 
         btn.addEventListener("click", () => {
+            
             tr.remove();
             calcularTotal();
         });
@@ -234,7 +259,144 @@ async function main() {
         document.getElementById("productsTable").appendChild(tr);
 
         if (select.value) select.dispatchEvent(new Event("change"));
+
+        
+    }*/
+function crearFilaProducte(p) {
+    let tr = document.createElement("tr");
+    tr.className = "product-line";
+
+    // Product select
+    let tdProd = document.createElement("td");
+    let select = document.createElement("select");
+    select.name = "product_id[]";
+    select.classList.add("product-select");
+    select.required = true;
+    select.appendChild(new Option("Selecciona producte...", ""));
+    Product.forEach(pr => {
+        let op = new Option(pr.name, pr.id);
+        if (p && (Number(p.product_id || p.producte) === Number(pr.id))) op.selected = true;
+        select.appendChild(op);
+    });
+    tdProd.appendChild(select);
+    tdProd.setAttribute("data-label", "Producte:");
+    tr.appendChild(tdProd);
+
+    // Quantitat
+    let tdQuant = document.createElement("td");
+    let inputQuant = document.createElement("input");
+    inputQuant.type = "number";
+    inputQuant.name = "quantity[]";
+    inputQuant.min = 1;
+    inputQuant.required = true;
+    inputQuant.value = p && (p.quantity || p.quantitat) ? (p.quantity || p.quantitat) : 1;
+    inputQuant.classList.add("product-quant");
+    tdQuant.appendChild(inputQuant);
+    tdQuant.setAttribute("data-label", "Quantitat:");
+    tr.appendChild(tdQuant);
+
+    // Preu unitari
+    let tdPreu = document.createElement("td");
+    let inputPreu = document.createElement("input");
+    inputPreu.type = "number";
+    inputPreu.step = "0.01";
+    inputPreu.name = "price[]";
+    inputPreu.min = 0;
+    inputPreu.required = true;
+    inputPreu.value = p && (p.price || p.unit_price || p.preu) ? Number(p.price || p.unit_price || p.preu).toFixed(2) : 0;
+    inputPreu.classList.add("product-price");
+    tdPreu.appendChild(inputPreu);
+    tdPreu.setAttribute("data-label", "Preu:");
+    tr.appendChild(tdPreu);
+
+    // Descompte
+    let tdDesc = document.createElement("td");
+    let inputDesc = document.createElement("input");
+    inputDesc.type = "number";
+    inputDesc.step = "0.01";
+    inputDesc.name = "discount[]";
+    inputDesc.min = 0;
+    inputDesc.readOnly = true;
+    let descompteInicial = p && (p.discount || p.descompte)
+        ? Number(p.discount || p.descompte)
+        : buscarDescomptePerProducte(p?.product_id || p?.producte);
+    inputDesc.value = descompteInicial.toFixed(2);
+    inputDesc.classList.add("product-discount");
+    tdDesc.appendChild(inputDesc);
+    tdDesc.setAttribute("data-label", "Descompte:");
+    tr.appendChild(tdDesc);
+
+    // Preu final
+    let tdFinal = document.createElement("td");
+    let inputFinal = document.createElement("input");
+    inputFinal.type = "number";
+    inputFinal.step = "0.01";
+    inputFinal.name = "finalPrice[]";
+    inputFinal.readOnly = true;
+    inputFinal.classList.add("product-final-price");
+    tdFinal.appendChild(inputFinal);
+    tdFinal.setAttribute("data-label", "Subtotal:");
+    tr.appendChild(tdFinal);
+
+    // Botó eliminar → modal confirmació
+    let tdAcc = document.createElement("td");
+    let btn = document.createElement("button");
+
+    btn.innerHTML = '<i class="fa-solid fa-trash" style="color: #931621;"></i>';
+    btn.classList.add("btn", "btn-sm");
+    btn.style.background = "transparent";
+    btn.style.border = "none";
+
+    btn.addEventListener("click", () => {
+        // Obrir modal
+        let modal = document.getElementById("modalEliminar");
+        modal.classList.remove("ocult");
+
+        // Assignar accions
+        document.getElementById("btnConfirmarEliminar").onclick = () => {
+            tr.remove();
+            calcularTotal();
+            modal.classList.add("ocult");
+        };
+
+        document.getElementById("btnCancelarEliminar").onclick = () => {
+            modal.classList.add("ocult");
+        };
+    });
+
+    tdAcc.appendChild(btn);
+    tr.appendChild(tdAcc);
+
+    // Recalcular funcions
+    function recalcular() {
+        let q = parseFloat(inputQuant.value) || 0;
+        let pr = parseFloat(inputPreu.value) || 0;
+        let d = parseFloat(inputDesc.value) || 0;
+        inputFinal.value = (q * pr * (1 - d / 100)).toFixed(2);
+        calcularTotal();
     }
+
+    select.addEventListener("change", () => {
+        let id = Number(select.value);
+        let prod = Product.find(pr => pr.id === id);
+        if (!prod) return;
+
+        inputPreu.value = Number(prod.price || 0).toFixed(2);
+        inputDesc.value = prod.discount
+            ? Number(prod.discount).toFixed(2)
+            : buscarDescomptePerProducte(id);
+
+        recalcular();
+    });
+
+    inputQuant.addEventListener("input", recalcular);
+    inputPreu.addEventListener("input", recalcular);
+
+    document.getElementById("productsTable").appendChild(tr);
+
+    if (select.value) select.dispatchEvent(new Event("change"));
+}
+
 
     //  Carregar productes existents 
     let llista = Orderdetail.filter(od => Number(od.order_id) === Number(comandaId));
@@ -308,11 +470,11 @@ async function main() {
             //  Actualitzar la comanda
             await updateId(url, "Order", comanda.id, comanda);
 
-            alert("Comanda actualitzada correctament!");
-            window.location.href = "index.html";
+            mostrarMissatge("Comanda actualitzada correctament!", "ok");
+            setTimeout(() => window.location.href = "index.html", 1000);
         } catch (err) {
             console.error("Error actualitzant la comanda:", err);
-            alert("Hi ha hagut un error en actualitzar la comanda.");
+            mostrarMissatge("Hi ha hagut un error en actualitzar la comanda.", "error");
         }
     });
 

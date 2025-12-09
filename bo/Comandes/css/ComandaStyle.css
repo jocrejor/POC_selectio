@@ -93,7 +93,9 @@ option {
     color: #000 !important;
 }
 
-
+#afegirPedido:hover, .cercar:hover, .netejar:hover{
+  cursor: pointer;
+  }
 
 
 

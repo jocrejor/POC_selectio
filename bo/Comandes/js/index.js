@@ -68,11 +68,24 @@ async function main() {
         // Quan se selecciona una data
         onSelect: mostrarComandes // Crida la funció mostrarComandes()
     });
+     // Configuració botó tancar sessió
+    let btnTancarSessio = document.querySelectorAll('.iconaTancarSessio');
+    btnTancarSessio.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            // Eliminar dades de sessió
+            localStorage.removeItem('usuari');  // o sessionStorage.removeItem('usuari');
+
+            // Redirigir a la pàgina de login
+            window.location.href = '/login.html';
+        });
+    });
 }
 
 // Variables globals
 let paginaActual = 1;
-let COMANDES_PER_PAGINA = 5;
+let COMANDES_PER_PAGINA = 10;
 let comandesTotals = [];
 
 function carregarClientsSelect() {
@@ -130,7 +143,7 @@ function formatDataDDMMYYYY(dataString) {
 
     // Si està en format yyyy-mm-dd la convertim a dd-mm-yyyy
     if (/^\d{4}-\d{2}-\d{2}$/.test(dataString)) {
-        const [yyyy, mm, dd] = dataString.split("-");
+        let [yyyy, mm, dd] = dataString.split("-");
         return `${dd}-${mm}-${yyyy}`;
     }
 
@@ -138,15 +151,9 @@ function formatDataDDMMYYYY(dataString) {
     return dataString;
 }
 
-//Convertir a string dd-mm-yyyy a objecte date
-/*function parseDateDDMMYYYY(dateString) {
-    const [dd, mm, yyyy] = dateString.split("-");
-    return new Date(`${dd}-${mm}-${yyyy}`);
-
-}*/
 
 function parseDateDDMMYYYY(dateString) {
-    const [dd, mm, yyyy] = dateString.split("-");
+    let [dd, mm, yyyy] = dateString.split("-");
     return new Date(yyyy, mm - 1, dd);
 }
 
@@ -223,7 +230,7 @@ function formatInputDate(input) {
 
         // Ve yyyy-mm-dd heu convertim
         if (/^\d{4}-\d{2}-\d{2}$/.test(v)) {
-            const [yyyy, mm, dd] = v.split("-");
+            let [yyyy, mm, dd] = v.split("-");
             this.value = `${dd}-${mm}-${yyyy}`;
         }
     });
@@ -278,7 +285,7 @@ function debounce(func, wait = 150) {
 }
 // Redibuixar només si canvia el mode (desktop ↔ mòbil)
 function checkResize() {
-    const currentMode = window.innerWidth <= 767;
+    let currentMode = window.innerWidth <= 767;
     if (currentMode !== isMobileMode) {
         isMobileMode = currentMode;
         mostrarComandes();
@@ -298,34 +305,33 @@ function mostrarComandes() {
 
     tbody.innerHTML = "";
 
-    let comandes = filtrarComandes(comandesTotals);
+    // Aplica els filtres
+    comandesFiltrades = filtrarComandes(comandesTotals);
 
-    if (comandes.length === 0) {
+    if (comandesFiltrades.length === 0) {
         tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">No hi ha comandes.</td></tr>`;
+        document.getElementById("pagines").innerHTML = "";
+        document.getElementById("anterior").classList.add("no_mostrar");
+        document.getElementById("posterior").classList.add("no_mostrar");
         return;
     }
-    // ---- PAGINACIÓ ----
-    let perPag = COMANDES_PER_PAGINA;
-    let totalPagines = Math.ceil(comandes.length / perPag);
 
+    let totalPagines = Math.ceil(comandesFiltrades.length / COMANDES_PER_PAGINA);
     if (paginaActual > totalPagines) paginaActual = totalPagines;
     if (paginaActual < 1) paginaActual = 1;
 
-    let inici = (paginaActual - 1) * perPag;
-    let final = inici + perPag;
-    let llista = comandes.slice(inici, final);
+    let inici = (paginaActual - 1) * COMANDES_PER_PAGINA;
+    let final = inici + COMANDES_PER_PAGINA;
+    let llistaPagina = comandesFiltrades.slice(inici, final);
 
-
-    //Mostrar Comandes
-    llista.forEach((c, index) => {
+    // Mostrar comandes (igual que abans, mòbil i desktop)
+    llistaPagina.forEach((c, index) => {
         let total = (c.productes || []).reduce((acc, p) =>
-            acc + (p.quantitat * p.preu * (1 - (p.descompte || 0) / 100))
-            , 0);
-        total += c.enviament || 0;
+            acc + (p.quantitat * p.preu * (1 - (p.descompte || 0) / 100)), 0
+        ) + (c.enviament || 0);
 
         if (isMobileMode) {
-            // Format vertical mòbil amb labels en negreta i color negre
-            const camps = [
+            let camps = [
                 { label: "ID", value: c.id },
                 { label: "Data", value: formatDataDDMMYYYY(c.data) },
                 { label: "Client", value: c.client },
@@ -342,25 +348,16 @@ function mostrarComandes() {
                 tbody.appendChild(tr);
             });
 
-            // Accions
             let trAccions = document.createElement("tr");
             let tdAccions = document.createElement("td");
             tdAccions.innerHTML = `
-        <a class="icon-editar" href="ComandaVisualitza.html?id=${c.id}">
-            <i class="fa-solid fa-eye"></i>
-        </a>
-        <a class="icon-editar" href="ComandaModificar.html?id=${c.id}">
-            <i class="fa-solid fa-pen-to-square"></i>
-        </a>
-        <a class="icon-borrar" href="#" onclick="eliminarComanda(${index})">
-            <i class="fa-solid fa-trash"></i>
-        </a>`;
+                <a class="icon-editar" href="ComandaVisualitza.html?id=${c.id}"><i class="fa-solid fa-eye"></i></a>
+                <a class="icon-editar" href="ComandaModificar.html?id=${c.id}"><i class="fa-solid fa-pen-to-square"></i></a>
+                <a class="icon-borrar" href="#" onclick="eliminarComanda(${inici + index})"><i class="fa-solid fa-trash"></i></a>
+            `;
             trAccions.appendChild(tdAccions);
             tbody.appendChild(trAccions);
-        }
-
-        else {
-            // Format taula normal
+        } else {
             let tr = document.createElement("tr");
             tr.innerHTML = `
                 <td>${c.id}</td>
@@ -370,38 +367,30 @@ function mostrarComandes() {
                 <td>${(+c.enviament).toFixed(2)}€</td>
                 <td>${total.toFixed(2)}€</td>
                 <td>
-                    <a class="icon-editar" href="ComandaVisualitza.html?id=${c.id}">
-                        <i class="fa-solid fa-eye"></i>
-                    </a>
-                    <a class="icon-editar" href="ComandaModificar.html?id=${c.id}">
-                        <i class="fa-solid fa-pen-to-square"></i>
-                    </a>
-                    <a class="icon-borrar" href="#" onclick="eliminarComanda(${index})">
-                        <i class="fa-solid fa-trash"></i>
-                    </a>
-                </td>`;
+                    <a class="icon-editar" href="ComandaVisualitza.html?id=${c.id}"><i class="fa-solid fa-eye"></i></a>
+                    <a class="icon-editar" href="ComandaModificar.html?id=${c.id}"><i class="fa-solid fa-pen-to-square"></i></a>
+                    <a class="icon-borrar" href="#" onclick="eliminarComanda(${inici + index})"><i class="fa-solid fa-trash"></i></a>
+                </td>
+            `;
             tbody.appendChild(tr);
         }
     });
-    actualizarPaginacio(totalPagines);
 
+    // Actualitza els botons de paginació
+    actualizarPaginacio(totalPagines);
 }
 function actualizarPaginacio(totalPagines) {
-
-    const btnAnterior = document.getElementById("anterior");
-    const btnPosterior = document.getElementById("posterior");
-    const contPagines = document.getElementById("pagines");
+    let btnAnterior = document.getElementById("anterior");
+    let btnPosterior = document.getElementById("posterior");
+    let contPagines = document.getElementById("pagines");
 
     if (!btnAnterior || !btnPosterior || !contPagines) return;
 
     contPagines.innerHTML = "";
 
-    //  BOTÓ ANTERIOR 
-    if (paginaActual <= 1) {
-        btnAnterior.classList.add("no_mostrar");
-    } else {
-        btnAnterior.classList.remove("no_mostrar");
-    }
+    // BOTÓ ANTERIOR
+    if (paginaActual <= 1) btnAnterior.classList.add("no_mostrar");
+    else btnAnterior.classList.remove("no_mostrar");
 
     btnAnterior.onclick = () => {
         if (paginaActual > 1) {
@@ -410,29 +399,21 @@ function actualizarPaginacio(totalPagines) {
         }
     };
 
-    //  BOTONS NUMÈRICS 
+    // BOTONS NUMÈRICS
     for (let i = 1; i <= totalPagines; i++) {
-        const boto = document.createElement("button");
+        let boto = document.createElement("button");
         boto.textContent = i;
-
-        if (i === paginaActual) {
-            boto.classList.add("paginaSeleccionada");
-        }
-
+        if (i === paginaActual) boto.classList.add("paginaSeleccionada");
         boto.addEventListener("click", () => {
             paginaActual = i;
             mostrarComandes();
         });
-
         contPagines.appendChild(boto);
     }
 
-    //  BOTÓ SEGÜENT 
-    if (paginaActual >= totalPagines) {
-        btnPosterior.classList.add("no_mostrar");
-    } else {
-        btnPosterior.classList.remove("no_mostrar");
-    }
+    // BOTÓ SEGÜENT
+    if (paginaActual >= totalPagines) btnPosterior.classList.add("no_mostrar");
+    else btnPosterior.classList.remove("no_mostrar");
 
     btnPosterior.onclick = () => {
         if (paginaActual < totalPagines) {
@@ -451,14 +432,14 @@ function visualitzarComanda(index) {
 
 
 function modificarComanda(index) {
-    const comanda = comandesTotals[index];
+    let comanda = comandesTotals[index];
     if (!comanda) return;
 
     window.location.href = `ComandaModificar.html?id=${comanda.id}`;
 }
 
 function eliminarComanda(index) {
-    const comanda = comandesTotals[index];
+    let comanda = comandesTotals[index];
     if (!comanda) return;
 
     // Crida la funció que elimina la comanda de la base de dades

@@ -271,9 +271,19 @@ function parseDateDDMMYYYY(dateString) {
 }
 
 //  Eliminar producte 
-function eliminarProducte(index) {
+/*function eliminarProducte(index) {
   productesActuals.splice(index, 1);
   mostrarProductes(productesActuals);
+}*/
+
+// Eliminar producte amb confirmació
+function eliminarProducte(index) {
+  let confirmacio = confirm("Esteu segur que voleu eliminar aquest element? Aquesta acció no es pot desfer.");
+  if (confirmacio) {
+    productesActuals.splice(index, 1);
+    mostrarProductes(productesActuals);
+  }
+  // Si l'usuari prem "Cancel·lar", no passa res
 }
 
 //  Funcions de validació i errors 
