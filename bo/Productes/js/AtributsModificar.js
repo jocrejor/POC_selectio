@@ -19,6 +19,8 @@ window.onload = iniciar;
     carregaselect();
     document.getElementById("enviar").addEventListener("click", guardarEnLocalStorage, false);
     document.getElementById("cancelar").addEventListener("click", cancelar);
+      thereIsUser("../login.html");
+ botonsTancarSessio("../login.html");
 }
 
 function cancelar() {

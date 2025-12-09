@@ -27,6 +27,7 @@
 
   <script src="./js/AttributAssignar.js"></script>
             <script src="../js/common.js"></script>
+                <script src="../js/logout.js"></script>
 </head>
 
 <body>
@@ -43,14 +44,15 @@
                     <div id="sessioUsuari">
                         <div class="headerUsuari">
                             <img src="img/foto_persona.png" alt="No s'ha pogut carregar l'imatge">
-                            <span>Manolo Garibolo</span>
+                           <span id="usuariNom"></span>
                             <span class="separador">&nbsp;</span>
                         </div>
-                        <div class="tancarSessio">
-                            <a href="#">
-                                <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
-                            </a>
-                        </div>
+                   <div class="tancarSessio">
+    <a href="#" id="botoTancarSessio">
+        <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
+    </a>
+</div>
+
                     </div>
                 </div>
             </div>
