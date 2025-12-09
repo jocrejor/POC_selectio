@@ -227,14 +227,37 @@ async function crearFamilia() {
         description: descripcio
     };
 
-    try {
-        // POST a la API
-        await postData(url, "Family", novaFamilia);
-        alert("Familia creada correctamente");
-    } catch (error) {
-        console.error("Error creando familia:", error);
-        alert("Error al crear la familia.");
+  try {
+    // POST a la API
+    await postData(url, "Family", novaFamilia);
+
+    const missatge = document.getElementById("missatge");
+
+    // Eliminar qualsevol text anterior
+    while (missatge.firstChild) {
+        missatge.removeChild(missatge.firstChild);
     }
+
+    // Afegir el nou missatge
+    missatge.appendChild(document.createTextNode("Familia creada correctamente"));
+
+} catch (error) {
+    console.error("Error creando familia:", error);
+
+    const missatge = document.getElementById("missatge");
+
+    while (missatge.firstChild) {
+        missatge.removeChild(missatge.firstChild);
+    }
+
+    missatge.appendChild(document.createTextNode("Error al crear la familia."));
+        //Desaparèixer als 3 segons
+    setTimeout(() => {
+        while (missatge.firstChild) {
+            missatge.removeChild(missatge.firstChild);
+        }
+    }, 3000);
+}
 }
 
 // Actualiza una familia existente con los datos del formulario
@@ -289,13 +312,12 @@ async function borrarFamilia(id) {
     }
 
     // AVISO DE CONFIRMACIÓN
-    const ok = confirm("Estàs segur que vols eliminar aquesta família?");
+    const ok = confirm("Esteu segur que voleu eliminar aquest element? Aquesta acció no es pot desfer");
     if (!ok) return;
 
     try {
         // DELETE de la API
         await deleteData(url, "Family", id);
-        alert("Familia eliminada correctamente");
         await recargarDatos();
     } catch (error) {
         console.error("Error eliminando familia:", error);

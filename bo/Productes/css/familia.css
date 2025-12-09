@@ -83,6 +83,9 @@ tbody tr:hover {
 #buscarFamilia{
     margin-bottom: 15px;
 }
+#missatge{
+    color: var(--color-secundari);
+}
 
 /* -------------------- Familias y Subfamilias -------------------- */
 .familia {
