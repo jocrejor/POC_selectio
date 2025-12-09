@@ -8,6 +8,7 @@ async function main() {
   document.getElementById("productsTable").addEventListener("click", function (e) {
     if (e.target.classList.contains("addProduct")) afegirProducte(e);
   });
+document.querySelectorAll(".addProduct").forEach(btn => btn.style.cursor = "pointer");
 
   // Obtenir dades del servidor
   Order = await getData(url, "Order");
@@ -20,8 +21,22 @@ async function main() {
   configurarAutoPreu();
   configurarCalculPreuFinal();
   inicialitzarData();
-}
 
+   //  CONFIGURACIÓ BOTÓ TANCAR SESSIÓ 
+  let botonsTancar = document.querySelectorAll('.iconaTancarSessio');
+  botonsTancar.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (confirm("Vols tancar sessió?")) {
+              tancarSessio();
+          }
+      });
+  });
+}
+ function tancarSessio() {
+      localStorage.removeItem('usuari'); 
+      window.location.href = '../login.html'; 
+  }
 
 //  Carregar clients i productes 
 function carregarClients() {

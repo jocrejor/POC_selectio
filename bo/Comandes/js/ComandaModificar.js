@@ -93,7 +93,21 @@ async function main() {
 
         return;
     }
+  //  CONFIGURACIÓ BOTÓ TANCAR SESSIÓ 
+    let botonsTancar = document.querySelectorAll('.iconaTancarSessio');
+    botonsTancar.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (confirm("Vols tancar sessió?")) {
+                tancarSessio();
+            }
+        });
+    });
 
+ function tancarSessio() {
+        localStorage.removeItem('usuari'); 
+        window.location.href = '../login.html'; 
+    }
     //  Utilitats
     //format de la data dd-mm-yyyy 
     function formatDateISO(d) {

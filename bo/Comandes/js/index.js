@@ -2,6 +2,7 @@
 document.addEventListener("DOMContentLoaded", main);
 
 async function main() {
+      
     // Carreguem dades globals del API
     Order = await getData(url, "Order");
     Orderdetail = await getData(url, "Orderdetail");
@@ -68,20 +69,22 @@ async function main() {
         // Quan se selecciona una data
         onSelect: mostrarComandes // Crida la funció mostrarComandes()
     });
-     // Configuració botó tancar sessió
-    let btnTancarSessio = document.querySelectorAll('.iconaTancarSessio');
-    btnTancarSessio.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-
-            // Eliminar dades de sessió
-            localStorage.removeItem('usuari');  // o sessionStorage.removeItem('usuari');
-
-            // Redirigir a la pàgina de login
-            window.location.href = '/login.html';
-        });
-    });
+   
 }
+
+//  MOSTRAR NOM D'USUARI 
+function mostrarNomUsuari(rutaLogin = "../login.html") {
+    let nomUsuari = localStorage.getItem('usuari'); // o sessionStorage segons la teva app
+    let spanUsuari = document.getElementById("usuariNom");
+
+    if (nomUsuari) {
+        spanUsuari.textContent = nomUsuari;
+    } else {
+        // Redirigeix si no hi ha usuari loguejat
+        window.location.href = rutaLogin;
+    }
+}
+
 
 // Variables globals
 let paginaActual = 1;
@@ -454,3 +457,12 @@ function eliminarComanda(index) {
             alert("Error en eliminar la comanda.");
         });
 }
+// Funció que elimina les dades de sessió i redirigeix al login
+function tancarSessio() {
+    // Eliminar informació de sessió
+    localStorage.removeItem('usuari');  // o sessionStorage si és el cas
+
+    // Redirigir a la pàgina de login
+    window.location.href = '../login.html';  // ajusta el path segons el teu projecte
+}
+

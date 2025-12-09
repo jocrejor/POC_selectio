@@ -21,6 +21,7 @@
     <script src="../../apiAccess/crud.js"></script>
     <script src="./js/index.js"></script>
     <script src="./js/ComandaEliminar.js"></script>
+    <script type="text/javascript" src="../js/logout.js"></script>
     <link rel="stylesheet" href="./css/ComandaStyle.css">
 
     <!--jQuery-->
@@ -45,11 +46,11 @@
                 <div id="sessioUsuari">
                     <div class="headerUsuari">
                         <img src="../img/foto_persona.png" alt="No s'ha pogut carregar l'imatge">
-                        <span>Manolo Garibolo</span>
+                        <span id="usuariNom"></span>
                         <span class="separador">&nbsp;</span>
                     </div>
                     <div class="tancarSessio">
-                        <a href="#">
+                        <a id="botoTancarSessio" href="#">
                             <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
                         </a>
                     </div>
@@ -69,15 +70,15 @@
                     <i class="fa-solid fa-paperclip"></i>
                     Atributs
                 </a>
-                <a href="#" class="opcio_menu">
+                <a href="../GestioCarrets/index.html" class="opcio_menu">
                     <i class="fa-solid fa-cart-shopping"></i>
                     Carrets
                 </a>
-                <a href="#" class="opcio_menu">
+                <a href="../Clients/index.html" class="opcio_menu">
                     <i class="fa-solid fa-person"></i>
                     Clients
                 </a>
-                <a href="#" class="opcio_menu">
+                <a href="../Configuracions/Configuracio.html" class="opcio_menu">
                     <i class="fa-solid fa-sliders"></i>
                     Configuracions
                 </a>
@@ -105,11 +106,11 @@
                     <i class="fa-solid fa-city"></i>
                     Productes
                 </a>
-                <a href="../Usuaris/usuaris.html" class="opcio_menu">
+                <a href="../Usuaris/index.html" class="opcio_menu">
                     <i class="fa-solid fa-user"></i>
                     Usuaris
                 </a>
-                <a href="#" class="opcio_menu eixir_menu">
+                <a href="#" id="tancarSessioLateral" class="opcio_menu eixir_menu">
                     <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
                     Eixir
                 </a>
@@ -208,7 +209,8 @@
                                     <!-- Modal per confirmar esborrat -->
                                     <div id="modalEliminar" class="modal ocult">
                                         <div class="modal-contenido">
-                                            <p class="text">Esteu segur que voleu eliminar aquest element? Aquesta acció no es pot
+                                            <p class="text">Esteu segur que voleu eliminar aquest element? Aquesta acció
+                                                no es pot
                                                 desfer.</p>
                                             <div class="modal-botons">
                                                 <button id="btnConfirmarEliminar" class="btn-eliminar">Eliminar</button>

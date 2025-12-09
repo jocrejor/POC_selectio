@@ -51,7 +51,16 @@ async function main() {
         document.getElementById("tornar").addEventListener("click", () => {
             window.location.href = "index.html";
         });
-
+          //  CONFIGURACIÓ BOTÓ TANCAR SESSIÓ 
+        let botonsTancar = document.querySelectorAll('.iconaTancarSessio');
+        botonsTancar.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (confirm("Vols tancar sessió?")) {
+                    tancarSessio();
+                }
+            });
+        });
     } catch (err) {
         console.error(err);
         mostrarMissatge(detalleContainer, "Hi ha hagut un error carregant la comanda.");
@@ -193,4 +202,8 @@ function formatData(dataString) {
     let mes = String(data.getMonth() + 1).padStart(2, "0");
     let any = data.getFullYear();
     return `${dia}-${mes}-${any}`;
+}
+function tancarSessio() {
+    localStorage.removeItem('usuari');
+    window.location.href = '../login.html';
 }
