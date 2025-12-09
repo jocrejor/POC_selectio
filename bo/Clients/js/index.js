@@ -26,8 +26,12 @@ function crearBuscador() {
 
     div.innerHTML = `
         <input type="text" id="textCercar" placeholder="Cercar client...">
-        <button id="btnBuscar">Cercar</button>
-        <button id="btnNetejar">Netejar</button>
+                                
+        <button id="btnBuscar"><i class="fa-solid fa-magnifying-glass"></i>Cercar</button>
+                                
+        <button id="btnNetejar"><i class="fa-solid fa-xmark"></i>Netejar</button>
+                                
+
     `;
 
     contingut.insertBefore(div, contingut.children[1]);
