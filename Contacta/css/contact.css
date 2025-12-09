@@ -1,5 +1,5 @@
 /* ============================================
-   ESTILOS DEL FORMULARIO DE CONTACTO (contact.html)
+   ESTILOS DEL FORMULARIO DE CONTACTO
    ============================================ */
 .contenidor-contacte {
   max-width: 800px;
@@ -99,7 +99,7 @@
 }
 
 .boto-guardar-contacte {
-  background-color: blueviolet;
+  background-color: var(--color-secundari);
   color: white;
 }
 
@@ -109,12 +109,8 @@
 }
 
 .boto-cancelar-contacte {
-  background-color: #e0e0e0;
-  color: #555;
-}
-
-.boto-cancelar-contacte:hover {
-  background-color: #d0d0d0;
+  background-color: var(--color-primari);
+  color: white;
 }
 
 .seccio-llista-contactes {
@@ -222,4 +218,14 @@
 .enllac-tornar-contacte:hover {
   color: #764ba2;
   transform: translateX(-5px);
+}
+
+/* ============================================
+   ESTILOS DEL FORMULARIO DE CONTACTO MOVIL
+   ============================================ */
+
+@media (max-width: 650px) {
+    .botons-formulari-contacte{
+      flex-direction: column;
+    }
 }
