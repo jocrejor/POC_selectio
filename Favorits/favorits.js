@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", main);
 // CONFIGURACIÓ DE L'API
 // ============================
 const API_BASE = "https://api.serverred.es/";
-const USER_ID = 1;
+const USER_ID = 5;
 
 // Variables globals per a les dades
 let totesImatges = [];
@@ -61,8 +61,13 @@ async function main() {
         await carregarTotesDades();
 
         // Després carregar els comparadors
-        const res = await fetch(`${API_BASE}/comparator?user_id=${USER_ID}`);
-        const comparadors = await res.json();
+        const res = await fetch(`${API_BASE}/comparator?client_id=${USER_ID}`);
+        const data = await res.json();
+
+        // Només els que tinguen client_id igual a client_id 
+        const comparadors = data.filter(c => c.client_id === USER_ID);
+
+
 
         pintarComparadors(comparadors);
 
