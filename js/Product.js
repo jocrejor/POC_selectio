@@ -1,10 +1,26 @@
 document.addEventListener("DOMContentLoaded", main);
 
 // Inicialitzar el comparador globalment
-const comparador = new Comparador();
-comparador.carregarLocalStorage();
+let comparador = null;
+
+// Funció per inicialitzar el comparador des de la API
+async function inicialitzarComparador() {
+  const apiUrl = 'https://api.serverred.es';
+  const comparatorId = sessionStorage.getItem('currentComparatorId');
+  comparador = new Comparador();
+  
+  if (comparatorId) {
+    try {
+      await comparador.carregarDesDeAPI(apiUrl, comparatorId);
+    } catch (error) {
+      console.warn('No es pot carregar comparador existent, creant-ne un de nou');
+    }
+  }
+}
 
 async function main() {
+  // Inicialitzar el comparador
+  await inicialitzarComparador();
   const llistaFamilies = document.getElementById("llistaFamilies");
   const productList = document.getElementById("productList");
   const paginacioContainer = document.getElementById("paginacio");
@@ -226,20 +242,8 @@ async function main() {
       productesFiltrats = ProductData.filter(p => allIds.includes(p.family_id));
     }
 
-    const textBusqueda = buscador.val().toLowerCase().trim();
-    if (textBusqueda !== "") {
-      productesActuals = productesFiltrats.filter(p => 
-        p.name.toLowerCase().includes(textBusqueda) ||
-        (p.description && p.description.toLowerCase().includes(textBusqueda))
-      );
-    } else {
-      productesActuals = productesFiltrats;
-    }
-
+    aplicarFiltres();
     actualitzarMiguesDePa(idFamilia);
-
-    pagActual = 1;
-    mostrarPagina(pagActual, productesActuals);
 
     const teSubllistat = li.querySelector("ul.sub-llista");
     if (!teSubllistat) {
@@ -254,7 +258,7 @@ async function main() {
     return ids;
   }
 
-  // ==================== FUNCIONS D'ORDRE====================
+  // ==================== FUNCIONS D'ORDRE ====================
   btnOrdenarAsc.addEventListener("click", () => {
     productesActuals.sort((a, b) => a.price - b.price);
     pagActual = 1;
@@ -269,20 +273,63 @@ async function main() {
 
   // ==================== BUSCADOR JQUERY ====================
   buscador.on("input", function() {
-    const textBusqueda = $(this).val().toLowerCase().trim();
-    
-    if (textBusqueda === "") {
-      productesActuals = productesFiltrats;
+    aplicarFiltres();
+  });
+
+  // ==================== BOTÓ MOSTRAR OFERTES ====================
+  const btnMostrarOfertes = document.createElement("button");
+  btnMostrarOfertes.classList.add("button");
+  btnMostrarOfertes.title = "Només amb oferta";
+  btnMostrarOfertes.appendChild(document.createTextNode("Ofertes"));
+  btnOrdenarDesc.parentElement.insertBefore(btnMostrarOfertes, btnOrdenarDesc.nextSibling);
+
+  let filtreOfertesActiu = false;
+
+  btnMostrarOfertes.addEventListener("click", () => {
+    filtreOfertesActiu = !filtreOfertesActiu;
+    btnMostrarOfertes.classList.toggle("actiu", filtreOfertesActiu);
+    aplicarFiltres();
+  });
+
+  function aplicarFiltres() {
+    // Primer filtrar per família
+    const familiaActiva = document.querySelector(".familia-item.activa");
+    let filtrats = productesFiltrats;
+
+    if (familiaActiva && familiaActiva.dataset.id) {
+      const allIds = getAllFamilyIds(parseInt(familiaActiva.dataset.id));
+      filtrats = ProductData.filter(p => allIds.includes(p.family_id));
     } else {
-      productesActuals = productesFiltrats.filter(p => 
-        p.name.toLowerCase().includes(textBusqueda) || 
+      filtrats = ProductData;
+    }
+
+    // Filtrar per cercador
+    const textBusqueda = buscador.val().toLowerCase().trim();
+    if (textBusqueda !== "") {
+      filtrats = filtrats.filter(p =>
+        p.name.toLowerCase().includes(textBusqueda) ||
         (p.description && p.description.toLowerCase().includes(textBusqueda))
       );
     }
-    
+
+    // Filtrar només amb oferta si està actiu
+    if (filtreOfertesActiu) {
+      const now = new Date();
+      filtrats = filtrats.filter(product => {
+        const saleIds = ProductSaleData.filter(ps => ps.product_id === product.id).map(ps => ps.sale_id);
+        const oPrice = SaleData.filter(s =>
+          saleIds.includes(s.id) &&
+          new Date(s.start_date) <= now &&
+          now <= new Date(s.end_date)
+        );
+        return oPrice.length > 0;
+      });
+    }
+
+    productesActuals = filtrats;
     pagActual = 1;
     mostrarPagina(pagActual, productesActuals);
-  });
+  }
 
   // ==================== ENSENYAR PRODUCTES ====================
   function mostrarPagina(page, productes) {
@@ -299,13 +346,22 @@ async function main() {
     if (productes.length === 0) {
       const missatge = document.createElement("p");
       missatge.classList.add("no-resultats");
-      missatge.appendChild(document.createTextNode("No s'han trobat productes amb els criteris de cerca."));
+      
+      let mensaje = "No s'han trobat productes.";
+      if (filtreOfertesActiu && buscador.val().trim() !== "") {
+        mensaje = "No s'han trobat productes amb oferta que coincideixin amb la cerca.";
+      } else if (filtreOfertesActiu) {
+        mensaje = "No s'han trobat productes amb oferta.";
+      } else if (buscador.val().trim() !== "") {
+        mensaje = "No s'han trobat productes amb els criteris de cerca.";
+      }
+      
+      missatge.appendChild(document.createTextNode(mensaje));
       productList.appendChild(missatge);
       return;
     }
 
     productes.forEach(product => {
-
       const div = document.createElement("div");
       div.className = "targeta-producte";
 
@@ -319,7 +375,7 @@ async function main() {
 
       const productImg = ProductimageData.find(img => img.product_id == product.id);
       const img = document.createElement("img");
-      img.src = productImg ? productImg.url : "https://png.pngtree.com/png-vector/20221125/ourmid/pngtree-no-image-available-icon-flatvector-illustration-pic-design-profile-vector-png-image_40966566.jpg";
+      img.src = productImg && productImg.url ? productImg.url : "./img/Productes/defaultImage.jpg";
       img.alt = product.name;
       div.appendChild(img);
 
@@ -408,14 +464,23 @@ async function main() {
     alert(`Afegit al carret: ${producte.name}`);
   }
 
-  function afegirAlComparador(producte) {
-    const afegit = comparador.afegirProducte(producte);
-    if (afegit) {
-
-        window.location.href = 'Comparador/comparador.html';
+  async function afegirAlComparador(producte) {
+    try {
+      if (!comparador) {
+        await inicialitzarComparador();
+      }
       
+      const apiUrl = 'https://api.serverred.es';
+      const afegit = await comparador.afegirProducte(producte, apiUrl);
+      
+      if (afegit && comparador.comparatorApiId) {
+        sessionStorage.setItem('currentComparatorId', comparador.comparatorApiId);
+        window.location.href = 'Comparador/comparador.html';
+      }
+    } catch (error) {
+      console.error('Error afegint producte al comparador:', error);
+      alert('Error afegint el producte al comparador');
     }
-
   }
 
   // ==================== PAGINACIO ====================
@@ -483,13 +548,13 @@ async function main() {
         // Actualitzar migues de pa
         actualitzarMiguesDePa(idFamilia);
         
-        // Mostrar productes
-        mostrarPagina(pagActual, productesActuals);
+        // Aplicar filtros si hay búsqueda u ofertas activas
+        aplicarFiltres();
       }
     }
   } else {
     // Si no hi ha paràmetre, mostrar tots els productes
     actualitzarMiguesDePa(null);
-    mostrarPagina(pagActual, productesActuals);
+    aplicarFiltres();
   }
 }
