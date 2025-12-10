@@ -93,6 +93,16 @@ td {
 .fam-principal:first-child{
     padding-left: 60px !important;
 }
+#buscarFamilia{
+    width: 33%;
+}
+.gris label{
+    margin-bottom: 5px;
+}
+.cercarBOTO{
+display: flex;
+justify-content: flex-end;
+}
 /* -------------------- Tabla -------------------- */
 .seccion-tabla {
     padding: 20px;
