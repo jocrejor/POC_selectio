@@ -34,7 +34,18 @@ async  function carregarDadesLocal() {
   families = await getData(url, "Family");
   console.log("ATTRIBUTES ", attributes);
 console.log("FAMILIES ", families);
- 
+
+    let filtroGuardado = localStorage.getItem("filtroFamilia");
+
+    if (filtroGuardado) {
+        filtroFamilia = filtroGuardado;
+
+        let famSelected = families.find(f => String(f.id) === String(filtroFamilia));
+        if (famSelected) {
+            $("#familia").val(famSelected.name);
+            $("#familia").data("id", famSelected.id);
+        }
+    }
   mostrarPagina();
   autocompletarfamilies();
 }
@@ -243,6 +254,7 @@ function aplicarFiltroFamilia() {
 
     filtroFamilia = id ? id : "";      
  paginaActual = 1; 
+  localStorage.setItem("filtroFamilia", filtroFamilia);
     mostrarPagina();
 }
 
@@ -250,7 +262,7 @@ function limpiarFiltroFamilia() {
     $("#familia").val("");       
     $("#familia").data("id", ""); 
     filtroFamilia = "";        
-
+    localStorage.removeItem("filtroFamilia");
     mostrarPagina();           
 }
 
