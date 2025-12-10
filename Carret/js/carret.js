@@ -8,7 +8,6 @@ async function main() {
 
     await mostrarInfoCliente();
     await mostrarCarret();
-    actualitzarBotonsNav();
 
     // Botó finalitzar comanda
     const btnFinalitzar = document.getElementById("btnFinalitzar");
@@ -19,12 +18,12 @@ async function main() {
     }
 
     // Botons "Seguir comprant"
-    const btnsSeguirComprant = document.querySelectorAll("#btnSeguirComprant");
-    btnsSeguirComprant.forEach(btn => {
-        btn.addEventListener("click", () => {
-            window.location.href = 'listarproductes.html';
+    const btnsSeguirComprant = document.getElementById("btnSeguirComprant");
+        btnsSeguirComprant.addEventListener("click", () => {
+            window.location.href = "../../Product.html";
         });
-    });
+    
+
 }
 
 // ====================================================================
@@ -82,7 +81,7 @@ async function obtenerOCrearCart() {
 async function mostrarInfoCliente() {
     const cont = document.getElementById("infoClient");
     if (!cont) return;
-    
+
     while (cont.firstChild) {
         cont.removeChild(cont.firstChild);
     }
@@ -94,7 +93,7 @@ async function mostrarInfoCliente() {
     box.classList.add("box");
 
     const h3 = document.createElement("h3");
-    
+
     if (user) {
         h3.textContent = "Informació del client";
         box.appendChild(h3);
