@@ -70,12 +70,12 @@ function configurarFormulari(url) {
     // Configurar submit del formulari
     form.addEventListener("submit", (e) => guardarRegistre(e, url));
 
-    // botó cancel·lar
+    // botó reiniciar
     btnCancelar.addEventListener("click", (e) => {
         e.preventDefault();
+        form.reset();
         sessionStorage.removeItem("editId");
         sessionStorage.removeItem("editIndex");
-        window.location.href = "./index.html";
     });
 
     // botó tornar al llistat
