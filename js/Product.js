@@ -319,7 +319,7 @@ async function main() {
 
       const productImg = ProductimageData.find(img => img.product_id == product.id);
       const img = document.createElement("img");
-      img.src = productImg ? productImg.url : "https://png.pngtree.com/png-vector/20221125/ourmid/pngtree-no-image-available-icon-flatvector-illustration-pic-design-profile-vector-png-image_40966566.jpg";
+      img.src = productImg && productImg.url ? productImg.url : "./img/Productes/defaultImage.jpg";
       img.alt = product.name;
       div.appendChild(img);
 
