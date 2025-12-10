@@ -1,3 +1,10 @@
-.contingut{
+.contingut {
     padding: 25px;
+}
+
+#missatgeError{
+display:none;
+color:red;
+font-weight:bold;
+margin:20px 0;
 }

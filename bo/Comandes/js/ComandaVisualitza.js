@@ -1,6 +1,9 @@
 document.addEventListener("DOMContentLoaded", main);
 
 async function main() {
+        mostrarNomUsuari();//Mostrar nom d'usuari
+    configurarLogout(); //Configurar botons de logout
+    //Carregar dades de la comanda
     let comandaId = getComandaIdFromUrl();
     let detalleContainer = document.getElementById("detallePedido");
 
@@ -51,20 +54,32 @@ async function main() {
         document.getElementById("tornar").addEventListener("click", () => {
             window.location.href = "index.html";
         });
-          //  CONFIGURACIÓ BOTÓ TANCAR SESSIÓ 
-        let botonsTancar = document.querySelectorAll('.iconaTancarSessio');
-        botonsTancar.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (confirm("Vols tancar sessió?")) {
-                    tancarSessio();
-                }
-            });
-        });
+        
     } catch (err) {
         console.error(err);
         mostrarMissatge(detalleContainer, "Hi ha hagut un error carregant la comanda.");
     }
+}
+// Mostrar nom d'usuari al header
+function mostrarNomUsuari() {
+    let usuariNom = document.querySelector("#sessioUsuari .headerUsuari span");
+    let usuariActual = localStorage.getItem("usuari");
+    if (usuariNom && usuariActual) {
+        usuariNom.textContent = usuariActual;
+    }
+}
+
+// Configurar botons de tancar sessió
+function configurarLogout() {
+    let btnsTancar = document.querySelectorAll("#botoTancarSessio, #tancarSessioLateral");
+    btnsTancar.forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            e.preventDefault();
+            if (confirm("Vols tancar sessió?")) {
+                tancarSessio();
+            }
+        });
+    });
 }
 
 // Obtenir l'ID de la URL
@@ -203,6 +218,7 @@ function formatData(dataString) {
     let any = data.getFullYear();
     return `${dia}-${mes}-${any}`;
 }
+//  FUNCIONS DE LOGOUT 
 function tancarSessio() {
     localStorage.removeItem('usuari');
     window.location.href = '../login.html';

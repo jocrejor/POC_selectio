@@ -23,20 +23,17 @@ document.querySelectorAll(".addProduct").forEach(btn => btn.style.cursor = "poin
   inicialitzarData();
 
    //  CONFIGURACIÓ BOTÓ TANCAR SESSIÓ 
-  let botonsTancar = document.querySelectorAll('.iconaTancarSessio');
-  botonsTancar.forEach(btn => {
-      btn.addEventListener('click', (e) => {
-          e.preventDefault();
-          if (confirm("Vols tancar sessió?")) {
-              tancarSessio();
-          }
-      });
+   document.querySelectorAll('.iconaTancarSessio').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (confirm("Vols tancar sessió?")) tancarSessio();
+    });
   });
 }
- function tancarSessio() {
-      localStorage.removeItem('usuari'); 
-      window.location.href = '../login.html'; 
-  }
+function tancarSessio() {
+  localStorage.removeItem('usuari'); 
+  window.location.href = '../login.html'; 
+}
 
 //  Carregar clients i productes 
 function carregarClients() {

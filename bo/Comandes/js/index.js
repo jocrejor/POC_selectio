@@ -13,6 +13,15 @@ async function main() {
     carregarClientsSelect();
     mostrarComandes();
 
+ // MOSTRAR NOM D'USUARI
+    const usuariNom = document.getElementById("usuariNom");
+    const usuariActual = localStorage.getItem("usuari"); // Usar la mateixa clau que guardes al login
+    if (usuariNom && usuariActual) {
+        usuariNom.textContent = usuariActual;
+    }
+
+    // CONFIGURAR BOTONS DE LOGOUT
+    botonsTancarSessio();
 
     // Configuració botons
     let botoAfegir = document.getElementById("afegirPedido");
@@ -466,3 +475,32 @@ function tancarSessio() {
     window.location.href = '../login.html';  // ajusta el path segons el teu projecte
 }
 
+// Configura els botons de tancar sessió (header i lateral)
+function botonsTancarSessio() {
+    const btnLogoutHeader = document.getElementById("botoTancarSessio");
+    const btnLogoutLateral = document.getElementById("tancarSessioLateral");
+
+    if (btnLogoutHeader) {
+        btnLogoutHeader.addEventListener("click", (ev) => {
+            ev.preventDefault();
+            if (confirm("Estàs segur que vols tancar sessió?")) {
+                tancarSessio();
+            }
+        });
+    }
+
+    if (btnLogoutLateral) {
+        btnLogoutLateral.addEventListener("click", (ev) => {
+            ev.preventDefault();
+            if (confirm("Estàs segur que vols tancar sessió?")) {
+                tancarSessio();
+            }
+        });
+    }
+}
+
+// Funció que elimina la sessió i redirigeix al login
+function tancarSessio() {
+    localStorage.removeItem('usuari'); // o sessionStorage segons el teu projecte
+    window.location.href = '../login.html'; // Ajusta segons el path real
+}

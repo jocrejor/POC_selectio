@@ -18,7 +18,7 @@ async function carregarComandes() {
         currentUser = JSON.parse(currentUserStr);
     } catch (e) {
         console.error("Error parsejant clientActiu", e);
-        alert("Hi ha hagut un problema amb la sessió. Torna a iniciar sessió.");
+        mostrarError("Has d'iniciar sessió per veure les comandes.");
         window.location.href = "../Login.html";
         return;
     }
@@ -27,13 +27,14 @@ async function carregarComandes() {
     let clientId = Number(currentUser.id);
     if (!clientId) {
         console.error("No s'ha pogut obtenir l'ID del client", currentUser);
-        alert("No s'ha pogut identificar el client. Torna a iniciar sessió.");
+        mostrarError("No s'ha pogut identificar el client. Torna a iniciar sessió.");
+
         window.location.href = "../Login.html";
         return;
     }
 
     //  Fer fetch de les comandes
-    let url = "https://api.serverred.es/Order"; // URL de la teva API
+    let url = "https://api.serverred.es/Order"; 
 
     try {
         let res = await fetch(url);
