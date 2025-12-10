@@ -69,7 +69,6 @@ async function main() {
     }
     document.getElementById("btnCercar").addEventListener("click", () => {
         const text = document.getElementById("buscarFamilia").value.trim().toLowerCase();
-
         if (text === "") {
             restaurarTaulaInicial();
         } else {
@@ -83,14 +82,18 @@ async function main() {
             const nivell = parseInt(tr.dataset.nivel);
 
             if (nivell === 0) {
-                tr.style.display = "";        // Mostrar famílies principals
+                tr.style.display = "";       
             } else {
-                tr.style.display = "";        // Mostrar totes temporalment
-                tr.classList.add("oculto");   // Ocultar subfamílies
+                tr.style.display = "";       
+                tr.classList.add("oculto");  
             }
         });
     }
 
+    document.getElementById("btnNetejar").addEventListener("click", () => {
+        document.getElementById("buscarFamilia").value = "";
+        restaurarTaulaInicial();
+    });
 
 }
 

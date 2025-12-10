@@ -75,7 +75,9 @@ align-items: flex-start;
     background: #e6f0ff;   
 }
 
-
+#btnNetejar{
+    background-color: var(--color-boto-netejar);
+}
 
 /* -------------------- Tabla -------------------- */
 .seccion-tabla {
