@@ -27,7 +27,8 @@ async function main() {
     clients = await getData(url, "Client");
 
     actualitzarDades();
-
+    autocompletar();
+    
     // BOTÓ CERCA
     botoCercar.addEventListener("click", e => {
         e.preventDefault();
@@ -93,6 +94,8 @@ function crearElementsTaula(carretsFiltrats = null) {
                 usuari = `${client.name} ${client.surname}`;
             }
         }
+
+        console.log("Carret ID:", c.id, "User_agent:", c.User_agent, "Usuari resolt:", usuari);
 
         elementsTaula.push({
             id: c.id,
@@ -319,3 +322,25 @@ function actualitzarDades(carretsFiltrats = null) {
     const paginats = aplicarPaginacio(elementsTaula);
     mostraTaula(paginats);
 }
+
+function autocompletar(){
+    let clientsDisponibles = [];
+    let sessioDisponible= [];
+
+    clients.forEach(c => {
+        clientsDisponibles.push(c.name);
+    })
+
+     $("#filtreUsuari").autocomplete({
+        source: clientsDisponibles
+    });
+
+    carrets.forEach(ca => {
+        sessioDisponible.push(ca.session_id);
+    })
+
+    $("#filtreSessio").autocomplete({
+        source: sessioDisponible
+    });
+}
+   
