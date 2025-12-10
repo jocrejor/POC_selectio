@@ -147,6 +147,6 @@ async function guardarEnLocalStorage(e) {
     };
 
        await updateId(url, "Attribute", atributoId,datosobjecte);
-    alert("Característica modificada correctament!");
+ 
     window.location.href = "./Atributs.html";
 }
