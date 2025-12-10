@@ -135,6 +135,7 @@ window.actualitzarDades = function() {
     // EVENTS
     // -----------------------------
     btnAfegir.addEventListener("click", () => {
+        sessionStorage.removeItem("editId");
         sessionStorage.removeItem("editIndex");
         window.location.href = "./HistoricForm.html";
     });
@@ -154,13 +155,44 @@ window.actualitzarDades = function() {
     $(btnFiltrar).click(function (e) {
         e.preventDefault();
 
+        const errorDiv = document.getElementById("errorMessagesFiltres");
+        errorDiv.innerHTML = "";
+        const errors = [];
+
+        const dataDesdeVal = $('#dataDesde').val();
+        const dataFinsVal = $('#dataFins').val();
+
+        // Validar que la data de fi no sia anterior a la de inici
+        if (dataDesdeVal && dataFinsVal) {
+            const dateDesde = new Date(dataDesdeVal.split('-').reverse().join('-'));
+            const dateFins = new Date(dataFinsVal.split('-').reverse().join('-'));
+            
+            if (dateFins < dateDesde) {
+                errors.push("La data fi no pot ser anterior a la data d'inici.");
+            }
+        }
+
+        // Si hi ha errors, mostrar-los i sortir
+        if (errors.length > 0) {
+            errors.forEach(error => {
+                const p = document.createElement("p");
+                p.textContent = error;
+                p.style.color = "red";
+                p.style.fontWeight = "bold";
+                p.style.margin = "5px 0";
+                p.style.fontSize = "14px";
+                errorDiv.appendChild(p);
+            });
+            return;
+        }
+
         window.paginaActual = 1;
         const filtres = {
             idClient: clientSelecId || "",
             idComparador: comparadorSelecId || "",
             idFavorit: favoritSelecId || "",
-            desde: $('#dataDesde').val(),
-            fins: $('#dataFins').val(),
+            desde: dataDesdeVal,
+            fins: dataFinsVal,
         };
         
         window.registresFiltrats = aplicarFiltres(window.registresOriginals, filtres);

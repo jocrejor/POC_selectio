@@ -116,38 +116,40 @@
               <div class="contingut">
 
                 <button class="btnTornar" id="afegirNou">Tornar a la llista</button>
-                <form id="formRegistre">
+                <form id="formRegistre" novalidate>
 
                   <div class="form-group">
                     <label for="client_id">Client ID:</label>
-                    <select class id="client_id" name="client_id" required>
-                      <option value>-- Selecciona un client --</option>
+                    <select id="client_id" name="client_id" required>
+                      <option value="">-- Selecciona un client --</option>
                     </select>
                   </div>
 
                   <div class="form-group">
                     <label for="comparator_id">Comparador ID:</label>
-                    <select class id="comparator_id" name="comparator_id" required>
-                      <option value>-- Selecciona un comparador --</option>
+                    <select id="comparator_id" name="comparator_id" required>
+                      <option value="">-- Selecciona un comparador --</option>
                     </select>
                   </div>
 
                   <div class="form-group">
                     <label for="favorite_id">Favorit ID:</label>
-                    <select class id="favorite_id" name="favorite_id" required>
-                      <option value>-- Selecciona un favorit --</option>
+                    <select id="favorite_id" name="favorite_id" required>
+                      <option value="">-- Selecciona un favorit --</option>
                     </select>
                   </div>
 
                   <div class="form-group">
                     <label for="date_start">Data inici:</label>
-                    <input type="date" id="date_start" name="date_start" />
+                    <input type="date" id="date_start" name="date_start" required />
                   </div>
 
                   <div class="form-group">
                     <label for="date_end">Data fi:</label>
-                    <input type="date" id="date_end" name="date_end" />
+                    <input type="date" id="date_end" name="date_end" required />
                   </div>
+
+                  <div id="errorMessages"></div>
 
                   <button class="btnAccio" type="submit">Actualitzar</button>
                   <button class="btnAccio" type="button" id="btnCancelar" name="btnCancelar">Reiniciar</button>

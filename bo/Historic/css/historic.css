@@ -164,6 +164,14 @@
     margin-right: 15px;
 }
 
-button {
-    cursor: pointer;
+#errorMessages {
+    margin-bottom: 20px;
+    min-height: 20px;
+}
+
+#errorMessages p {
+    color: red;
+    font-weight: bold;
+    margin: 5px 0;
+    font-size: 14px;
 }
