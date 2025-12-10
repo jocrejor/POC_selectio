@@ -3,85 +3,50 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Comandes del clients</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestió de Comandes | Selectio</title>
 
     <!-- Estils -->
+    <link rel="stylesheet" href="./css/normalize.css">
+    <link rel="stylesheet" href="./css/grid.css">
+    <link rel="stylesheet" href="./css/common.css">
+    <link rel="stylesheet" href="css/comandes.css">
+    <link rel="stylesheet" href="css/MostrarComandes.css">
+
+    <!-- Fonts i icones -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="../css/common.css">
-    <link rel="stylesheet" href="../css/grid.css">
-    <link rel="stylesheet" href="../css/taula-common.css">
-    <link rel="stylesheet" href="./css/MostrarComandes.css">
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
-
-    <link rel="icon" href="../img/logo_selectio.png" type="image/x-icon">
-
-    <!-- JS -->
-    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
     <script src="https://kit.fontawesome.com/d9f0c40e4f.js" crossorigin="anonymous"></script>
-    <script src="../js/common-table.js"></script>
-    <script src="../apiAccess/crud.js" defer></script>
-    <script src="./js/MostrarComandes.js" defer></script>
-
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-V7HH56DBMD"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-
-        gtag('config', 'G-V7HH56DBMD');
-    </script>
-
+        <!-- Scripts -->
+    <script src="./js/MostrarComandes.js"></script>
 </head>
 
 <body class="roboto-font">
 
+    <!-- Header -->
     <div class="container-fluid header">
         <div class="row">
             <div class="col-1">
                 <div class="logo_header">
                     <div class="obrir-menu"><i class="fa-solid fa-bars"></i></div>
-                    <img src="../img/logo_selectio.png" alt="Logo Selectio">
+                    <img src="./img/logo_selectio.png" alt="Logo Selectio">
                 </div>
             </div>
             <div class="col-6">
                 <div class="menu-box">
                     <div class="tancar-menu"><i class="fa-solid fa-xmark"></i></div>
                     <ul class="menu">
-                        <li>
-                            <div class="selector"></div>
-                            <a href="../index.html">Inici</a>
-                        </li>
-                        <li>
-                            <div class="selector"></div>
-                            <a href="../Product.html">Producte</a>
-                        </li>
-                        <li>
-                            <div class="selector"></div>
-                            <a href="../families.html">Famílies</a>
-                        </li>
-                        <li>
-                            <div class="selector"></div>
-                            <a href="./Comparador/comparador.html">Comparador</a>
-                        </li>
+                        <li><div class="selector"></div><a href="../index.html">Inici</a></li>
+                        <li><div class="selector"></div><a href="../Product.html">Producte</a></li>
+                        <li><div class="selector"></div><a href="../Families.html">Famílies</a></li>
+                        <li><div class="selector"></div><a href="../Comparador/comparador.html">Comparador</a></li>
                     </ul>
                     <ul class="menu">
-                        <li>
-                            <div class="selector"></div>
-                            <a href="MostrarComandes.html">Comandes</a>
-                        </li>
-                        <li class="registre">
-                            <div class="selector"></div>
-                            <a href="../Registre.html">Registre</a>
-                        </li>
-                        <li class="login">
-                            <div class="selector"></div>
-                            <a href="../Login.html">Iniciar sessió</a>
-                        </li>
+                        <li class="actual"><div class="selector"></div><a href="./comandesFE.html">Comandes</a></li>
+                        <li class="registre"><div class="selector"></div><a href="../Registre.html">Registre</a></li>
+                        <li class="login"><div class="selector"></div><a href="../Login.html">Iniciar sessió</a></li>
                     </ul>
                 </div>
             </div>
@@ -94,12 +59,9 @@
             <div class="col-2">
                 <div class="links-header-box">
                     <ul class="links-header">
-                        <li class="contacte"><a href="../Contacta/contact.html "><i class="fa-solid fa-phone"></i></a>
-                        </li>
-                        <li class="usuari"><a href="../AreaPersonal/index.html"><i class="fa-regular fa-user"></i></a>
-                        </li>
-                        <li class="carret"><a href="../Carret/carret.html "><i
-                                    class="fa-solid fa-cart-shopping"></i></a></li>
+                        <li class="contacte"><a href="../Contacta/contact.html"><i class="fa-solid fa-phone"></i></a></li>
+                        <li class="usuari"><a href="../AreaPersonal/index.html"><i class="fa-regular fa-user"></i></a></li>
+                        <li class="carret"><a href="../Carret/carret.html"><i class="fa-solid fa-cart-shopping"></i></a></li>
                     </ul>
                 </div>
             </div>
@@ -107,55 +69,55 @@
     </div>
 
     <!-- Cos principal -->
-    <div class="contingut">
-        <h1>Comandes del client </h1>
+    <div class="container-fluid main">
+        <div class="row">
+            <div class="col-12 comandes-container">
+                <h1 class="titol-comandes">Gestió de Comandes</h1>
+                <div id="contingutTaula" class="table-responsive">
+                    <table class="taula-comandes">
+                        <thead>
+                            <tr>
+                                <th>ID Comanda</th>
+                                <th>Data</th>
+                                <th>Total</th>
+                                <th>Accions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cosTaula">
+                            <!-- Contingut generat per JS -->
+                        </tbody>
+                    </table>
 
-        <div id="contingutTaula">
-            <table id="taula">
-                <thead>
-                    <tr>
-                        <th>ID Comanda</th>
-                        <th>Total</th>
-                        <th>Accions</th>
-                    </tr>
-                </thead>
-                <tbody id="cosTaula">
-                    <!-- Filas generadas por JS -->
-                </tbody>
-            </table>
-
-            <!-- Modal -->
-            <div id="modalComanda" class="modal">
-                <div class="modal-content">
-                    <span class="close">&times;</span>
-                    <h2>Detalls de la comanda</h2>
-                    <div id="detallsComanda">
-                        <!-- Contingut generat per JS -->
+                    <!-- Modal de detalls de comanda -->
+                    <div id="modalComanda" class="modal">
+                        <div class="modal-content">
+                            <span class="close">&times;</span>
+                            <h2>Detalls de la comanda</h2>
+                            <div id="detallsComanda"></div>
+                        </div>
                     </div>
+
+                    <div id="missatgeError"></div>
                 </div>
             </div>
-
         </div>
-        <div id="missatgeError"></div>
     </div>
 
-    <footer class="container-fluid footer">
+    <!-- Footer -->
+    <div class="container-fluid footer">
         <div class="row">
             <div class="col-4">
                 <div class="logo_footer">
-                    <img src="../img/logo_selectio.png" alt="Logo Selectio">
+                    <img src="./img/logo_selectio.png" alt="Logo Selectio">
                 </div>
             </div>
             <div class="col-4">
                 <div class="xarxes-box">
                     <ul class="xarxes-socials">
-                        <li><a href="https://www.x.com/" target="_blank"><i class="fa-brands fa-x-twitter"></i></a></li>
-                        <li><a href="https://www.facebook.com/" target="_blank"><i
-                                    class="fa-brands fa-facebook"></i></a></li>
-                        <li><a href="https://www.instagram.com/" target="_blank"><i
-                                    class="fa-brands fa-instagram"></i></a></li>
-                        <li><a href="https://es.linkedin.com/" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
-                        </li>
+                        <li><a href="#"><i class="fa-brands fa-x-twitter"></i></a></li>
+                        <li><a href="#"><i class="fa-brands fa-facebook"></i></a></li>
+                        <li><a href="#"><i class="fa-brands fa-instagram"></i></a></li>
+                        <li><a href="#"><i class="fa-brands fa-linkedin"></i></a></li>
                     </ul>
                 </div>
             </div>
@@ -182,7 +144,9 @@
                 </div>
             </div>
         </div>
-    </footer>
+    </div>
+
+
 </body>
 
 </html>
