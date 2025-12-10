@@ -8,8 +8,8 @@ function actualitzarDades() {
 
 // Funció per a mostrar missatges temporals a l'usuari
 function mostrarMensaje(texto, tipo = "success") {
-    const mensaje = document.createElement("div");
-    mensaje.className = `notification ${tipo}`;
+    const mensaje       = document.createElement("div");
+    mensaje.className   = `notification ${tipo}`;
     mensaje.textContent = texto;
 
     document.body.appendChild(mensaje);
@@ -40,20 +40,20 @@ async function main() {
 
     const cosTaula = document.getElementById('tableBody');
 
-    const filterName = document.getElementById('filterName');
+    const filterName       = document.getElementById('filterName');
     const filterPercentMin = document.getElementById('filterPercentMin');
     const filterPercentMax = document.getElementById('filterPercentMax');
-    const filterDateStart = document.getElementById('filterDateStart');
-    const filterDateEnd = document.getElementById('filterDateEnd');
-    const applyFilter = document.getElementById('applyFilter');
-    const clearFilter = document.getElementById('clearFilter');
-    const botoAfegir = document.getElementById('botoAfegir');
+    const filterDateStart  = document.getElementById('filterDateStart');
+    const filterDateEnd    = document.getElementById('filterDateEnd');
+    const applyFilter      = document.getElementById('applyFilter');
+    const clearFilter      = document.getElementById('clearFilter');
+    const botoAfegir       = document.getElementById('botoAfegir');
 
-    let dades = [];
+    let dades          = [];
     let dadesFiltrades = [];
 
     let autocompleteSuggestions = [];
-    let currentFocus = -1;
+    let currentFocus            = -1;
 
     // Funció per a carregar les ofertes des de la API
     async function carregarOfertesAPI() {
@@ -131,7 +131,7 @@ async function main() {
     // Carregar dades inicials des de la API
     async function inicialitzarDades() {
         try {
-            dades = await carregarOfertesAPI();
+            dades          = await carregarOfertesAPI();
             dadesFiltrades = [...dades];
 
             // Cargar array para paginación
@@ -146,8 +146,8 @@ async function main() {
     // Funció per a inicialitzar l'autocompletat estilo Google
     function inicialitzarAutocomplete() {
         // Crear el contenedor de sugerencias
-        const suggestionsContainer = document.createElement('div');
-        suggestionsContainer.id = 'autocomplete-suggestions';
+        const suggestionsContainer     = document.createElement('div');
+        suggestionsContainer.id        = 'autocomplete-suggestions';
         suggestionsContainer.className = 'autocomplete-suggestions';
 
         // Insertar después del input de búsqueda
@@ -212,7 +212,7 @@ async function main() {
     // Funció per a mostrar les suggestions
     function mostrarSuggestions(sugerencias, texteCerca) {
         const suggestionsContainer = document.getElementById('autocomplete-suggestions');
-        const texteLower = texteCerca.toLowerCase();
+        const texteLower           = texteCerca.toLowerCase();
 
         if (sugerencias.length === 0) {
             amagarSuggestions();
@@ -222,14 +222,14 @@ async function main() {
         suggestionsContainer.innerHTML = '';
 
         sugerencias.forEach((suggeriment, index) => {
-            const item = document.createElement('div');
-            item.className = 'autocomplete-item';
+            const item         = document.createElement('div');
+            item.className     = 'autocomplete-item';
             item.dataset.index = index;
 
             // Resaltar el texto coincidente
-            const text = suggeriment;
+            const text       = suggeriment;
             const startIndex = text.toLowerCase().indexOf(texteLower);
-            const endIndex = startIndex + texteCerca.length;
+            const endIndex   = startIndex + texteCerca.length;
 
             if (startIndex !== -1) {
                 const part1 = text.substring(0, startIndex);
@@ -301,7 +301,7 @@ async function main() {
     // Funció per a seleccionar una suggestion
     function seleccionarSuggestion() {
         const suggestionsContainer = document.getElementById('autocomplete-suggestions');
-        const items = suggestionsContainer.querySelectorAll('.autocomplete-item');
+        const items                = suggestionsContainer.querySelectorAll('.autocomplete-item');
 
         if (currentFocus > -1 && items[currentFocus]) {
             filterName.value = items[currentFocus].textContent || items[currentFocus].innerText;
@@ -318,11 +318,11 @@ async function main() {
 
     // Funció per a aplicar filtros
     function aplicarFiltres() {
-        const nomFiltre = filterName.value.toLowerCase().trim();
-        const percentMin = filterPercentMin.value ? parseInt(filterPercentMin.value) : null;
-        const percentMax = filterPercentMax.value ? parseInt(filterPercentMax.value) : null;
+        const nomFiltre       = filterName.value.toLowerCase().trim();
+        const percentMin      = filterPercentMin.value ? parseInt(filterPercentMin.value) : null;
+        const percentMax      = filterPercentMax.value ? parseInt(filterPercentMax.value) : null;
         const dataIniciFiltre = filterDateStart.value;
-        const dataFiFiltre = filterDateEnd.value;
+        const dataFiFiltre    = filterDateEnd.value;
 
         dadesFiltrades = dades.filter(function (oferta) {
             if (nomFiltre && !oferta.oferta.toLowerCase().includes(nomFiltre)) {
@@ -360,12 +360,12 @@ async function main() {
     }
 
     function netejarFiltres() {
-        filterName.value = '';
+        filterName.value       = '';
         filterPercentMin.value = '';
         filterPercentMax.value = '';
-        filterDateStart.value = '';
-        filterDateEnd.value = '';
-        dadesFiltrades = [...dades];
+        filterDateStart.value  = '';
+        filterDateEnd.value    = '';
+        dadesFiltrades         = [...dades];
         if (typeof paginaActual !== 'undefined') {
             paginaActual = 1;
         }
@@ -440,10 +440,10 @@ async function main() {
                 missatge = "No s'han trobat ofertes que coincideixin amb els filtres";
             }
 
-            const fila = document.createElement("tr");
-            const celda = document.createElement("td");
+            const fila        = document.createElement("tr");
+            const celda       = document.createElement("td");
             celda.setAttribute("colspan", "8");
-            celda.className = 'no-data';
+            celda.className   = 'no-data';
             celda.textContent = missatge;
             fila.appendChild(celda);
             cosTaula.appendChild(fila);
@@ -497,15 +497,15 @@ async function main() {
             celdaAccio.setAttribute('data-cell', 'Accions : ');
 
             // Enlace editar
-            const enlaceEditar = document.createElement("a");
+            const enlaceEditar     = document.createElement("a");
             enlaceEditar.className = 'icon-editar';
-            enlaceEditar.href = `OfertaModificar.html?edit=${element.id}`;
+            enlaceEditar.href      = `OfertaModificar.html?edit=${element.id}`;
             enlaceEditar.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
 
             // Botón productos aplicados
-            const botoProductesAplicats = document.createElement("a");
+            const botoProductesAplicats     = document.createElement("a");
             botoProductesAplicats.className = 'icon-visualitzar';
-            botoProductesAplicats.href = '#';
+            botoProductesAplicats.href      = '#';
             botoProductesAplicats.innerHTML = '<i class="fa-solid fa-eye"></i>';
             botoProductesAplicats.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -513,9 +513,9 @@ async function main() {
             });
 
             // Enlace eliminar
-            const enlaceEliminar = document.createElement("a");
+            const enlaceEliminar     = document.createElement("a");
             enlaceEliminar.className = 'icon-borrar';
-            enlaceEliminar.href = '#';
+            enlaceEliminar.href      = '#';
             enlaceEliminar.innerHTML = '<i class="fa-solid fa-trash"></i>';
             enlaceEliminar.addEventListener('click', function (e) {
                 e.preventDefault();
