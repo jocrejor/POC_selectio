@@ -47,12 +47,12 @@ $(document).ready(function () {
             
             getData(url, busquedaEndPoint).then(data => {
                 
-                // Mapeamos los datos recibidos al formato que jQuery UI entiende
+                // Mapeamos los datos recibidos
                 const resultados = data.map(item => ({
                     label: item.name, 
                     value: item.name,
                     id: item.id,
-                    price: item.price
+                    price: item.price,
                 }));
 
                 
