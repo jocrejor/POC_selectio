@@ -1,6 +1,10 @@
 document.addEventListener("DOMContentLoaded", main);
 
-async function main() {    
+async function main() {
+    thereIsUser("../login.html");
+
+    botonsTancarSessio("../login.html");
+    
     // Carregar dades de les APIs
     const [clients, favorits, comparadors] = await Promise.all([
         carregarClientsApi(url),
