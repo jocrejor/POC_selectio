@@ -146,6 +146,78 @@ button.addProduct {
     color: #003d99;
 }
 
+.addProduct.colorBoto {
+    display: inline-flex;   
+    align-items: center;    
+    gap: 0;                 
+    padding: 4px 8px;       
+    font-size: 14px;        
+    cursor: pointer;
+}
+
+.addProduct.colorBoto i {
+    margin: 0.3em;              
+    padding: 0;            
+}
+
+.modalEliminar {
+    display: none; /* Ocult per defecte */
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5); /* fons semi-transparente */
+    justify-content: center;
+    align-items: center;
+}
+
+.modalEliminar-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.modalEliminar-buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.btnEliminar {
+    background-color: #d9534f;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btnCancelar {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btnEliminar:hover {
+    background-color: #c9302c;
+}
+
+.btnCancelar:hover {
+    background-color: #5a6268;
+}
+
+.text{
+    color: black;
+}
+
 /* Si l'ample de la pantalla es menor o igual a 767px */
 @media screen and (max-width: 767px) {
 

@@ -106,6 +106,8 @@ async function main() {
     mostrarNomUsuari();
     configurarLogout();
 
+
+
     let urlParams = new URLSearchParams(window.location.search);
     let comandaId = urlParams.get("id");
 
@@ -129,7 +131,8 @@ async function main() {
 
         return;
     }
-
+ // Mostrar nom comanda
+    document.getElementById("comandaNom").textContent = comanda.name || comanda.nom || `ID ${comanda.id}`;
 
     //  Utilitats
     //format de la data dd-mm-yyyy 
@@ -144,7 +147,18 @@ async function main() {
 
         return `${dia}-${mes}-${any}`;
     }
+    document.getElementById("date").value = formatDateISO(comanda.date || comanda.order_date || comanda.data);
+    document.getElementById("payment").value = comanda.payment || comanda.pagament || "";
+    document.getElementById("shipping").value = comanda.shipping_amount || comanda.enviament || 0;
 
+    // Carregar clients ordenats alfabèticament
+    (document.getElementById("client")).replaceChildren();
+    let clientsOrdenats = Client.slice().sort((a, b) => (a.name + " " + a.surname).toLowerCase().localeCompare((b.name + " " + b.surname).toLowerCase()));
+    clientsOrdenats.forEach(c => {
+        let op = new Option(`${c.name} ${c.surname}`, c.id);
+        if (Number(c.id) === Number(comanda.client_id)) op.selected = true;
+        (document.getElementById("client")).appendChild(op);
+    });
     //Buscar descompte aplicable segons producte
     function buscarDescomptePerProducte(productId) {
         let mapeoDescuentos = { 201: [1, 2, 3, 4, 5], 202: [11, 12, 13, 14, 15], 203: [16, 17, 18, 19, 20], 204: [21, 22, 23, 24, 25] };
@@ -164,11 +178,11 @@ async function main() {
 
     //  Select clients 
     let clientSelect = document.getElementById("client");
-    clientSelect.replaceChildren();
+    (document.getElementById("client")).replaceChildren();
     Client.forEach(c => {
         let op = new Option(`${c.name} ${c.surname}`, c.id);
         if (Number(c.id) === Number(comanda.client_id)) op.selected = true;
-        clientSelect.appendChild(op);
+        (document.getElementById("client")).appendChild(op);
     });
 
 

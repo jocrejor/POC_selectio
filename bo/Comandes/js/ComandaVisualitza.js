@@ -1,11 +1,15 @@
 document.addEventListener("DOMContentLoaded", main);
 
 async function main() {
-        mostrarNomUsuari();//Mostrar nom d'usuari
+    mostrarNomUsuari();//Mostrar nom d'usuari
     configurarLogout(); //Configurar botons de logout
     //Carregar dades de la comanda
     let comandaId = getComandaIdFromUrl();
     let detalleContainer = document.getElementById("detallePedido");
+
+    document.getElementById("tornar").addEventListener("click", () => {
+        window.location.href = "index.html";
+    });
 
     if (!comandaId) {
         mostrarMissatge(detalleContainer, "No s'ha passat cap ID de comanda.");
@@ -54,7 +58,7 @@ async function main() {
         document.getElementById("tornar").addEventListener("click", () => {
             window.location.href = "index.html";
         });
-        
+
     } catch (err) {
         console.error(err);
         mostrarMissatge(detalleContainer, "Hi ha hagut un error carregant la comanda.");
@@ -139,8 +143,8 @@ function mostrarComanda(comanda) {
         detalleContainer.appendChild(tr);
         return;
     }
-let detalleBody = document.getElementById("detallePedido");
-detalleBody.replaceChildren();
+    let detalleBody = document.getElementById("detallePedido");
+    detalleBody.replaceChildren();
     productes.forEach(p => {
         let fila = document.createElement("tr");
 
@@ -153,7 +157,7 @@ detalleBody.replaceChildren();
         total += subtotal;
 
         let camps = [
-            { label: "Producte:" , value: nom },
+            { label: "Producte:", value: nom },
             { label: "Quantitat:", value: quant },
             { label: "Preu:", value: preu.toFixed(2) },
             { label: "Descompte:", value: desc.toFixed(2) },
@@ -161,11 +165,11 @@ detalleBody.replaceChildren();
         ];
 
         camps.forEach(c => {
-       let td = document.createElement("td");
-        td.textContent = c.value;           
-        td.setAttribute("data-label", c.label); 
-        fila.appendChild(td);
-});
+            let td = document.createElement("td");
+            td.textContent = c.value;
+            td.setAttribute("data-label", c.label);
+            fila.appendChild(td);
+        });
 
         detalleContainer.appendChild(fila);
     });

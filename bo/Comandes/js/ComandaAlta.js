@@ -8,7 +8,7 @@ async function main() {
   document.getElementById("productsTable").addEventListener("click", function (e) {
     if (e.target.classList.contains("addProduct")) afegirProducte(e);
   });
-document.querySelectorAll(".addProduct").forEach(btn => btn.style.cursor = "pointer");
+  document.querySelectorAll(".addProduct").forEach(btn => btn.style.cursor = "pointer");
 
   // Obtenir dades del servidor
   Order = await getData(url, "Order");
@@ -22,8 +22,8 @@ document.querySelectorAll(".addProduct").forEach(btn => btn.style.cursor = "poin
   configurarCalculPreuFinal();
   inicialitzarData();
 
-   //  CONFIGURACIÓ BOTÓ TANCAR SESSIÓ 
-   document.querySelectorAll('.iconaTancarSessio').forEach(btn => {
+  //  CONFIGURACIÓ BOTÓ TANCAR SESSIÓ 
+  document.querySelectorAll('.iconaTancarSessio').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
       if (confirm("Vols tancar sessió?")) tancarSessio();
@@ -31,8 +31,8 @@ document.querySelectorAll(".addProduct").forEach(btn => btn.style.cursor = "poin
   });
 }
 function tancarSessio() {
-  localStorage.removeItem('usuari'); 
-  window.location.href = '../login.html'; 
+  localStorage.removeItem('usuari');
+  window.location.href = '../login.html';
 }
 
 //  Carregar clients i productes 
@@ -43,6 +43,9 @@ function carregarClients() {
   let op = new Option("Selecciona un client...", "");
   op.style.color = "black";
   select.appendChild(op);
+
+  // Ordenar alfabèticament
+  Client.sort((a, b) => (a.name + a.surname).localeCompare(b.name + b.surname));
 
   Client.forEach(c => {
     let option = new Option(`${c.name} ${c.surname}`, c.id);
@@ -59,6 +62,9 @@ function carregarProductes() {
     op.style.color = "black";
     select.appendChild(op);
 
+    // Ordenar productes alfabèticament
+    Product.sort((a, b) => a.name.localeCompare(b.name));
+
     Product.forEach(p => {
       let option = new Option(p.name, p.id);
       option.style.color = "black";
@@ -66,6 +72,7 @@ function carregarProductes() {
     });
   });
 }
+
 
 //  Auto preu i recalcular 
 function configurarAutoPreu() {
@@ -177,21 +184,21 @@ function mostrarProductes(productes) {
     let nom = prodObj ? prodObj.name : "Desconegut";
 
     // Crea les cel·les
-  let valors = [
-  {label: "ID:", value: i + 1},
-  {label: "Producte:", value: nom},
-  {label: "Quantitat:", value: p.quantitat},
-  {label: "Preu:", value: p.preu.toFixed(2)},
-  {label: "Descompte:", value: p.descompte.toFixed(2)},
-  {label: "Preu Final:", value: p.preuFinal.toFixed(2)}
-];
+    let valors = [
+      { label: "ID:", value: i + 1 },
+      { label: "Producte:", value: nom },
+      { label: "Quantitat:", value: p.quantitat },
+      { label: "Preu:", value: p.preu.toFixed(2) },
+      { label: "Descompte:", value: p.descompte.toFixed(2) },
+      { label: "Preu Final:", value: p.preuFinal.toFixed(2) }
+    ];
 
-valors.forEach(v => {
-  let td = document.createElement("td");
-  td.textContent = v.value;
-  td.setAttribute("data-label", v.label);
-  tr.appendChild(td);
-});
+    valors.forEach(v => {
+      let td = document.createElement("td");
+      td.textContent = v.value;
+      td.setAttribute("data-label", v.label);
+      tr.appendChild(td);
+    });
 
 
     // Accions
@@ -202,8 +209,14 @@ valors.forEach(v => {
     btn.classList.add("btn", "btn-sm");
     btn.style.background = "transparent";
     btn.style.border = "none";
-    btn.addEventListener("click", () => eliminarProducte(i));
+
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();  
+      eliminarProducte(i);
+    });
+
     tdAcc.appendChild(btn);
+
     tr.appendChild(tdAcc);
 
     cont.appendChild(tr);
@@ -214,7 +227,7 @@ valors.forEach(v => {
   // Fila del Total
   let trTotal = document.createElement("tr");
   trTotal.style.backgroundColor = "var(--color-secundari)";
-  trTotal.style.color = "white"; 
+  trTotal.style.color = "white";
 
   let tdTotalLabel = document.createElement("td");
   tdTotalLabel.colSpan = 5;
@@ -289,14 +302,40 @@ function parseDateDDMMYYYY(dateString) {
 }*/
 
 // Eliminar producte amb confirmació
-function eliminarProducte(index) {
-  let confirmacio = confirm("Esteu segur que voleu eliminar aquest element? Aquesta acció no es pot desfer.");
-  if (confirmacio) {
+/*function eliminarProducte(index) {
     productesActuals.splice(index, 1);
     mostrarProductes(productesActuals);
+    // Si l'usuari prem "Cancel·lar", no passa res
+}*/
+function eliminarProducte(index) {
+  const modal = document.getElementById("modalEliminar");
+  modal.style.display = "flex"; // Mostra el modal
+
+  const btnConfirm = document.getElementById("btnEliminarConfirm");
+  const btnCancel = document.getElementById("btnEliminarCancel");
+
+  // Funció per tancar modal i netejar listeners
+  function tancarModal() {
+    modal.style.display = "none";
+    btnConfirm.removeEventListener("click", confirmar);
+    btnCancel.removeEventListener("click", tancarModal);
   }
-  // Si l'usuari prem "Cancel·lar", no passa res
+
+  // Funció de confirmació que elimina només el producte seleccionat
+  function confirmar() {
+    productesActuals.splice(index, 1);  // elimina el producte correcte
+    mostrarProductes(productesActuals); // actualitza la taula
+    tancarModal();
+  }
+
+  btnConfirm.addEventListener("click", confirmar);
+  btnCancel.addEventListener("click", tancarModal);
 }
+
+
+
+
+
 
 //  Funcions de validació i errors 
 function esborrarError() {
@@ -313,19 +352,18 @@ function errorMissatge(msg) {
 
 //  Validació de formulari 
 function validarFormulari(e) {
+  e.preventDefault();  // Evitem recàrrega
   esborrarError();
 
-  if (productesActuals.length === 0) { errorMissatge("Has d’afegir almenys un producte"); e.preventDefault(); return false; }
+  let totValid = validarClient() && validarPagament() && validarProductes();
 
-  if (!confirm("Confirma si vols enviar el formulari")) {
-    e.preventDefault();
-    return false;
+  if (totValid) {
+    enviarFormulari();  // Crida la teva funció d’enviament
   }
-
-  enviarFormulari();
-  e.preventDefault(); // Evitem recàrrega
-  return true;
+  // Si hi ha errors, queden mostrats en #missatgeError
+  return totValid;
 }
+
 
 //  Enviar formulari a la base de dades 
 async function enviarFormulari() {
@@ -334,25 +372,25 @@ async function enviarFormulari() {
   let clientSelect = document.getElementById("client");
   if (!clientSelect.value) { errorMissatge("Selecciona un client"); return; }
 
-  let dateValue  = document.getElementById("date").value;
+  let dateValue = document.getElementById("date").value;
   let [dd, mm, yyyy] = dateValue.split("-");
 
-let d = new Date(Date.UTC(yyyy, mm - 1, dd));
+  let d = new Date(Date.UTC(yyyy, mm - 1, dd));
 
-let dataIso = d.toISOString();  
+  let dataIso = d.toISOString();
   //const dataIso = new Date(dateValue).toISOString();
 
-  crearComanda(clientSelect.value, document.getElementById("payment").value, document.getElementById("shipping").value,dataIso,productesActuals)
+  crearComanda(clientSelect.value, document.getElementById("payment").value, document.getElementById("shipping").value, dataIso, productesActuals)
 
-    // Netejar formulari i productes en memòria
-    productesActuals = [];
-    document.forms[0].reset();
-    document.getElementById("productesAfegits").replaceChildren();
+  // Netejar formulari i productes en memòria
+  productesActuals = [];
+  document.forms[0].reset();
+  document.getElementById("productesAfegits").replaceChildren();
 
-    let msg = document.createElement("p");
-    msg.style.color = "green";
-    msg.textContent = "Comanda guardada correctament a la base de dades.";
-    document.getElementById("missatgeError").appendChild(msg);
+  let msg = document.createElement("p");
+  msg.style.color = "green";
+  msg.textContent = "Comanda guardada correctament a la base de dades.";
+  document.getElementById("missatgeError").appendChild(msg);
 
 
 }
@@ -367,4 +405,52 @@ function buscarDescomptePerProducte(productId) {
     }
   }
   return 0;
+}
+
+function error(element, missatge) {
+  let cont = document.getElementById("missatgeError");
+  let p = document.createElement("p");
+  p.style.color = "red";
+  p.style.fontWeight = "bold";
+  p.textContent = missatge;
+  cont.appendChild(p);
+
+  element.classList.add("error");
+  element.focus();
+}
+
+function esborrarError() {
+  let cont = document.getElementById("missatgeError");
+  cont.textContent = "";
+  let formulari = document.forms[0];
+  for (let i = 0; i < formulari.elements.length; i++) {
+    formulari.elements[i].classList.remove("error");
+  }
+}
+function validarClient() {
+  let element = document.getElementById("client");
+  if (!element.value) {
+    error(element, "Has de seleccionar un client.");
+    return false;
+  }
+  return true;
+}
+
+function validarPagament() {
+  let element = document.getElementById("payment");
+  if (!element.value) {
+    error(element, "Has de seleccionar un tipus de pagament.");
+    return false;
+  }
+  return true;
+}
+
+
+
+function validarProductes() {
+  if (productesActuals.length === 0) {
+    error(document.getElementById("productsTable"), "Has d’afegir almenys un producte.");
+    return false;
+  }
+  return true;
 }
