@@ -257,15 +257,15 @@ function mostrarFamilies(families) {
 // Actualiza el dropdown con todas las familias disponibles
 function actualitzarSelect() {
     let select = document.getElementById("familia_de");
-    select.innerHTML = '<option value="">Sense família pare</option>';
+    select.innerHTML = '<option value="">Sense família</option>';
 
     // Només famílies principals (parent_id == null)
     families
         .forEach(f => {
             select.innerHTML += `<option value="${f.id}">${f.name}</option>`;
-            console.log(f);
         });
-}
+    }
+
 
 // Crea una nueva familia con los datos del formulario
 async function crearFamilia() {
