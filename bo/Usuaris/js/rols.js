@@ -145,7 +145,7 @@ async function eliminarRol(idRol) {
         return;
     }
 
-    if (confirm(`Estàs segur que vols eliminar el rol ${rol.name}?`)) {
+    if (confirm(`Esteu segur que voleu eliminar aquest element? Aquesta acció no es pot desfer`)) {
         // Filtrar l'array per eliminar el rol especificat
         await deleteData(url, 'Rol', rol.id);
         rols = await getData(url, "Rol");

@@ -140,7 +140,7 @@ function crearElementsTaula(usuarisFiltrats = null) {
 
 // Funció per eliminar un usuari amb confirmació.
 async function eliminarUsuari(id) {
-    if (confirm("Estàs segur que vols eliminar aquest usuari?")) {
+    if (confirm("Esteu segur que voleu eliminar aquest element? Aquesta acció no es pot desfer")) {
         await deleteData(url, 'User', id);
         await recarregarDades();
     }
