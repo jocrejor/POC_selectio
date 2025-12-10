@@ -19,6 +19,8 @@ window.onload = iniciar;
     carregaselect();
     document.getElementById("enviar").addEventListener("click", guardarEnLocalStorage, false);
     document.getElementById("cancelar").addEventListener("click", cancelar);
+      thereIsUser("../login.html");
+ botonsTancarSessio("../login.html");
 }
 
 function cancelar() {
@@ -145,6 +147,6 @@ async function guardarEnLocalStorage(e) {
     };
 
        await updateId(url, "Attribute", atributoId,datosobjecte);
-    alert("Característica modificada correctament!");
+
     window.location.href = "./Atributs.html";
 }

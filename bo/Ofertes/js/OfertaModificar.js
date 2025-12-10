@@ -18,20 +18,22 @@ async function main() {
         // Eliminar l'usuari actual del localStorage
         tancarSessio("../login.html");
     });
-    const formulari = document.getElementById('formOferta');
-    const entradaOferta = document.getElementById('ofertaInput');
+    
+    const formulari          = document.getElementById('formOferta');
+    const entradaOferta      = document.getElementById('ofertaInput');
     const entradaPercentatge = document.getElementById('percentajeInput');
-    const entradaCupo = document.getElementById('couponInput');
-    const entradaDataInici = document.getElementById('dataIniciInput');
-    const entradaDataFi = document.getElementById('datafiInput');
+    const entradaCupo        = document.getElementById('couponInput');
+    const entradaDataInici   = document.getElementById('dataIniciInput');
+    const entradaDataFi      = document.getElementById('datafiInput');
+    const pageTitle          = document.querySelector('.pagina .col-12 p'); // Per al títol
 
     function obtenerFechaHoraLocal() {
-        const ahora = new Date();
-        const año = ahora.getFullYear();
-        const mes = String(ahora.getMonth() + 1).padStart(2, '0');
-        const dia = String(ahora.getDate()).padStart(2, '0');
-        const horas = String(ahora.getHours()).padStart(2, '0');
-        const minutos = String(ahora.getMinutes()).padStart(2, '0');
+        const ahora    = new Date();
+        const año      = ahora.getFullYear();
+        const mes      = String(ahora.getMonth() + 1).padStart(2, '0');
+        const dia      = String(ahora.getDate()).padStart(2, '0');
+        const horas    = String(ahora.getHours()).padStart(2, '0');
+        const minutos  = String(ahora.getMinutes()).padStart(2, '0');
         const segundos = String(ahora.getSeconds()).padStart(2, '0');
 
         return `${año}-${mes}-${dia} ${horas}:${minutos}:${segundos}`;
@@ -45,7 +47,17 @@ async function main() {
     }
 
     const parametres = new URLSearchParams(window.location.search);
-    const ofertaId = parametres.get('edit');
+    const ofertaId   = parametres.get('edit');
+
+    // Validar si hi ha una oferta seleccionada
+    if (!ofertaId) {
+        mostrarMissatge("Error: No s'ha especificat cap oferta per editar", "error");
+        // Redirigir a la llista després d'un temps
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 3000);
+        return; // Sortir de la funció principal
+    }
 
     // Carregar dades de l'oferta des de la API
     async function carregarOferta() {
@@ -54,11 +66,18 @@ async function main() {
         try {
             const oferta = await getIdData(url, "Sale", ofertaId);
             if (oferta) {
-                entradaOferta.value = oferta.description || "";
+                // Actualitzar el títol de la pàgina amb el nom de l'oferta
+                if (pageTitle) {
+                    pageTitle.textContent = `Editar Oferta: ${oferta.description}`;
+                    document.title        = `Editar Oferta: ${oferta.description}`;
+                }
+                
+                // Omplir el formulari amb les dades existents
+                entradaOferta.value      = oferta.description || "";
                 entradaPercentatge.value = oferta.discount_percent || "";
-                entradaCupo.value = oferta.coupon || "";
-                entradaDataInici.value = oferta.start_date ? oferta.start_date.split(' ')[0] : "";
-                entradaDataFi.value = oferta.end_date ? oferta.end_date.split(' ')[0] : "";
+                entradaCupo.value        = oferta.coupon || "";
+                entradaDataInici.value   = oferta.start_date ? oferta.start_date.split(' ')[0] : "";
+                entradaDataFi.value      = oferta.end_date ? oferta.end_date.split(' ')[0] : "";
                 return oferta;
             }
             return null;
@@ -68,16 +87,29 @@ async function main() {
         }
     }
 
-    if (ofertaId) {
-        await carregarOferta();
-    } else {
-        mostrarMissatge("Error: No s'ha especificat cap oferta per editar", "error");
-        return;
+    // Intentar carregar l'oferta
+    const oferta = await carregarOferta();
+    
+    // Si no es pot carregar l'oferta, mostrar error i redirigir
+    if (!oferta) {
+        mostrarMissatge("Error: No s'ha trobat l'oferta especificada", "error");
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 3000);
+        return; // Sortir de la funció principal
     }
 
+    // Només continuar si tenim una oferta vàlida
     function reiniciarFormulario() {
-        formulari.reset();
-        mostrarMissatge("Formulari reiniciat", "success");
+        // Reiniciar a les dades originals
+        if (oferta) {
+            entradaOferta.value      = oferta.description || "";
+            entradaPercentatge.value = oferta.discount_percent || "";
+            entradaCupo.value        = oferta.coupon || "";
+            entradaDataInici.value   = oferta.start_date ? oferta.start_date.split(' ')[0] : "";
+            entradaDataFi.value      = oferta.end_date ? oferta.end_date.split(' ')[0] : "";
+        }
+        mostrarMissatge("Formulari reiniciat a les dades originals", "success");
     }
 
     const reiniciarButton = document.getElementById('reiniciarButton');
@@ -85,65 +117,79 @@ async function main() {
         reiniciarButton.addEventListener('click', reiniciarFormulario);
     }
 
-    function mostrarMissatge(text, tipus = "error") {
-        let missatge = document.getElementById("mensaje");
-        if (!missatge) {
-            missatge = document.createElement("p");
-            missatge.id = "mensaje";
-            missatge.style.color = tipus === "error" ? "red" : "green";
-            formulari.parentNode.insertBefore(missatge, formulari);
-        }
-        missatge.textContent = text;
-        missatge.style.color = tipus === "error" ? "red" : "green";
+function mostrarMissatge(text, tipus = "error") {
+    let missatge = document.getElementById("mensaje");
+    if (!missatge) {
+        missatge    = document.createElement("div");
+        missatge.id = "mensaje";
+        formulari.parentNode.insertBefore(missatge, formulari);
     }
+    missatge.textContent = text;
+    missatge.style.color = tipus === "error" ? "red" : "green";
+    
+    // Mostrar/ocultar segons si hi ha text
+    if (text.trim() === '') {
+        missatge.style.display = 'none';
+    } else {
+        missatge.style.display = 'block';
+    }
+}
 
     function validarFormulari() {
-        let esValid = true;
+    let esValid = true;
+    
+    // Netejar missatges anteriors
+    mostrarMissatge("", "success");
 
-        // Validar nombre de oferta
-        if (!entradaOferta.value.trim()) {
-            mostrarMissatge("El nom de l'oferta és obligatori", "error");
-            esValid = false;
-        } else if (entradaOferta.value.trim().length < 2) {
-            mostrarMissatge("L'oferta ha de tenir com a mínim 2 caràcters", "error");
-            esValid = false;
-        }
-
-        // Validar porcentaje
-        if (!entradaPercentatge.value) {
-            mostrarMissatge("El percentatge és obligatori", "error");
-            esValid = false;
-        } else {
-            const percentatge = parseInt(entradaPercentatge.value);
-            if (percentatge < 1 || percentatge > 100) {
-                mostrarMissatge("El percentatge ha de ser entre 1 i 100", "error");
-                esValid = false;
-            }
-        }
-
-        // Validar fechas
-        if (!entradaDataInici.value) {
-            mostrarMissatge("La data d'inici és obligatòria", "error");
-            esValid = false;
-        }
-
-        if (!entradaDataFi.value) {
-            mostrarMissatge("La data de fi és obligatòria", "error");
-            esValid = false;
-        }
-
-        if (entradaDataInici.value && entradaDataFi.value) {
-            const dataInici = new Date(entradaDataInici.value);
-            const dataFi = new Date(entradaDataFi.value);
-
-            if (dataInici >= dataFi) {
-                mostrarMissatge("La data de fi ha de ser posterior a la data d'inici", "error");
-                esValid = false;
-            }
-        }
-
-        return esValid;
+    // Validar nombre de oferta
+    if (!entradaOferta.value.trim()) {
+        mostrarMissatge("El nom de l'oferta és obligatori", "error");
+        esValid = false;
+    } else if (entradaOferta.value.trim().length < 2) {
+        mostrarMissatge("L'oferta ha de tenir com a mínim 2 caràcters", "error");
+        esValid = false;
     }
+
+    // Validar porcentaje
+    if (!entradaPercentatge.value) {
+        mostrarMissatge("El percentatge és obligatori", "error");
+        esValid = false;
+    } else {
+        const percentatge = parseInt(entradaPercentatge.value);
+        if (percentatge < 1 || percentatge > 100) {
+            mostrarMissatge("El percentatge ha de ser entre 1 i 100", "error");
+            esValid = false;
+        }
+    }
+
+    // Validar fechas
+    if (!entradaDataInici.value) {
+        mostrarMissatge("La data d'inici és obligatòria", "error");
+        esValid = false;
+    }
+
+    if (!entradaDataFi.value) {
+        mostrarMissatge("La data de fi és obligatòria", "error");
+        esValid = false;
+    }
+
+    if (entradaDataInici.value && entradaDataFi.value) {
+        const dataInici = new Date(entradaDataInici.value);
+        const dataFi = new Date(entradaDataFi.value);
+
+        if (dataInici >= dataFi) {
+            mostrarMissatge("La data de fi ha de ser posterior a la data d'inici", "error");
+            esValid = false;
+        }
+    }
+
+    // Si tot és vàlid, mostrar missatge de confirmació
+    if (esValid) {
+        mostrarMissatge("Formulari vàlid. Prem 'Enviar' per guardar l'oferta.", "success");
+    }
+
+    return esValid;
+}
 
     formulari.addEventListener('submit', async function (e) {
         e.preventDefault();
@@ -162,7 +208,7 @@ async function main() {
         };
 
         try {
-            if (ofertaId) {
+            if (ofertaId && oferta) {
                 await updateId(url, "Sale", ofertaId, datosAPI);
                 mostrarMissatge("Oferta editada correctament!", "success");
 

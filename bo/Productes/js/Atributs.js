@@ -8,7 +8,9 @@ const ITEMS_PAGINA = 10;
 
 
  async function iniciar() {
+     thereIsUser("../login.html");
    await carregarDadesLocal();
+ 
 
  document.getElementById("enviar").addEventListener("click", anarcrear);
 document.getElementById("applyFilter").addEventListener("click", function (e) {
@@ -20,8 +22,8 @@ document.getElementById("clearFilter").addEventListener("click", function (e) {
     e.preventDefault();
     limpiarFiltroFamilia();
 });
-
-
+ 
+ botonsTancarSessio("../login.html");
 }
 
 function anarcrear() {

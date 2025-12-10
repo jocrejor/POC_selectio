@@ -391,4 +391,14 @@
   .contact-info-strip {
     text-align: center;
   }
+
+  .about-section {
+  background-color: #1a1a1a;
+  color: white;
+  background-size: cover;
+  background-position: center;
+  padding: 40px 30px;
+  position: relative;
+  height: 800px;
+}
 }

@@ -16,6 +16,8 @@ async function iniciar() {
   mostrarAtributsCreades();
 
   document.getElementById("enviar").addEventListener("click", crearProductattribute);
+    thereIsUser("../login.html");
+ botonsTancarSessio("../login.html");
 }
 
 async function carregarDadesLocal() {

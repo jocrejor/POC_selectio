@@ -11,7 +11,7 @@ function calcularPrecioConDescuento(precioOriginal, porcentajeDescuento) {
     if (!porcentajeDescuento || porcentajeDescuento === 0) {
         return precioOriginal;
     }
-    const descuento = (precioOriginal * porcentajeDescuento) / 100;
+    const descuento   = (precioOriginal * porcentajeDescuento) / 100;
     const precioFinal = precioOriginal - descuento;
     return precioFinal.toFixed(2);
 }
@@ -19,7 +19,7 @@ function calcularPrecioConDescuento(precioOriginal, porcentajeDescuento) {
 // Funció per a afegir un producte a una oferta específica
 async function afegirProducteAOferta(ofertaId, productId) {
     try {
-        const ofertaIdNum = parseInt(ofertaId);
+        const ofertaIdNum  = parseInt(ofertaId);
         const productIdNum = parseInt(productId);
 
         // Obtener las relaciones existentes para generar un ID único
@@ -40,8 +40,8 @@ async function afegirProducteAOferta(ofertaId, productId) {
         }
 
         // Verificar si ya existe esta relación específica
-        const existeRelacion = productSale.find(rel => {
-            const relSaleId = typeof rel.sale_id === 'string' ? parseInt(rel.sale_id) : rel.sale_id;
+        const existeRelacion   = productSale.find(rel => {
+            const relSaleId    = typeof rel.sale_id === 'string' ? parseInt(rel.sale_id) : rel.sale_id;
             const relProductId = typeof rel.product_id === 'string' ? parseInt(rel.product_id) : rel.product_id;
             return relSaleId === ofertaIdNum && relProductId === productIdNum;
         });
@@ -76,29 +76,35 @@ async function afegirProducteAOferta(ofertaId, productId) {
 
 // Funció que elimina un producte d'una oferta específica
 async function eliminarProductoDeOferta(ofertaId, productId) {
-    if (confirm("Estàs segur que vols eliminar aquest producte de l'oferta?")) {
-        try {
-            const productSale = await obtenerProductSale();
+    // Demanar confirmació a l'usuari
+    const confirmacio = confirm("Esteu segur que voleu eliminar aquest element?\nAquesta acció no es pot desfer.");
 
-            const relacion = productSale.find(function (rel) {
-                return rel.sale_id === parseInt(ofertaId) && rel.product_id === parseInt(productId);
-            });
+    // Si l'usuari cancela, no fer res
+    if (!confirmacio) {
+        return;
+    }
 
-            if (relacion && relacion.id) {
-                await deleteData(url, "ProductSale", relacion.id);
+    try {
+        const productSale = await obtenerProductSale();
 
-                if (typeof window.cargarProductosAplicados === 'function') {
-                    await window.cargarProductosAplicados(ofertaId);
-                }
+        const relacion = productSale.find(function (rel) {
+            return rel.sale_id === parseInt(ofertaId) && rel.product_id === parseInt(productId);
+        });
 
-                mostrarMensaje("Producte eliminat correctament de l'oferta", "success");
-            } else {
-                mostrarMensaje("No s'ha trobat la relació per eliminar", "error");
+        if (relacion && relacion.id) {
+            await deleteData(url, "ProductSale", relacion.id);
+
+            if (typeof window.cargarProductosAplicados === 'function') {
+                await window.cargarProductosAplicados(ofertaId);
             }
-        } catch (error) {
-            console.error('Error eliminant producte de oferta:', error);
-            mostrarMensaje("Error eliminant el producte", "error");
+
+            mostrarMensaje("Producte eliminat correctament de l'oferta", "success");
+        } else {
+            mostrarMensaje("No s'ha trobat la relació per eliminar", "error");
         }
+    } catch (error) {
+        console.error('Error eliminant producte de oferta:', error);
+        mostrarMensaje("Error eliminant el producte", "error");
     }
 }
 
@@ -121,19 +127,33 @@ async function main() {
         tancarSessio("../login.html");
     });
 
-    const tableBody = document.getElementById('tableBody');
-    const pageTitle = document.getElementById('pageTitle');
+    const tableBody        = document.getElementById('tableBody');
+    const pageTitle        = document.getElementById('pageTitle');
     const addProductButton = document.getElementById('addProductButton');
+    const contingutTaula   = document.getElementById('contingutTaula');
+    const paginacio        = document.querySelector('.paginacio');
+    const tornarButton     = document.querySelector('.boton-tornar');
 
     // Variables para los datos
     let productosAplicados = [];
 
-    const params = new URLSearchParams(window.location.search);
+    const params   = new URLSearchParams(window.location.search);
     const ofertaId = params.get('oferta');
 
+    // Validar si hi ha una oferta seleccionada
     if (!ofertaId) {
-        mostrarError("No s'ha especificat cap oferta");
-        return;
+        mostrarError("Error: No s'ha especificat cap oferta");
+        
+        // Ocultar elements que no es necessiten
+        if (addProductButton) addProductButton.style.display = 'none';
+        if (tornarButton) tornarButton.style.display = 'none';
+        if (paginacio) paginacio.classList.add('no_mostrar');
+        
+        // Redirigir a la llista després d'un temps
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 3000);
+        return; // Sortir de la funció principal
     }
 
     async function carregarOferta() {
@@ -155,8 +175,19 @@ async function main() {
 
     const oferta = await carregarOferta();
 
+    // Si no es pot carregar l'oferta, mostrar error i redirigir
     if (!oferta) {
-        return;
+        mostrarError("Error: No s'ha trobat l'oferta especificada");
+        
+        // Ocultar elements que no es necessiten
+        if (addProductButton) addProductButton.style.display = 'none';
+        if (tornarButton) tornarButton.style.display = 'none';
+        if (paginacio) paginacio.classList.add('no_mostrar');
+        
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 3000);
+        return; // Sortir de la funció principal
     }
 
     if (addProductButton) {
@@ -199,6 +230,7 @@ async function main() {
         window.actualitzarDades();
     }
 
+    // Només carregar productes si tenim una oferta vàlida
     await cargarProductosAplicados(ofertaId);
 
     // Hacer la función cargarProductosAplicados disponible globalmente
@@ -226,7 +258,6 @@ async function main() {
     }
 
     // Event listener para el botón Tornar a Ofertes
-    const tornarButton = document.querySelector('.boton-tornar');
     if (tornarButton) {
         tornarButton.addEventListener('click', function () {
             window.location.href = 'index.html';
@@ -272,7 +303,7 @@ async function main() {
             // Celda Precio con descuento
             const celdaPrecioDescuento = document.createElement("td");
             celdaPrecioDescuento.setAttribute('data-cell', 'Preu amb Descompte : ');
-            const precioConDescuento = calcularPrecioConDescuento(producto.price, producto.descuentoPorcentaje);
+            const precioConDescuento         = calcularPrecioConDescuento(producto.price, producto.descuentoPorcentaje);
             celdaPrecioDescuento.textContent = `(${producto.descuentoPorcentaje}%) ${precioConDescuento} €`;
             row.appendChild(celdaPrecioDescuento);
 
@@ -292,9 +323,9 @@ async function main() {
             const actionCell = document.createElement("td");
             actionCell.setAttribute('data-cell', 'Accions : ');
 
-            const removeButton = document.createElement("a");
+            const removeButton     = document.createElement("a");
             removeButton.className = 'icon-borrar';
-            removeButton.href = '#';
+            removeButton.href      = '#';
             removeButton.innerHTML = '<i class="fa-solid fa-trash"></i>';
             removeButton.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -314,7 +345,7 @@ async function main() {
 }
 
 async function mostrarModalProductos(ofertaId, ofertaNombre) {
-    const modal = document.getElementById("modalOferta");
+    const modal        = document.getElementById("modalOferta");
     const modalContent = document.getElementById("modalOfertaContent");
 
     if (!modal || !modalContent) return;
@@ -336,23 +367,23 @@ async function mostrarModalProductos(ofertaId, ofertaNombre) {
         modalContent.appendChild(noProductsMsg);
     } else {
         productosDisponibles.forEach(function (producto) {
-            const productItem = document.createElement("div");
+            const productItem     = document.createElement("div");
             productItem.className = 'product-item';
 
-            const productInfo = document.createElement("div");
+            const productInfo     = document.createElement("div");
             productInfo.className = 'product-info';
 
-            const productName = document.createElement("p");
-            productName.className = 'product-name';
+            const productName       = document.createElement("p");
+            productName.className   = 'product-name';
             productName.textContent = producto.name;
             productName.setAttribute('data-cell', 'Nom : ');
 
-            const productDetails = document.createElement("p");
+            const productDetails     = document.createElement("p");
             productDetails.className = 'product-details';
             productDetails.setAttribute('data-cell', 'Preu : ');
             productDetails.textContent = `${producto.price} €`;
 
-            const productFamily = document.createElement("p");
+            const productFamily     = document.createElement("p");
             productFamily.className = 'product-family';
             productFamily.setAttribute('data-cell', 'Familia : ');
             productFamily.textContent = producto.familyName;
@@ -361,8 +392,8 @@ async function mostrarModalProductos(ofertaId, ofertaNombre) {
             productInfo.appendChild(productDetails);
             productInfo.appendChild(productFamily);
 
-            const addButton = document.createElement("button");
-            addButton.className = 'modal-add-button';
+            const addButton       = document.createElement("button");
+            addButton.className   = 'modal-add-button';
             addButton.textContent = "Afegir";
 
             addButton.addEventListener('click', function () {
@@ -431,7 +462,7 @@ async function buscarProductosAplicados(ofertaId) {
             getIdData(url, "Sale", ofertaId) // Obtener datos de la oferta para el descuento
         ]);
 
-        const ofertaIdNum = parseInt(ofertaId);
+        const ofertaIdNum         = parseInt(ofertaId);
         const porcentajeDescuento = oferta ? oferta.discount_percent : 0;
 
         productSale.forEach(function (relacion) {
@@ -472,14 +503,14 @@ async function buscarProductosAplicados(ofertaId) {
 }
 
 async function obtenerProductosDisponibles(ofertaId) {
-    const productosAplicados = await buscarProductosAplicados(ofertaId);
+    const productosAplicados    = await buscarProductosAplicados(ofertaId);
     const productosAplicadosIds = productosAplicados.map(p => p.id);
 
     const productosDisponibles = [];
 
     try {
         const productos = await obtenerProductos();
-        const familias = await obtenerFamilias();
+        const familias  = await obtenerFamilias();
 
         productos.forEach(function (producto) {
             if (!productosAplicadosIds.includes(producto.id)) {
@@ -506,8 +537,8 @@ async function obtenerProductosDisponibles(ofertaId) {
 
 // Funció per a mostrar missatges temporals a l'usuari
 function mostrarMensaje(texto, tipo = "success") {
-    const mensaje = document.createElement("div");
-    mensaje.className = `notification ${tipo}`;
+    const mensaje       = document.createElement("div");
+    mensaje.className   = `notification ${tipo}`;
     mensaje.textContent = texto;
 
     document.body.appendChild(mensaje);
@@ -522,10 +553,10 @@ function mostrarError(mensaje) {
     const tableBody = document.getElementById('tableBody');
     if (!tableBody) return;
 
-    const row = document.createElement("tr");
+    const row  = document.createElement("tr");
     const cell = document.createElement("td");
     cell.setAttribute('colspan', '7');
-    cell.className = 'no-data';
+    cell.className   = 'no-data';
     cell.textContent = mensaje;
     row.appendChild(cell);
     tableBody.appendChild(row);
@@ -536,10 +567,10 @@ function mostrarNoProductos() {
     const tableBody = document.getElementById('tableBody');
     if (!tableBody) return;
 
-    const row = document.createElement("tr");
+    const row  = document.createElement("tr");
     const cell = document.createElement("td");
     cell.setAttribute('colspan', '7');
-    cell.className = 'no-data';
+    cell.className   = 'no-data';
     cell.textContent = "No hi ha productes aplicats a aquesta oferta";
     row.appendChild(cell);
     tableBody.appendChild(row);

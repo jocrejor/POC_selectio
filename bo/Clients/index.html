@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="../css/template_grid3.css">
     <link rel="stylesheet" href="../css/common.css">
     <link rel="stylesheet" href="../css/common-table.css">
+     <link rel="stylesheet" href="css/style.css">
      <link rel="stylesheet" href="../css/common-paginacio.css">
     <script src="https://kit.fontawesome.com/f653e778a0.js" crossorigin="anonymous"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,8 +22,8 @@
 
     <script src="../js/common.js"></script>
     <script src="../../apiAccess/crud.js"></script>
+    <script src="../js/logout.js"></script>
     <script src="./js/index.js"></script>
-    <script src="index.js"></script>
 
     <!--jQuery-->
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
@@ -38,16 +39,18 @@
                     <i class="fa-solid fa-bars"></i>
                 </div>
                 <div id="logotip">
+                    <a href="../index.html">
                     <img src="../img/logo_tendafake.png" alt="No s'ha pogut carregat l'imatge">
+                    </a>
                 </div>
                 <div id="sessioUsuari">
                     <div class="headerUsuari">
                         <img src="../img/foto_persona.png" alt="No s'ha pogut carregar l'imatge">
-                        <span>Manolo Garibolo</span>
+                        <span id="usuariNom"></span>
                         <span class="separador">&nbsp;</span>
                     </div>
                     <div class="tancarSessio">
-                        <a href="#">
+                        <a id="botoTancarSessio" href="#">
                             <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
                         </a>
                     </div>
@@ -67,7 +70,7 @@
                     <i class="fa-solid fa-paperclip"></i>
                     Atributs
                 </a>
-                <a href="../GestioCarret/index.html" class="opcio_menu">
+                <a href="../GestioCarrets/index.html" class="opcio_menu">
                     <i class="fa-solid fa-cart-shopping"></i>
                     Carrets
                 </a>
@@ -75,7 +78,7 @@
                     <i class="fa-solid fa-person"></i>
                     Clients
                 </div>
-                <a href="../Configuracions/index.html" class="opcio_menu">
+                <a href="../Configuracions/Configuracio.html" class="opcio_menu">
                     <i class="fa-solid fa-sliders"></i>
                     Configuracions
                 </a>
@@ -91,7 +94,7 @@
                     <i class="fa-solid fa-list"></i>
                     Families
                 </a>
-                <a href="#" class="opcio_menu">
+                <a href="../../Favorits/favorits.html" class="opcio_menu">
                     <i class="fa-solid fa-star"></i>
                     Favorits
                 </a>
@@ -108,7 +111,7 @@
                     Productes
                 </a>
 
-                <a href="../Usuaris/usuaris.html" class="opcio_menu">
+                <a href="../Usuaris/index.html" class="opcio_menu">
                     <i class="fa-solid fa-user"></i>
                     Usuaris
                 </a>
@@ -119,11 +122,11 @@
             </div>
             <!-- Filtres -->
             <div class="col-10">
-                <button onclick="window.location.href='clientCrear.html'">Nou Client</button>
                 <div class="container-fluid sense-separacio">
                     <div class="row">
                         <div class="col-12">
                             <div class="contingut">
+                                <button onclick="window.location.href='clientCrear.html'">Afegir Client</button>
                                 <div id="contingutTaula">
                                     <table id="taula">
                                         <thead>

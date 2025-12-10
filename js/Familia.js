@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", main);
 
 async function main() {
@@ -51,9 +50,7 @@ async function main() {
         targeta.dataset.id = familia.id;
 
         // URL imatge
-        const urlImatge = familia.image
-            ? `./backoffice/Productes/img/${familia.image}`
-            : "./img/Productes/defaultImage.jpg";
+        const urlImatge = familia.image ? `./bo/Productes/img/${familia.image}` : "./img/Productes/defaultImage.jpg";
 
         const contenidorImatge = document.createElement("div");
         contenidorImatge.classList.add("contenidor-imatge-familia");
@@ -83,6 +80,7 @@ async function main() {
         targeta.addEventListener("click", () => {
             if (teSubfamilies) {
                 familiaActualId = familia.id;
+                inputBuscador.value = ""; // Limpiar buscador al navegar
                 mostrarFamilies(familia.id);
             } else {
                 window.location.href = `Product.html?familia=${familia.id}`;
@@ -105,6 +103,7 @@ async function main() {
         linkInici.addEventListener("click", (e) => {
             e.preventDefault();
             familiaActualId = null;
+            inputBuscador.value = ""; // Limpiar buscador al volver al inicio
             mostrarFamilies(null);
         });
 
@@ -148,6 +147,7 @@ async function main() {
                     link.addEventListener("click", (e) => {
                         e.preventDefault();
                         familiaActualId = f.id;
+                        inputBuscador.value = ""; // Limpiar buscador al navegar
                         mostrarFamilies(f.id);
                     });
 
@@ -157,6 +157,78 @@ async function main() {
                 miguesPa.appendChild(liFam);
             });
         }
+    }
+
+    //========== BUSCADOR ==========
+    const inputBuscador = document.getElementById("buscador");
+    
+    inputBuscador.addEventListener("input", (e) => {
+        const textBusqueda = e.target.value.toLowerCase().trim();
+        
+        if (textBusqueda === "") {
+            // Si el buscador está vacío, mostrar la vista normal
+            mostrarFamilies(familiaActualId);
+            return;
+        }
+        
+        // Filtrar familias que coincidan con la búsqueda
+        const familiesFiltrades = dadesFamilies.filter(familia => 
+            familia.name.toLowerCase().includes(textBusqueda)
+        );
+        
+        mostrarResultatsBusqueda(familiesFiltrades, textBusqueda);
+    });
+    
+    //========== FUNCIO PER MOSTRAR RESULTATS DE BUSQUEDA ==========
+    function mostrarResultatsBusqueda(families, textBusqueda) {
+        contenidorFamilies.replaceChildren();
+        
+        // Actualizar migues de pa para búsqueda
+        miguesPa.replaceChildren();
+        const liInici = document.createElement("li");
+        const linkInici = document.createElement("a");
+        linkInici.appendChild(document.createTextNode("Inici"));
+        linkInici.href = "#";
+        linkInici.addEventListener("click", (e) => {
+            e.preventDefault();
+            familiaActualId = null;
+            inputBuscador.value = "";
+            mostrarFamilies(null);
+        });
+        liInici.appendChild(linkInici);
+        miguesPa.appendChild(liInici);
+        
+        const liSep = document.createElement("li");
+        const icon = document.createElement("i");
+        icon.className = "fa-solid fa-chevron-right";
+        liSep.appendChild(icon);
+        miguesPa.appendChild(liSep);
+        
+        const liBusqueda = document.createElement("li");
+        const spanBusqueda = document.createElement("span");
+        spanBusqueda.classList.add("actiu");
+        spanBusqueda.appendChild(document.createTextNode(`Resultats per "${textBusqueda}"`));
+        liBusqueda.appendChild(spanBusqueda);
+        miguesPa.appendChild(liBusqueda);
+        
+        // Mostrar resultados
+        if (families.length === 0) {
+            const missatge = document.createElement("p");
+            missatge.classList.add("missatge-buit");
+            missatge.appendChild(document.createTextNode(`No s'han trobat resultats per "${textBusqueda}"`));
+            contenidorFamilies.appendChild(missatge);
+            return;
+        }
+        
+        const contenidorTargetes = document.createElement("div");
+        contenidorTargetes.classList.add("grid-families");
+        
+        families.forEach(familia => {
+            const targeta = crearTargetaFamilia(familia);
+            contenidorTargetes.appendChild(targeta);
+        });
+        
+        contenidorFamilies.appendChild(contenidorTargetes);
     }
 
     //========== INICI ==========
