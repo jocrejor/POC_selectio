@@ -99,7 +99,7 @@ function crearElementsTaula(carretsFiltrats = null) {
             session_id: c.session_id,
             usuari: usuari,
             date: new Date(c.date).toLocaleString(),
-            total_amount: c.total_amount.toFixed(2)
+            total_amount: Math.round(c.total_amount * 100) / 100
         });
     });
 }

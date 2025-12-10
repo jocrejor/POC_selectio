@@ -25,60 +25,11 @@ async function main() {
             window.location.href = 'listarproductes.html';
         });
     });
-
-    // Botó Login 
-    const btnLogin = document.querySelector('button[data-action="login"]');
-    if (btnLogin) {
-        btnLogin.addEventListener("click", (e) => {
-            e.preventDefault();
-            mostrarFormularioLogin();
-        });
-    }
-
-    // Botó Tancar sessió
-    const btnTancarSessio = document.querySelector('button[data-action="logout"]');
-    if (btnTancarSessio) {
-        btnTancarSessio.addEventListener("click", (e) => {
-            e.preventDefault();
-            cerrarSesion();
-        });
-    }
 }
 
 // ====================================================================
 // FUNCIONS DE SESSIÓ I LOGIN
 // ====================================================================
-
-function mostrarFormularioLogin() {
-    console.log("Redirigint a login...");
-    window.location.href = '../Login.html';
-}
-
-function cerrarSesion() {
-    console.log("Intentant tancar sessió...");
-    if (confirm("Vols tancar sessió?")) {
-        localStorage.removeItem("currentUser");
-        console.log("Sessió tancada");
-        alert("Sessió tancada correctament");
-        window.location.reload();
-    }
-}
-
-function actualitzarBotonsNav() {
-    const user = obtenerUser();
-    const btnLogin = document.querySelector('button[data-action="login"]');
-    const btnLogout = document.querySelector('button[data-action="logout"]');
-
-    console.log("Actualitzant botons. Usuari:", user);
-
-    if (user) {
-        if (btnLogin) btnLogin.style.display = 'none';
-        if (btnLogout) btnLogout.style.display = 'inline-block';
-    } else {
-        if (btnLogin) btnLogin.style.display = 'inline-block';
-        if (btnLogout) btnLogout.style.display = 'none';
-    }
-}
 
 function obtenerUser() {
     const user = localStorage.getItem("currentUser");
@@ -140,7 +91,7 @@ async function mostrarInfoCliente() {
     const cartId = obtenerOCrearCartId();
 
     const box = document.createElement("div");
-    box.style.cssText = "padding:10px;background:#f0f0f0;border-radius:5px;margin-bottom:20px;";
+    box.classList.add("box");
 
     const h3 = document.createElement("h3");
     

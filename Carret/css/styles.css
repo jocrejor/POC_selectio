@@ -153,6 +153,12 @@ button:hover {
 .info-client-card strong {
     color: var(--color-primari);
 }
+.box{
+    padding: 10px;
+    background: #f0f0f0;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
 
 /* Total */
 #total {
