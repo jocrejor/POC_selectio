@@ -1,5 +1,9 @@
 document.addEventListener("DOMContentLoaded", main)
 
+// Inicialitzar el comparador globalment
+const comparador = new Comparador();
+comparador.carregarLocalStorage();
+
 async function main () {
   // Obtenir els paràmetres de la URL
   const params = new URLSearchParams(window.location.search);
@@ -227,7 +231,7 @@ async function main () {
   compBtn.appendChild(document.createTextNode("Comparar"));
   compBtn.classList.add("boto-afegir-comparador", "button");
   compBtn.onclick = () => {
-    window.location.href = "#";
+    afegirAlComparador(product);
   }
   contenidorBT.appendChild(compBtn);
 
@@ -313,4 +317,14 @@ async function main () {
 
   // Afegir tot al contenidor del DOM
   container.appendChild(divPrincipal);
+}
+
+// Funció per afegir producte al comparador
+function afegirAlComparador(producte) {
+  const afegit = comparador.afegirProducte(producte);
+  if (afegit) {
+    
+      window.location.href = 'Comparador/comparador.html';
+  }
+
 }

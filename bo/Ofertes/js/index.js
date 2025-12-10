@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", main);
 
-// Clau per guardar els filtres al localStorage - NOU
 const FILTRES_KEY = 'ofertes_filtres';
 
 function actualitzarDades() {
@@ -9,20 +8,14 @@ function actualitzarDades() {
     }
 }
 
-// Funció per a mostrar missatges temporals a l'usuari
 function mostrarMensaje(texto, tipo = "success") {
     const mensaje = document.createElement("div");
     mensaje.className = `notification ${tipo}`;
     mensaje.textContent = texto;
-
     document.body.appendChild(mensaje);
-
-    setTimeout(function () {
-        mensaje.remove();
-    }, 3000);
+    setTimeout(() => mensaje.remove(), 3000);
 }
 
-// Funció per guardar els filtres al localStorage - NOU
 function guardarFiltres() {
     const filtres = {
         nom: document.getElementById('filterName').value,
@@ -34,64 +27,52 @@ function guardarFiltres() {
     localStorage.setItem(FILTRES_KEY, JSON.stringify(filtres));
 }
 
-// Funció per carregar els filtres des del localStorage - NOU
 function carregarFiltres() {
     const filtresGuardats = localStorage.getItem(FILTRES_KEY);
-    if (filtresGuardats) {
-        try {
-            const filtres = JSON.parse(filtresGuardats);
-            
-            document.getElementById('filterName').value = filtres.nom || '';
-            document.getElementById('filterPercentMin').value = filtres.percentMin || '';
-            document.getElementById('filterPercentMax').value = filtres.percentMax || '';
-            document.getElementById('filterDateStart').value = filtres.dataInici || '';
-            document.getElementById('filterDateEnd').value = filtres.dataFi || '';
-            
-            return true;
-        } catch (e) {
-            console.error('Error carregant filtres:', e);
-        }
+    if (!filtresGuardats) return false;
+    
+    try {
+        const filtres = JSON.parse(filtresGuardats);
+        document.getElementById('filterName').value = filtres.nom || '';
+        document.getElementById('filterPercentMin').value = filtres.percentMin || '';
+        document.getElementById('filterPercentMax').value = filtres.percentMax || '';
+        document.getElementById('filterDateStart').value = filtres.dataInici || '';
+        document.getElementById('filterDateEnd').value = filtres.dataFi || '';
+        return true;
+    } catch (e) {
+        console.error('Error carregant filtres:', e);
+        return false;
     }
-    return false;
 }
 
-// Funció principal que inicialitza la llista d'ofertes
+function carregarArray(e) {
+    arrayElements = e;
+}
+
 async function main() {
     thereIsUser("../login.html");
-
-    // Buscar el botó de tancar sessió
-    const btnLogout = document.getElementById("botoTancarSessio");
-
-    btnLogout.addEventListener("click", () => {
-        // Eliminar l'usuari actual
-        tancarSessio("../login.html");
-    });
-
-    const btnLogoutLateral = document.getElementById("tancarSessioLateral");
-
-    btnLogoutLateral.addEventListener("click", () => {
-        // Eliminar l'usuari actual del localStorage
-        tancarSessio("../login.html");
-    });
-
-    const cosTaula = document.getElementById('tableBody');
-
-    const filterName = document.getElementById('filterName');
-    const filterPercentMin = document.getElementById('filterPercentMin');
-    const filterPercentMax = document.getElementById('filterPercentMax');
-    const filterDateStart = document.getElementById('filterDateStart');
-    const filterDateEnd = document.getElementById('filterDateEnd');
-    const applyFilter = document.getElementById('applyFilter');
-    const clearFilter = document.getElementById('clearFilter');
-    const botoAfegir = document.getElementById('botoAfegir');
-
+    
+    // Configurar logout
+    document.getElementById("botoTancarSessio").addEventListener("click", () => tancarSessio("../login.html"));
+    document.getElementById("tancarSessioLateral").addEventListener("click", () => tancarSessio("../login.html"));
+    
+    // Elements DOM
+    const elements = {
+        cosTaula: document.getElementById('tableBody'),
+        filterName: document.getElementById('filterName'),
+        filterPercentMin: document.getElementById('filterPercentMin'),
+        filterPercentMax: document.getElementById('filterPercentMax'),
+        filterDateStart: document.getElementById('filterDateStart'),
+        filterDateEnd: document.getElementById('filterDateEnd'),
+        applyFilter: document.getElementById('applyFilter'),
+        clearFilter: document.getElementById('clearFilter'),
+        botoAfegir: document.getElementById('botoAfegir')
+    };
+    
     let dades = [];
     let dadesFiltrades = [];
-
-    let autocompleteSuggestions = [];
     let currentFocus = -1;
 
-    // Funció per a carregar les ofertes des de la API
     async function carregarOfertesAPI() {
         try {
             const sale = await getData(url, "Sale");
@@ -114,45 +95,22 @@ async function main() {
         }
     }
 
-    // Funció per a carregar array
-    function carregarArray(e) {
-        if (typeof arrayElements === 'undefined') {
-            arrayElements = e;
-        } else {
-            // Si ya existe, asignar el valor
-            arrayElements = e;
-        }
-    }
-
-    window.actualitzarDades = function () {
-        renderitzarTaula();
-    };
-
-    // Funció per a eliminar una oferta específica
     async function eliminarDada(ofertaId) {
         try {
-            // Demanar confirmació a l'usuari
             const confirmacio = confirm("Esteu segur que voleu eliminar aquest element?\nAquesta acció no es pot desfer.");
             
-            // Si l'usuari cancela, no fer res
             if (!confirmacio) {
                 return;
             }
             
-            // Convertir a número
             const idNumerico = parseInt(ofertaId);
-
-            // Buscar la oferta en dadesFiltradas por su ID
             const oferta = dadesFiltrades.find(o => {
                 const idOferta = parseInt(o.id);
                 return idOferta === idNumerico;
             });
 
             if (oferta && oferta.id) {
-                // Llamar a la API para eliminar
                 await deleteData(url, "Sale", oferta.id);
-
-                // Recargar datos
                 await inicialitzarDades();
                 mostrarMensaje("Oferta eliminada correctament", "success");
             } else {
@@ -164,20 +122,16 @@ async function main() {
         }
     }
 
-    // Carregar dades inicials des de la API
     async function inicialitzarDades() {
         try {
             dades = await carregarOfertesAPI();
             dadesFiltrades = [...dades];
 
-            // Carregar filtres guardats (si n'hi ha) - MODIFICAT
             const filtresCarregats = carregarFiltres();
             
-            // Si s'han carregat filtres, aplicar-los
             if (filtresCarregats) {
                 aplicarFiltres();
             } else {
-                // Si no hi ha filtres guardats, carregar totes les dades
                 carregarArray(dadesFiltrades);
                 window.actualitzarDades();
             }
@@ -188,32 +142,23 @@ async function main() {
         }
     }
 
-    // Funció per a inicialitzar l'autocompletat estilo Google
     function inicialitzarAutocomplete() {
-        // Crear el contenedor de sugerencias
         const suggestionsContainer = document.createElement('div');
         suggestionsContainer.id = 'autocomplete-suggestions';
         suggestionsContainer.className = 'autocomplete-suggestions';
+        elements.filterName.parentNode.insertBefore(suggestionsContainer, elements.filterName.nextSibling);
 
-        // Insertar después del input de búsqueda
-        filterName.parentNode.insertBefore(suggestionsContainer, filterName.nextSibling);
-
-        // Event listener para input
-        filterName.addEventListener('input', function (e) {
+        elements.filterName.addEventListener('input', function (e) {
             const valor = this.value.trim();
-
             if (valor.length < 2) {
                 amagarSuggestions();
                 return;
             }
-
-            // Buscar sugerencias
             const sugerencias = buscarSuggestions(valor);
             mostrarSuggestions(sugerencias, valor);
         });
 
-        // Event listener para teclas
-        filterName.addEventListener('keydown', function (e) {
+        elements.filterName.addEventListener('keydown', function (e) {
             const suggestions = document.getElementById('autocomplete-suggestions');
             if (!suggestions || suggestions.style.display === 'none') return;
 
@@ -236,15 +181,13 @@ async function main() {
             }
         });
 
-        // Cerrar sugerencias al hacer click fuera
         document.addEventListener('click', function (e) {
-            if (!filterName.contains(e.target) && !suggestionsContainer.contains(e.target)) {
+            if (!elements.filterName.contains(e.target) && !suggestionsContainer.contains(e.target)) {
                 amagarSuggestions();
             }
         });
     }
 
-    // Funció per a buscar suggestions
     function buscarSuggestions(texte) {
         const texteLower = texte.toLowerCase();
         return dades
@@ -254,7 +197,6 @@ async function main() {
             .slice(0, 8);
     }
 
-    // Funció per a mostrar les suggestions
     function mostrarSuggestions(sugerencias, texteCerca) {
         const suggestionsContainer = document.getElementById('autocomplete-suggestions');
         const texteLower = texteCerca.toLowerCase();
@@ -271,7 +213,6 @@ async function main() {
             item.className = 'autocomplete-item';
             item.dataset.index = index;
 
-            // Resaltar el texto coincidente
             const text = suggeriment;
             const startIndex = text.toLowerCase().indexOf(texteLower);
             const endIndex = startIndex + texteCerca.length;
@@ -291,16 +232,14 @@ async function main() {
             }
 
             item.addEventListener('click', function () {
-                filterName.value = suggeriment;
+                elements.filterName.value = suggeriment;
                 aplicarFiltres();
                 amagarSuggestions();
             });
 
             item.addEventListener('mouseenter', function () {
-                // Remover selección anterior
                 const items = suggestionsContainer.querySelectorAll('.autocomplete-item');
                 items.forEach(item => item.classList.remove('selected'));
-                // Añadir selección actual
                 this.classList.add('selected');
                 currentFocus = parseInt(this.dataset.index);
             });
@@ -312,7 +251,6 @@ async function main() {
         currentFocus = -1;
     }
 
-    // Funció per a amagar les suggestions
     function amagarSuggestions() {
         const suggestionsContainer = document.getElementById('autocomplete-suggestions');
         if (suggestionsContainer) {
@@ -321,53 +259,45 @@ async function main() {
         }
     }
 
-    // Funció per a moure la selecció amb teclat
     function moureSeleccio(direccio) {
         const suggestionsContainer = document.getElementById('autocomplete-suggestions');
         const items = suggestionsContainer.querySelectorAll('.autocomplete-item');
 
         if (items.length === 0) return;
 
-        // Remover selección anterior
         items.forEach(item => item.classList.remove('selected'));
-
         currentFocus += direccio;
 
         if (currentFocus >= items.length) currentFocus = 0;
         if (currentFocus < 0) currentFocus = items.length - 1;
 
-        // Añadir nueva selección
         items[currentFocus].classList.add('selected');
-
-        // Scroll a la opción seleccionada
         items[currentFocus].scrollIntoView({ block: 'nearest' });
     }
 
-    // Funció per a seleccionar una suggestion
     function seleccionarSuggestion() {
         const suggestionsContainer = document.getElementById('autocomplete-suggestions');
         const items = suggestionsContainer.querySelectorAll('.autocomplete-item');
 
         if (currentFocus > -1 && items[currentFocus]) {
-            filterName.value = items[currentFocus].textContent || items[currentFocus].innerText;
+            elements.filterName.value = items[currentFocus].textContent || items[currentFocus].innerText;
             aplicarFiltres();
         }
         amagarSuggestions();
     }
 
-    if (botoAfegir) {
-        botoAfegir.addEventListener('click', function () {
+    if (elements.botoAfegir) {
+        elements.botoAfegir.addEventListener('click', function () {
             window.location.href = "OfertaAlta.html";
         });
     }
 
-    // Funció per a aplicar filtros
     function aplicarFiltres() {
-        const nomFiltre = filterName.value.toLowerCase().trim();
-        const percentMin = filterPercentMin.value ? parseInt(filterPercentMin.value) : null;
-        const percentMax = filterPercentMax.value ? parseInt(filterPercentMax.value) : null;
-        const dataIniciFiltre = filterDateStart.value;
-        const dataFiFiltre = filterDateEnd.value;
+        const nomFiltre = elements.filterName.value.toLowerCase().trim();
+        const percentMin = elements.filterPercentMin.value ? parseInt(elements.filterPercentMin.value) : null;
+        const percentMax = elements.filterPercentMax.value ? parseInt(elements.filterPercentMax.value) : null;
+        const dataIniciFiltre = elements.filterDateStart.value;
+        const dataFiFiltre = elements.filterDateEnd.value;
 
         dadesFiltrades = dades.filter(function (oferta) {
             if (nomFiltre && !oferta.oferta.toLowerCase().includes(nomFiltre)) {
@@ -394,84 +324,77 @@ async function main() {
             return true;
         });
 
-        // Usar la variable global paginaActual de common-paginacio.js
         if (typeof paginaActual !== 'undefined') {
             paginaActual = 1;
         }
-        // Actualizar array para paginación
+        
         carregarArray(dadesFiltrades);
         window.actualitzarDades();
         amagarSuggestions();
-        
-        // GUARDAR ELS FILTRES APLICATS - NOU
         guardarFiltres();
     }
 
-    // MODIFICADA per eliminar els filtres del localStorage
     function netejarFiltres() {
-        filterName.value = '';
-        filterPercentMin.value = '';
-        filterPercentMax.value = '';
-        filterDateStart.value = '';
-        filterDateEnd.value = '';
+        elements.filterName.value = '';
+        elements.filterPercentMin.value = '';
+        elements.filterPercentMax.value = '';
+        elements.filterDateStart.value = '';
+        elements.filterDateEnd.value = '';
         
-        // Eliminar filtres guardats - NOU
         localStorage.removeItem(FILTRES_KEY);
         
         dadesFiltrades = [...dades];
         if (typeof paginaActual !== 'undefined') {
             paginaActual = 1;
         }
-        // Actualizar array para paginación
+        
         carregarArray(dadesFiltrades);
         window.actualitzarDades();
         amagarSuggestions();
     }
 
     function validarPercentatges() {
-        const percentMin = filterPercentMin.value ? parseInt(filterPercentMin.value) : null;
-        const percentMax = filterPercentMax.value ? parseInt(filterPercentMax.value) : null;
+        const percentMin = parseInt(elements.filterPercentMin.value) || null;
+        const percentMax = parseInt(elements.filterPercentMax.value) || null;
 
         if (percentMin !== null && (percentMin < 1 || percentMin > 100)) {
-            filterPercentMin.setCustomValidity('El percentatge mínim ha de ser entre 1 i 100');
+            elements.filterPercentMin.setCustomValidity('El percentatge mínim ha de ser entre 1 i 100');
         } else {
-            filterPercentMin.setCustomValidity('');
+            elements.filterPercentMin.setCustomValidity('');
         }
 
         if (percentMax !== null && (percentMax < 1 || percentMax > 100)) {
-            filterPercentMax.setCustomValidity('El percentatge màxim ha de ser entre 1 i 100');
+            elements.filterPercentMax.setCustomValidity('El percentatge màxim ha de ser entre 1 i 100');
         } else {
-            filterPercentMax.setCustomValidity('');
+            elements.filterPercentMax.setCustomValidity('');
         }
 
         if (percentMin !== null && percentMax !== null && percentMin > percentMax) {
-            filterPercentMax.setCustomValidity('El percentatge màxim no pot ser menor que el mínim');
+            elements.filterPercentMax.setCustomValidity('El percentatge màxim no pot ser menor que el mínim');
         } else {
-            filterPercentMax.setCustomValidity('');
+            elements.filterPercentMax.setCustomValidity('');
         }
     }
 
     // Event listeners
-    if (applyFilter) {
-        applyFilter.addEventListener('click', aplicarFiltres);
+    if (elements.applyFilter) {
+        elements.applyFilter.addEventListener('click', aplicarFiltres);
     }
 
-    if (clearFilter) {
-        clearFilter.addEventListener('click', netejarFiltres);
+    if (elements.clearFilter) {
+        elements.clearFilter.addEventListener('click', netejarFiltres);
     }
 
-    if (filterPercentMin) {
-        filterPercentMin.addEventListener('input', validarPercentatges);
-        filterPercentMin.addEventListener('change', validarPercentatges);
+    if (elements.filterPercentMin) {
+        elements.filterPercentMin.addEventListener('input', validarPercentatges);
     }
 
-    if (filterPercentMax) {
-        filterPercentMax.addEventListener('input', validarPercentatges);
-        filterPercentMax.addEventListener('change', validarPercentatges);
+    if (elements.filterPercentMax) {
+        elements.filterPercentMax.addEventListener('input', validarPercentatges);
     }
 
-    if (filterName) {
-        filterName.addEventListener('keypress', function (e) {
+    if (elements.filterName) {
+        elements.filterName.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 aplicarFiltres();
                 amagarSuggestions();
@@ -479,33 +402,20 @@ async function main() {
         });
     }
 
-    // Guardar filtres quan es canvien els valors (opcional) - NOU
-    if (filterName) {
-        filterName.addEventListener('change', guardarFiltres);
-    }
+    // Guardar filtres quan es canvien
+    const filtresInputs = ['filterName', 'filterPercentMin', 'filterPercentMax', 'filterDateStart', 'filterDateEnd'];
+    filtresInputs.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.addEventListener('change', guardarFiltres);
+        }
+    });
 
-    if (filterPercentMin) {
-        filterPercentMin.addEventListener('change', guardarFiltres);
-    }
-
-    if (filterPercentMax) {
-        filterPercentMax.addEventListener('change', guardarFiltres);
-    }
-
-    if (filterDateStart) {
-        filterDateStart.addEventListener('change', guardarFiltres);
-    }
-
-    if (filterDateEnd) {
-        filterDateEnd.addEventListener('change', guardarFiltres);
-    }
-
-    // Funció principal per a mostrar les ofertes en la taula
     function renderitzarTaula() {
-        if (!cosTaula) return;
+        if (!elements.cosTaula) return;
 
-        while (cosTaula.firstChild) {
-            cosTaula.removeChild(cosTaula.firstChild);
+        while (elements.cosTaula.firstChild) {
+            elements.cosTaula.removeChild(elements.cosTaula.firstChild);
         }
 
         if (dadesFiltrades.length === 0) {
@@ -520,9 +430,8 @@ async function main() {
             celda.className = 'no-data';
             celda.textContent = missatge;
             fila.appendChild(celda);
-            cosTaula.appendChild(fila);
+            elements.cosTaula.appendChild(fila);
 
-            // Ocultar paginación si no hay datos
             const paginacio = document.getElementsByClassName('paginacio')[0];
             if (paginacio) {
                 paginacio.classList.add('no_mostrar');
@@ -532,10 +441,9 @@ async function main() {
 
         const elementsActuals = aplicarPaginacio(dadesFiltrades);
 
-        elementsActuals.forEach(function (element, index) {
+        elementsActuals.forEach(function (element) {
             const fila = document.createElement("tr");
 
-            // Celdas de datos con data-cell attributes
             const celdaId = document.createElement("td");
             celdaId.setAttribute('data-cell', 'ID : ');
             celdaId.textContent = element.id ? element.id.toString() : "N/A";
@@ -566,17 +474,14 @@ async function main() {
             celdaCupo.textContent = element.coupon || "-";
             fila.appendChild(celdaCupo);
 
-            // Celda de acciones
             const celdaAccio = document.createElement("td");
             celdaAccio.setAttribute('data-cell', 'Accions : ');
 
-            // Enlace editar
             const enlaceEditar = document.createElement("a");
             enlaceEditar.className = 'icon-editar';
             enlaceEditar.href = `OfertaModificar.html?edit=${element.id}`;
             enlaceEditar.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
 
-            // Botón productos aplicados
             const botoProductesAplicats = document.createElement("a");
             botoProductesAplicats.className = 'icon-visualitzar';
             botoProductesAplicats.href = '#';
@@ -586,7 +491,6 @@ async function main() {
                 anarAProductes(element.id);
             });
 
-            // Enlace eliminar
             const enlaceEliminar = document.createElement("a");
             enlaceEliminar.className = 'icon-borrar';
             enlaceEliminar.href = '#';
@@ -601,12 +505,16 @@ async function main() {
             celdaAccio.appendChild(enlaceEliminar);
             fila.appendChild(celdaAccio);
 
-            cosTaula.appendChild(fila);
+            elements.cosTaula.appendChild(fila);
         });
 
         creaPagines();
     }
 
+    window.actualitzarDades = function () {
+        renderitzarTaula();
+    };
+    
     window.renderitzarTaula = renderitzarTaula;
 
     function anarAProductes(ofertaId) {
