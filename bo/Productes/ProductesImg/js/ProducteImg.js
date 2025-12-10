@@ -12,8 +12,10 @@ async function main() {
     }
 
     console.log("Cargando imágenes para producto ID:", id);
-    await cargarImagenesProducto(id);
-
+    
+    // Cargar imágenes existentes en variable global
+    await cargarImagenesProductoGlobal(id);
+    
     const btnAnadir = document.getElementById("btnAnadir");
     btnAnadir.addEventListener("click", () => {
         window.location.href = `ProducteCrearImg.html?id=${id}`;
@@ -24,6 +26,9 @@ async function main() {
         window.location.href = "../index.html";
     });
 }
+
+// Variable global para almacenar imágenes existentes
+let imagenesExistentes = [];
 
 function obtenerIdDeUrl() {
     const params = new URLSearchParams(window.location.search);
@@ -39,6 +44,20 @@ async function obtenerImagenesProducto(productId) {
     } catch (error) {
         console.error("Error obteniendo imágenes:", error);
         return [];
+    }
+}
+
+async function cargarImagenesProductoGlobal(productId) {
+    try {
+        const todasImagenes = await getData(url, "Productimage");
+        imagenesExistentes = todasImagenes.filter(img => img.product_id === productId);
+        console.log("Imágenes existentes del producto:", imagenesExistentes);
+        
+        // Cargar la visualización
+        await cargarImagenesProducto(productId);
+    } catch (error) {
+        console.error("Error cargando imágenes del producto:", error);
+        console.warn("No se pudieron cargar las imágenes existentes para validación de orden");
     }
 }
 
@@ -100,6 +119,14 @@ async function cargarImagenesProducto(id) {
         const ordenContainer = document.createElement("p");
         ordenContainer.innerHTML = `Ordre: <span class="orden-texto">${img.order}</span>`;
 
+        // Contenedor de mensajes de error
+        const errorContainer = document.createElement("div");
+        errorContainer.className = "error-mensaje";
+        errorContainer.style.color = "#d32f2f";
+        errorContainer.style.fontSize = "12px";
+        errorContainer.style.marginTop = "5px";
+        errorContainer.style.minHeight = "20px";
+
         // Contenedor de acciones
         const acciones = document.createElement("div");
         acciones.classList.add("acciones-container");
@@ -139,6 +166,7 @@ async function cargarImagenesProducto(id) {
         card.appendChild(imagen);
         card.appendChild(nombreContainer);
         card.appendChild(ordenContainer);
+        card.appendChild(errorContainer);
         card.appendChild(acciones);
 
         grid.appendChild(card);
@@ -159,14 +187,6 @@ function asignarEventListenersImagenes(productId) {
             if (isEditing) {
                 // Guardar cambios
                 await guardarCambios(card, imageId, productId);
-                icon.querySelector('i').className = "fa-solid fa-pen-to-square";
-                icon.title = "Editar imatge";
-                
-                // Mostrar icono eliminar, ocultar cancelar
-                const cancelBtn = card.querySelector('.icon-cancelar');
-                const deleteBtn = card.querySelector('.icon-borrar');
-                cancelBtn.style.display = "none";
-                deleteBtn.style.display = "inline-block";
             } else {
                 // Activar modo edición
                 activarModoEdicion(card);
@@ -206,18 +226,22 @@ function activarModoEdicion(card) {
     // Guardar valores originales
     card.dataset.originalNombre = nombreSpan.textContent;
     card.dataset.originalOrden = ordenSpan.textContent;
+    card.dataset.originalImageId = card.dataset.id;
     
     // Crear inputs de edición
     const nombreInput = document.createElement('input');
     nombreInput.type = 'text';
     nombreInput.value = nombreSpan.textContent;
     nombreInput.className = 'edit-input';
+    nombreInput.id = 'edit-nombre';
     
     const ordenInput = document.createElement('input');
     ordenInput.type = 'number';
     ordenInput.value = ordenSpan.textContent;
     ordenInput.className = 'edit-input';
+    ordenInput.id = 'edit-orden';
     ordenInput.min = '1';
+    ordenInput.max = '999';
     
     // Reemplazar spans con inputs
     nombreSpan.replaceWith(nombreInput);
@@ -231,11 +255,26 @@ function activarModoEdicion(card) {
         input.style.border = '1px solid #ddd';
         input.style.borderRadius = '4px';
     });
+    
+    // Agregar eventos de validación en tiempo real
+    nombreInput.addEventListener("input", function() {
+        if (this.value.trim() !== "") {
+            this.style.borderColor = "#ddd";
+            card.querySelector('.error-mensaje').textContent = '';
+        }
+    });
+    
+    ordenInput.addEventListener("input", function() {
+        if (this.value.trim() !== "") {
+            this.style.borderColor = "#ddd";
+            card.querySelector('.error-mensaje').textContent = '';
+        }
+    });
 }
 
 function cancelarEdicion(card) {
-    const nombreInput = card.querySelector('input[type="text"]');
-    const ordenInput = card.querySelector('input[type="number"]');
+    const nombreInput = card.querySelector('#edit-nombre');
+    const ordenInput = card.querySelector('#edit-orden');
     
     if (nombreInput && ordenInput) {
         // Restaurar valores originales
@@ -251,6 +290,9 @@ function cancelarEdicion(card) {
         ordenInput.replaceWith(ordenSpan);
     }
     
+    // Limpiar mensaje de error
+    card.querySelector('.error-mensaje').textContent = '';
+    
     // Restaurar iconos
     const editBtn = card.querySelector('.icon-editar');
     const cancelBtn = card.querySelector('.icon-cancelar');
@@ -262,48 +304,178 @@ function cancelarEdicion(card) {
     deleteBtn.style.display = "inline-block";
 }
 
+// Función para verificar si una posición ya está ocupada por otra imagen
+function posicionOcupada(orden, imagenActualId) {
+    return imagenesExistentes.some(img => 
+        img.order === orden && img.id !== imagenActualId
+    );
+}
+
+// Función para obtener la siguiente posición disponible
+function obtenerSiguientePosicionDisponible(excluirImagenActualId) {
+    if (imagenesExistentes.length === 0) {
+        return 1;
+    }
+    
+    // Ordenar imágenes por posición
+    const posiciones = imagenesExistentes
+        .filter(img => excluirImagenActualId ? img.id !== excluirImagenActualId : true)
+        .map(img => img.order)
+        .sort((a, b) => a - b);
+    
+    // Encontrar el primer hueco disponible
+    for (let i = 1; i <= posiciones.length + 1; i++) {
+        if (!posiciones.includes(i)) {
+            return i;
+        }
+    }
+    
+    // Si no hay huecos, devolver la siguiente posición
+    return posiciones.length + 1;
+}
+
+// Función para mostrar mensaje de error en la tarjeta
+function mostrarErrorEnTarjeta(card, mensaje) {
+    const errorContainer = card.querySelector('.error-mensaje');
+    if (errorContainer) {
+        errorContainer.textContent = mensaje;
+        errorContainer.style.color = "#d32f2f";
+    }
+}
+
+// Función para validar datos de la imagen
+function validarDatosImagen(nombre, orden, imageId) {
+    const nombreTrim = nombre.trim();
+    const ordenNum = parseInt(orden);
+    const imageIdNum = parseInt(imageId);
+    
+    // 1. Validar nombre
+    if (nombreTrim === "") {
+        return { valido: false, campo: "nombre", mensaje: "El nom de la imatge és obligatori" };
+    } else if (nombreTrim.length < 2) {
+        return { valido: false, campo: "nombre", mensaje: "El nom ha de tenir almenys 2 caràcters" };
+    } else if (nombreTrim.length > 100) {
+        return { valido: false, campo: "nombre", mensaje: "El nom no pot tenir més de 100 caràcters" };
+    }
+    
+    const nombreRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ0-9\s.\-_]+$/;
+    if (!nombreRegex.test(nombreTrim)) {
+        return { valido: false, campo: "nombre", mensaje: "El nom només pot contenir lletres, números, espais, punts, guions i guions baixos" };
+    }
+    
+    if (/\s{2,}/.test(nombreTrim)) {
+        return { valido: false, campo: "nombre", mensaje: "El nom no pot tenir múltiples espais consecutius" };
+    }
+    
+    if (nombreTrim.startsWith(" ") || nombreTrim.endsWith(" ")) {
+        return { valido: false, campo: "nombre", mensaje: "El nom no pot començar ni acabar amb espai" };
+    }
+
+    // 2. Validar orden
+    if (orden === "") {
+        return { valido: false, campo: "orden", mensaje: "L'ordre és obligatori" };
+    } else if (isNaN(ordenNum)) {
+        return { valido: false, campo: "orden", mensaje: "L'ordre ha de ser un número vàlid" };
+    } else if (ordenNum < 1) {
+        return { valido: false, campo: "orden", mensaje: "L'ordre ha de ser un número positiu (mínim 1)" };
+    } else if (ordenNum > 999) {
+        return { valido: false, campo: "orden", mensaje: "L'ordre no pot ser major a 999" };
+    } else if (!Number.isInteger(ordenNum)) {
+        return { valido: false, campo: "orden", mensaje: "L'ordre ha de ser un número enter (sense decimals)" };
+    }
+    
+    // 3. Validar que la posición no esté ya ocupada por OTRA imagen
+    if (posicionOcupada(ordenNum, imageIdNum)) {
+        const siguienteDisponible = obtenerSiguientePosicionDisponible(imageIdNum);
+        return { 
+            valido: false, 
+            campo: "orden", 
+            mensaje: `La posició ${ordenNum} ja està ocupada per una altra imatge. Posició disponible: ${siguienteDisponible}` 
+        };
+    }
+
+    return { valido: true, campo: null, mensaje: "" };
+}
+
 async function guardarCambios(card, imageId, productId) {
-    const nombreInput = card.querySelector('input[type="text"]');
-    const ordenInput = card.querySelector('input[type="number"]');
+    const nombreInput = card.querySelector('#edit-nombre');
+    const ordenInput = card.querySelector('#edit-orden');
     
     if (!nombreInput || !ordenInput) return;
     
-    const nuevoNombre = nombreInput.value.trim();
-    const nuevoOrden = parseInt(ordenInput.value) || 1;
+    const nuevoNombre = nombreInput.value;
+    const nuevoOrden = ordenInput.value;
     
-    if (!nuevoNombre) {
-        alert("El nom és obligatori");
+    // Validar datos
+    const validacion = validarDatosImagen(nuevoNombre, nuevoOrden, imageId);
+    
+    if (!validacion.valido) {
+        // Mostrar error en la tarjeta
+        mostrarErrorEnTarjeta(card, validacion.mensaje);
+        
+        // Resaltar el campo con error
+        if (validacion.campo === "nombre") {
+            nombreInput.style.borderColor = "#d32f2f";
+            nombreInput.focus();
+        } else if (validacion.campo === "orden") {
+            ordenInput.style.borderColor = "#d32f2f";
+            ordenInput.focus();
+        }
         return;
     }
     
+    const ordenNum = parseInt(nuevoOrden);
+    
     try {
+        // Obtener la imagen actual para mantener la URL
+        const imagenActual = imagenesExistentes.find(img => img.id === parseInt(imageId));
+        if (!imagenActual) {
+            mostrarErrorEnTarjeta(card, "Error: Imatge no trobada");
+            cancelarEdicion(card);
+            return;
+        }
+        
         const imagenActualizada = {
-            name: nuevoNombre,
-            url: card.querySelector('img').src, // Mantener la misma URL
-            order: nuevoOrden,
+            name: nuevoNombre.trim(),
+            url: imagenActual.url, // Mantener la misma URL
+            order: ordenNum,
             product_id: productId
         };
         
+        console.log("Actualizando imagen:", imagenActualizada);
         await updateId(url, "Productimage", imageId, imagenActualizada);
         
         // Actualizar la visualización
         const nombreSpan = document.createElement('span');
         nombreSpan.className = 'nombre-texto';
-        nombreSpan.textContent = nuevoNombre;
+        nombreSpan.textContent = nuevoNombre.trim();
         
         const ordenSpan = document.createElement('span');
         ordenSpan.className = 'orden-texto';
-        ordenSpan.textContent = nuevoOrden;
+        ordenSpan.textContent = ordenNum;
         
         nombreInput.replaceWith(nombreSpan);
         ordenInput.replaceWith(ordenSpan);
         
-        // Reordenar imágenes si es necesario
-        await cargarImagenesProducto(productId);
+        // Limpiar mensaje de error
+        card.querySelector('.error-mensaje').textContent = '';
+        
+        // Actualizar iconos
+        const editBtn = card.querySelector('.icon-editar');
+        const cancelBtn = card.querySelector('.icon-cancelar');
+        const deleteBtn = card.querySelector('.icon-borrar');
+        
+        editBtn.querySelector('i').className = "fa-solid fa-pen-to-square";
+        editBtn.title = "Editar imatge";
+        cancelBtn.style.display = "none";
+        deleteBtn.style.display = "inline-block";
+        
+        // Actualizar la lista global y recargar
+        await cargarImagenesProductoGlobal(productId);
         
     } catch (error) {
         console.error("Error actualizando imagen:", error);
-        alert("Error al actualizar la imagen.");
+        mostrarErrorEnTarjeta(card, "Error al actualizar la imagen.");
         cancelarEdicion(card);
     }
 }
@@ -312,7 +484,7 @@ async function eliminarImagen(productId, imageId) {
     if (confirm("Segur que vols eliminar esta imatge?")) {
         try {
             await deleteData(url, "Productimage", imageId);
-            await cargarImagenesProducto(productId);
+            await cargarImagenesProductoGlobal(productId);
         } catch (error) {
             console.error("Error eliminando imagen:", error);
             alert("Error al eliminar la imagen.");
