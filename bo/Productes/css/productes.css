@@ -140,7 +140,7 @@ option {
 }
 
 .estado-inactivo {
-    color: #c62828;
+    color: var(--color-borrar);
     font-weight: 600;
 }
 
@@ -172,6 +172,20 @@ option {
 
 #enviar{
     margin-top: 20px
+}
+
+/* Estilos para mensajes de éxito y error */
+.missatge {
+    padding-top: 20px;
+    font-weight: 600;
+}
+
+.missatge-error {
+    color: var(--color-borrar);
+}
+
+.missatge-exito {
+    color: var(--color-primari);
 }
 
 /* Telefono movil*/
