@@ -85,7 +85,14 @@ td {
     background-color: var(--color-boto-netejar);
     display: flex;
 }
-
+.gris{
+    background-color: var(--color-quaternari);
+    padding: 15px;
+    margin-bottom:10px
+}
+.fam-principal:first-child{
+    padding-left: 60px !important;
+}
 /* -------------------- Tabla -------------------- */
 .seccion-tabla {
     padding: 20px;

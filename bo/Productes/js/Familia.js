@@ -177,7 +177,7 @@ function mostrarFamilies(families) {
 
         // Crea el HTML de la fila
         const celdaNom = document.createElement("td");
-        celdaNom.style.paddingLeft = (20 * nivel) + "px";
+        celdaNom.style.paddingLeft = (20 * nivel) + 6 +"px";
         celdaNom.style.cursor = "pointer";
         celdaNom.style.fontWeight = fontWeight;
         celdaNom.textContent = nombreTexto;
@@ -191,7 +191,7 @@ function mostrarFamilies(families) {
         if (fam.image) {
             img.src = "./img/" + fam.image;
         } else {
-            img.src = "../../img/Productes/defaultImage.jpg"; // <-- Aquí pones la ruta de tu imagen por defecto
+            img.src = "../../img/Productes/defaultImage.jpg"; 
         }
 
         img.width = anchoImagen;

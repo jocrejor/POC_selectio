@@ -101,7 +101,7 @@
                     <i class="fa-solid fa-city"></i>
                     Productes
                 </a>
-                <a href="../Clients/index.html" class="opcio_menu">
+                <a href="../Usuaris/index.html" class="opcio_menu">
                     <i class="fa-solid fa-user"></i>
                     Usuaris
                 </a>
@@ -119,27 +119,28 @@
                             <div class="noElements">
                                 <p>No hi ha usuaris registrats</p>
                             </div>
+                            <div class="gris">
+                                        <label>Buscar</label>
+                                        <div class="cercarBOTO">
+                                            <input type="text" id="buscarFamilia"
+                                                placeholder="Buscar família o subfamília..." />
+                                            <button id="btnCercar">
+                                                <i class="fa-solid fa-magnifying-glass"></i>Cercar
+                                            </button>
+                                            <button id="btnNetejar">
+                                                <i class="fa-solid fa-xmark"></i> Netejar
+                                            </button>
+                                        </div>
+                                    </div>
                             <div class="contingut">
                                 <div id="contingutTaula">
-                                    <h3>Buscar</h3>
-                                    <div class="cercarBOTO">
-                                        <input type="text" id="buscarFamilia"
-                                            placeholder="Buscar família o subfamília..." />
-                                        <button id="btnCercar">
-                                            <i class="fa-solid fa-magnifying-glass"></i>Cercar
-                                        </button>
-                                        <button id="btnNetejar">
-                                            <i class="fa-solid fa-xmark"></i> Netejar
-                                        </button>
-                                    </div>
-
                                     <table id="taula">
                                         <thead>
                                             <tr>
-                                                <th>Nombre</th>
-                                                <th>Descripción</th>
-                                                <th>Imagen</th>
-                                                <th>Acciones</th>
+                                                <th>Nom</th>
+                                                <th>Descripció</th>
+                                                <th>Imatge</th>
+                                                <th>Accions</th>
                                             </tr>
                                         </thead>
                                         <tbody id="taulaFamilia"></tbody>
@@ -147,15 +148,15 @@
                                 </div>
                                 <section class="seccion-formulario">
                                     <div class="cabecera-seccion">
-                                        <h2>Formulario</h2>
+                                        <h2>Formulari</h2>
                                     </div>
 
                                     <input type="hidden" id="index" value="-1">
 
                                     <div class="formulario-cuadricula">
                                         <div class="grupo-formulario">
-                                            <label for="nom">Nombre de la familia</label>
-                                            <input type="text" id="nom" placeholder="Introduce el nombre de la familia"
+                                            <label for="nom">Nom de la familia</label>
+                                            <input type="text" id="nom" placeholder="Introdueix el nom de la família"
                                                 required minlength="3" maxlength="100"
                                                 pattern="^[A-Za-z0-9áéíóúàèìòùäëïöüñÁÉÍÓÚÀÈÌÒÙÄËÏÖÜÑ\s'']+$">
                                         </div>
@@ -168,19 +169,19 @@
                                         </div>
 
                                         <div class="grupo-formulario">
-                                            <label for="imatge">Imagen</label>
+                                            <label for="imatge">Imatge</label>
                                             <input type="file" id="imatge" accept="image/*">
                                         </div>
 
                                         <div class="grupo-formulario ancho-completo">
-                                            <label for="descripcio">Descripción</label>
-                                            <textarea id="descripcio" rows="3" placeholder="Descripción de la familia"
+                                            <label for="descripcio">Descripció</label>
+                                            <textarea id="descripcio" rows="3" placeholder="Descripció de la familia"
                                                 required minlength="3" maxlength="250"></textarea>
                                         </div>
                                     </div>
 
                                     <div class="acciones-formulario">
-                                        <button id="afegir" class="btn-principal">Añadir</button>
+                                        <button id="afegir" class="btn-principal">Afegir</button>
                                         <button type="button" onclick="netejarFormulari()"
                                             class="btn-secundario">Limpiar</button>
                                         <p id="missatge"></p>

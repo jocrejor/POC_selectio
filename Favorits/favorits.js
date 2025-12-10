@@ -33,12 +33,6 @@ async function carregarTotesDades() {
         totsAtributs = atributs;
         totsProductAtributs = productAtributs;
 
-        console.log("Dades carregades:", {
-            imatges: totesImatges.length,
-            families: totesFamilies.length,
-            atributs: totsAtributs.length,
-            productAtributs: totsProductAtributs.length
-        });
     } catch (error) {
         console.error("Error carregant dades:", error);
     }
