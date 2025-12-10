@@ -22,13 +22,13 @@ class Comparador {
         }
 
         // Comprovar compatibilitat per família
-        //if (this.productes.length > 0) {
-        //    const primeraFamiliaId = this.productes[0].product.family_id;
-        //    if (producte.family_id !== primeraFamiliaId) {
-        //        alert("El producte no és de la mateixa família que els que ja estàs comparant.");
-        //        return false;
-        //    }
-        //}
+        if (this.productes.length > 0) {
+           const primeraFamiliaId = this.productes[0].product.family_id;
+            if (producte.family_id !== primeraFamiliaId) {
+                alert("El producte no és de la mateixa família que els que ja estàs comparant.");
+                return false;
+            }
+        }
 
         // Afegir el producte
         this.productes.push({ product: producte, sessionId: this.sessionId });
