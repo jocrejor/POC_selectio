@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Llista de productes</title>
+    <script type="text/javascript" src="productesLlistar.js"></script>
+    <style>
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 8px;
+            width: 90%;
+            height: 90%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+        
+        .close {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            color: #aaa;
+            font-size: 35px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        
+        .close:hover,
+        .close:focus {
+            color: black;
+        }
+
+        .modal-content iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Home</h1>
+
+    <!-- Botó per obrir el modal -->
+    <button onclick="obrirModal()">
+        Comparador
+    </button>
+    <br><br>
+    <table>
+        <!-- Capçalera de la taula de productes -->
+        <tr><th>Accions</th><th>&nbsp;</th><th>Nom</th><th>Descripció</th><th>Preu</th></tr>
+        <tbody id="productListTable">
+        
+        </tbody>
+    </table>
+
+    <!-- Modal -->
+    <div id="comparadorModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="tancarModal()">&times;</span>
+            <iframe id="comparadorFrame" src=""></iframe>
+        </div>
+    </div>
+
+    <script>
+        function obrirModal() {
+            const modal = document.getElementById('comparadorModal');
+            const iframe = document.getElementById('comparadorFrame');
+            iframe.src = 'comparador.html';
+            modal.style.display = 'block';
+        }
+        
+        function tancarModal() {
+            const modal = document.getElementById('comparadorModal');
+            const iframe = document.getElementById('comparadorFrame');
+            modal.style.display = 'none';
+            iframe.src = ''; // Limpiar el iframe al cerrar
+        }
+        
+        // Tancar modal si es clica fora
+        window.onclick = function(event) {
+            const modal = document.getElementById('comparadorModal');
+            if (event.target == modal) {
+                tancarModal();
+            }
+        }
+    </script>
+</body>
+</html>
