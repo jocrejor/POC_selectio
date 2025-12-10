@@ -131,7 +131,7 @@ async function main() {
 
         return;
     }
- // Mostrar nom comanda
+    // Mostrar nom comanda
     document.getElementById("comandaNom").textContent = comanda.name || comanda.nom || `ID ${comanda.id}`;
 
     //  Utilitats
@@ -185,6 +185,27 @@ async function main() {
         (document.getElementById("client")).appendChild(op);
     });
 
+function mostrarModalEliminar(onConfirm) {
+    const modal = document.getElementById("modalEliminar");
+    const btnConfirm = document.getElementById("btnEliminarConfirm");
+    const btnCancel = document.getElementById("btnEliminarCancel");
+
+    modal.style.display = "flex";
+
+    function tancarModal() {
+        modal.style.display = "none";
+        btnConfirm.removeEventListener("click", confirmar);
+        btnCancel.removeEventListener("click", tancarModal);
+    }
+
+    function confirmar() {
+        onConfirm();
+        tancarModal();
+    }
+
+    btnConfirm.addEventListener("click", confirmar);
+    btnCancel.addEventListener("click", tancarModal);
+}
 
     function crearFilaProducte(p) {
         let tr = document.createElement("tr");
@@ -272,24 +293,17 @@ async function main() {
         btn.style.border = "none";
 
         btn.addEventListener("click", () => {
-            // Obrir modal
-            let modal = document.getElementById("modalEliminar");
-            modal.classList.remove("ocult");
-
-            // Assignar accions
-            document.getElementById("btnConfirmarEliminar").onclick = () => {
-                tr.remove();
-                calcularTotal();
-                modal.classList.add("ocult");
-            };
-
-            document.getElementById("btnCancelarEliminar").onclick = () => {
-                modal.classList.add("ocult");
-            };
+        mostrarModalEliminar(() => {
+            tr.remove();
+            calcularTotal();
         });
+    });
 
-        tdAcc.appendChild(btn);
-        tr.appendChild(tdAcc);
+    
+
+    tdAcc.appendChild(btn);
+    tr.appendChild(tdAcc);
+
 
         // Recalcular funcions
         function recalcular() {

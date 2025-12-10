@@ -19,7 +19,7 @@
     <script src="../js/common.js"></script>
     <script src="../../apiAccess/crud.js"></script>
     <script src="./js/ComandaModificar.js"></script>
-        <script type="text/javascript" src="../js/logout.js"></script>
+    <script type="text/javascript" src="../js/logout.js"></script>
 
     <link rel="stylesheet" href="./css/ComandaAlta.css">
 
@@ -45,7 +45,7 @@
                         <span class="separador">&nbsp;</span>
                     </div>
                     <div class="tancarSessio">
-                        <a  id="botoTancarSessio" href="#">
+                        <a id="botoTancarSessio" href="#">
                             <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
                         </a>
                     </div>
@@ -105,7 +105,7 @@
                     <i class="fa-solid fa-user"></i>
                     Usuaris
                 </a>
-                <a href="#"  id="tancarSessioLateral" class="opcio_menu eixir_menu">
+                <a href="#" id="tancarSessioLateral" class="opcio_menu eixir_menu">
                     <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
                     Eixir
                 </a>
@@ -173,7 +173,16 @@
                             </div>
                         </div>
                     </div>
-                    
+                    <div id="modalEliminar" class="modalEliminar">
+                        <div class="modalEliminar-content">
+                            <p class="text">Esteu segur que voleu eliminar aquest element? Aquesta acció no es pot
+                                desfer.</p>
+                            <div class="modalEliminar-buttons">
+                                <button id="btnEliminarConfirm" class="btnEliminar">Eliminar</button>
+                                <button id="btnEliminarCancel" class="btnCancelar">Cancel·lar</button>
+                            </div>
+                        </div>
+                    </div>
 
 
                     <div id="missatges"></div>

@@ -114,11 +114,8 @@
             <table id="taula">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Data</th>
-                        <th>Client</th>
-                        <th>Forma de pagament</th>
-                        <th>Enviament (€)</th>
+                        <th>ID Comanda</th>
+                        <th>Total</th>
                         <th>Accions</th>
                     </tr>
                 </thead>
@@ -126,6 +123,18 @@
                     <!-- Filas generadas por JS -->
                 </tbody>
             </table>
+
+            <!-- Modal -->
+            <div id="modalComanda" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h2>Detalls de la comanda</h2>
+                    <div id="detallsComanda">
+                        <!-- Contingut generat per JS -->
+                    </div>
+                </div>
+            </div>
+
         </div>
         <div id="missatgeError"></div>
     </div>
