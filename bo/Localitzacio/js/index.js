@@ -249,7 +249,6 @@ function configurarPaginaEditar() {
                 window.location.href = "../index.html?t=" + new Date().getTime();
             } catch (error) {
                 console.error('Error en actualitzar el país:', error);
-                alert('Error en actualitzar el país: ' + error.message);
             }
         });
     }
@@ -263,6 +262,33 @@ function configurarPaginaEditar() {
             $("#missatgeError").text("");
         });
     }
+// Dins de configurarPaginaEditar()
+$formulari.on("submit", async function(event) {
+    event.preventDefault();
+
+    // Esperar a que es completi la validació (inclosa comprovació de duplicats)
+    const esValid = await validarPaisJQuery();
+    if (!esValid) return;
+
+    const nouNomPais = $inputPais.val().trim();
+    
+    const dadesActualitzades = {
+        name: nouNomPais
+    };
+
+    try {
+        // 1. Actualitzar a l'API
+        await updateId('https://api.serverred.es/', 'Country', paisId, dadesActualitzades);
+        
+        // 2. Esperar un moment per assegurar que l'API ha processat
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // 3. Redirigir a la pàgina principal amb un paràmetre de cache busting
+        window.location.href = "../index.html?t=" + new Date().getTime();
+    } catch (error) {
+        console.error('Error en actualitzar el país:', error);
+    }
+});
 }
 
 // Configura el botó d'afegir a la pàgina principal amb jQuery
@@ -293,7 +319,9 @@ function configurarFormulariCrearJQuery() {
         $formulari.on("submit", async function(event) {
             event.preventDefault();
             
-            if (!validarPaisJQuery()) return;
+            // Esperar a que es completi la validació (inclosa comprovació de duplicats)
+            const esValid = await validarPaisJQuery();
+            if (!esValid) return;
             
             await crearPaisJQuery();
         });
@@ -491,7 +519,7 @@ async function esborrarPais(id) {
     const nomPais = pais ? pais.name : '';
 
     // Finestra emergent de confirmació
-    const confirmar = confirm(`Segur que vols eliminar aquest element "${nomPais}"?`);
+    const confirmar = confirm(`Segur que vols eliminar "${nomPais}"?`);
 
     if (confirmar) {
         try {
@@ -515,7 +543,6 @@ async function esborrarPais(id) {
             mostrarPagina();
         } catch (error) {
             console.error('Error en eliminar el país:', error);
-            alert('Error en eliminar el país.');
         }    
     }
 }
@@ -523,9 +550,11 @@ async function esborrarPais(id) {
 // --- FUNCIONS AUXILIARS ---
 
 // Valida el país amb jQuery
-function validarPaisJQuery() {
+// Valida el país amb jQuery i comprova duplicats
+async function validarPaisJQuery() {
     const $entrada = $("#country");
     const $missatgeError = $("#missatgeError");
+    const $paisId = $("#paisId"); // Per a mode editar
     const nom = $entrada.val().trim();
     
     // Netejar missatge d'error
@@ -551,10 +580,50 @@ function validarPaisJQuery() {
     // Validar patró
     const patro = /^[A-Za-zÀ-ÿ\s]{3,30}$/;
     if (!patro.test(nom)) {
-        $missatgeError.text("Només es permeten lletres i espais (3-30 caràcters).");
+        $missatgeError.text("Nomós es permeten lletres i espais (3-30 caràcters).");
         $entrada.addClass("error");
         $entrada.focus();
         return false;
+    }
+    
+    // --- COMPROVACIÓ DE DUPLICATS ---
+    const nomLower = nom.toLowerCase();
+    
+    try {
+        // Carregar tots els països per comprovar duplicats
+        const païsosExistent = await getData('https://api.serverred.es/', 'Country');
+        
+        // Verificar si estem en mode editar o crear
+        const mode = window.location.pathname.includes('indexEditar.html') ? 'editar' : 'crear';
+        const idIgnorar = mode === 'editar' && $paisId.length ? $paisId.val() : null;
+        
+        // Buscar duplicats
+        const duplicat = païsosExistent.find(p => {
+            if (!p || !p.id || !p.name) return false;
+            
+            // En mode editar, si l'ID coincideix amb el que estem editant, no és duplicat
+            if (mode === 'editar' && idIgnorar && p.id.toString() === idIgnorar.toString()) {
+                return false;
+            }
+            
+            return p.name.toLowerCase() === nomLower;
+        });
+        
+        if (duplicat) {
+            // Mostrar alerta igual que en el teu exemple
+            alert("Aquest país ja existeix.");
+            
+            // També marcar com error al formulari
+            $missatgeError.text(`Aquest país "${duplicat.name}" ja existeix.`);
+            $entrada.addClass("error");
+            $entrada.focus();
+            return false;
+        }
+        
+    } catch (error) {
+        console.error('Error comprovant duplicats:', error);
+        // Si hi ha error en la comprovació, permetem continuar
+        // per no bloquejar l'usuari
     }
     
     return true;

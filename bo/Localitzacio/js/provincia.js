@@ -50,10 +50,7 @@ async function configurarPaginaPrincipal() {
     llegirParametresURL();    
     mostrarInformacioContext();
 
-    if (!countryId) {
-        alert("No s'ha pogut determinar el país seleccionat.");
-        return;
-    }
+    
 
     // Inicialitzem la llista de províncies filtrats pel país
     provinciesFiltrats = Province.filter(p => p.country_id.toString() === countryId.toString());
@@ -118,12 +115,10 @@ async function configurarPaginaEditar() {
 
             try {
                 await updateId('https://api.serverred.es/', 'Province', provinciaId, dadesActualitzades);
-                alert(`Província "${nouNomProvincia}" actualitzada correctament.`);
                 
                 window.location.href = `../provincia.html?id=${countryId}&country=${encodeURIComponent(countryName)}`;
             } catch (error) {
                 console.error('Error actualitzant província:', error);
-                alert('Error actualitzant la província.');
             }
         });
     }
@@ -501,13 +496,11 @@ async function crearProvinciaJQuery() {
 
     try {
         await postData('https://api.serverred.es/', 'Province', novaProvincia);
-        alert(`Província "${nomProvincia}" afegida correctament.`);
         
         // Redirigir a la pàgina principal de províncies
         window.location.href = `../provincia.html?id=${countryId}&country=${encodeURIComponent(countryName)}`;
     } catch (error) {
         console.error('Error creant província:', error);
-        alert('Error afegint la província.');
     }
 }
 
@@ -517,7 +510,7 @@ async function esborrarProvincia(id) {
     const provinciaNom = provincia ? provincia.name : '';
 
     // Finestra emergent de confirmació
-    const confirmar = confirm(`Vols eliminar la província "${provinciaNom}"?`);
+    const confirmar = confirm(`Segur que vols eliminar "${provinciaNom}"?`);
 
     if (confirmar) {
         try {
@@ -539,14 +532,9 @@ async function esborrarProvincia(id) {
             }
             
             mostrarPagina(); // Redibuixa la llista i la paginació
-
-            alert(`La província "${provinciaNom}" s'ha eliminat correctament.`);
         } catch (error) {
             console.error('Error eliminant província:', error);
-            alert('Error eliminant la província.');
         }
-    } else {
-        alert(`S'ha cancel·lat l'eliminació de "${provinciaNom}".`);
     }
 }
 
@@ -599,7 +587,7 @@ function validarProvinciaJQuery() {
         // Filtrar províncies del mateix país
         const provinciesDelPais = Province.filter(p => p.country_id.toString() === countryId.toString());
         if (provinciesDelPais.some(p => p.name.toLowerCase() === nomLower)) {
-            $missatgeError.text("La província ja existeix en este país.");
+            alert("La província ja existeix en este país.");
             $input.addClass("error");
             $input.focus();
             return false;
@@ -613,7 +601,7 @@ function validarProvinciaJQuery() {
         
         const provinciesDelPais = Province.filter(p => p.country_id.toString() === countryId.toString());
         if (provinciesDelPais.some(p => p.name.toLowerCase() === nomLower && p.id !== provinciaIdActual)) {
-            $missatgeError.text("La província ja existeix en este país.");
+            alert("La província ja existeix en este país.");
             $input.addClass("error");
             $input.focus();
             return false;

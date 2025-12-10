@@ -160,11 +160,9 @@ async function configurarPaginaEditar() {
 
             try {
                 await updateId('https://api.serverred.es/', 'City', poblacioId, dadesActualitzades);
-                alert(`Població "${nouNomPoblacio}" actualitzada correctament.`);
                 window.location.href = `../poblacio.html?country_id=${countryId}&country=${encodeURIComponent(countryName)}&province_id=${provinceId}&province=${encodeURIComponent(provinceName)}`;
             } catch (error) {
                 console.error('Error actualitzant:', error);
-                alert('Error actualitzant la població.');
             }
         });
     } else {
@@ -587,11 +585,9 @@ async function crearPoblacioJQuery() {
 
     try {
         await postData('https://api.serverred.es/', 'City', novaPoblacio);
-        alert(`Població "${nomPoblacio}" afegida correctament.`);
         window.location.href = `../poblacio.html?country_id=${countryId}&country=${encodeURIComponent(countryName)}&province_id=${provinceId}&province=${encodeURIComponent(provinceName)}`;
     } catch (error) {
         console.error('Error creant població:', error);
-        alert('Error afegint la població: ' + error.message);
     }
 }
 
@@ -599,7 +595,7 @@ async function esborrarPoblacio(id) {
     const poblacio = City.find(p => p.id === id);
     const nom = poblacio ? poblacio.name : id;
     
-    if (confirm(`Vols eliminar la població "${nom}"?`)) {
+    if (confirm(`Segur que vols eliminar "${nom}"?`)) {
         try {
             await deleteData('https://api.serverred.es/', 'City', id);
             
@@ -621,11 +617,8 @@ async function esborrarPoblacio(id) {
             }
             
             mostrarPagina(); // Redibuixa la llista i la paginació
-            
-            alert(`La població "${nom}" s'ha eliminat correctament.`);
         } catch (error) {
             console.error('Error eliminant:', error);
-            alert('Error eliminant la població.');
         }
     }
 }
@@ -679,7 +672,7 @@ function validarPoblacioJQuery(mode = 'crear', idIgnorar = null) {
     });
 
     if (duplicat) {
-        $errorMsg.text("Aquesta població ja existeix en aquesta província.");
+        alert("Aquesta població ja existeix en aquesta província.");
         $input.addClass("error");
         $input.focus();
         return false;
