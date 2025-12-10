@@ -206,6 +206,7 @@ form {
 #menu_lateral {
     display: block;
     background-color: var(--color-primari);
+    height: 800px;
 }
 
 .opcio_menu {

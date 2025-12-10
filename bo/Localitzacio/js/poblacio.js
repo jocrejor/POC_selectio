@@ -16,7 +16,6 @@ const API_URL = 'https://api.serverred.es/City';
 let paginaActual = 1;
 const itemsPerPagina = 10;
 
-
 // Funció principal que s'executa quan es carrega la pàgina
 async function main() {
     console.log("DEBUG: Iniciant main()");
@@ -55,9 +54,16 @@ async function configurarPaginaPrincipal() {
 
     if (!provinceId) {
         console.warn("No s'ha pogut determinar la província seleccionada.");
+        // Inicialitzem amb array buit si no hi ha provinceId
+        poblacionsFiltrats = [];
     } else {
-        // Inicialitzem la llista de poblacions filtrats
-        poblacionsFiltrats = City.filter(p => p.province_id.toString() === provinceId.toString());
+        // Inicialitzem la llista de poblacions filtrats - AMB COMPROVACIÓ DE NULL
+        poblacionsFiltrats = City.filter(p => {
+            if (!p || p.province_id === null || p.province_id === undefined) {
+                return false;
+            }
+            return p.province_id.toString() === provinceId.toString();
+        });
         // Crida a mostrarPagina() en lloc de mostrarLlista()
         mostrarPagina();
     }
@@ -324,18 +330,24 @@ function configurarCercadorJQuery() {
 function filtrarIMostrarJQuery(textCerca) {
     const textCercaLower = textCerca.toLowerCase().trim();
 
-    // Filtrar per província seleccionada
-    let poblacionsDeProvincia = City.filter(p => p.province_id.toString() === provinceId.toString());
+    // Filtrar per província seleccionada - AMB COMPROVACIÓ DE NULL
+    let poblacionsDeProvincia = City.filter(p => {
+        if (!p || p.province_id === null || p.province_id === undefined) {
+            return false;
+        }
+        return p.province_id.toString() === provinceId.toString();
+    });
     
     if (textCercaLower === '') {
         // Si no hi ha text, mostrar totes les poblacions de la província
         poblacionsFiltrats = poblacionsDeProvincia;
     } else {
-        // Filtrar poblacions segons el text de cerca
-        poblacionsFiltrats = poblacionsDeProvincia.filter(poblacio => 
-            poblacio.name.toLowerCase().includes(textCercaLower) ||
-            poblacio.id.toString().includes(textCercaLower)
-        );
+        // Filtrar poblacions segons el text de cerca - AMB COMPROVACIÓ
+        poblacionsFiltrats = poblacionsDeProvincia.filter(poblacio => {
+            if (!poblacio || !poblacio.name) return false;
+            return poblacio.name.toLowerCase().includes(textCercaLower) ||
+                   poblacio.id.toString().includes(textCercaLower);
+        });
     }
     
     // Resetar la pàgina a 1 i mostrar la nova pàgina
@@ -359,7 +371,6 @@ function mostrarPagina() {
     // Renderitzar els botons de paginació
     renderitzarPaginacio();
 }
-
 
 // --- FUNCIÓ PER A LA PAGINACIÓ LLISCANT I CENTRADA ---
 function renderitzarPaginacio() {
@@ -451,7 +462,6 @@ function renderitzarPaginacio() {
     }
 }
 
-
 // Mostrar missatge si no hi ha resultats
 function mostrarMissatgeSenseResultatsJQuery() {
     const $taulaBody = $('#llista');
@@ -460,8 +470,13 @@ function mostrarMissatgeSenseResultatsJQuery() {
     $('#missatgeSenseResultats').remove();
     $('#missatgeSensePoblacions').remove();
 
-    // Obtenir totes les poblacions de la província actual
-    const poblacionsDeProvincia = City.filter(p => p.province_id.toString() === provinceId.toString());
+    // Obtenir totes les poblacions de la província actual - AMB COMPROVACIÓ DE NULL
+    const poblacionsDeProvincia = City.filter(p => {
+        if (!p || p.province_id === null || p.province_id === undefined) {
+            return false;
+        }
+        return p.province_id.toString() === provinceId.toString();
+    });
 
     if (poblacionsDeProvincia.length === 0) {
         // Si no hi ha poblacions a la base de dades per eixa província
@@ -484,9 +499,14 @@ function actualitzarComptadorResultatsJQuery() {
     
     // Crear nou comptador
     const textCerca = $('#buscar').val();
-    const poblacionsDeProvincia = City.filter(p => p.province_id.toString() === provinceId.toString());
+    const poblacionsDeProvincia = City.filter(p => {
+        if (!p || p.province_id === null || p.province_id === undefined) {
+            return false;
+        }
+        return p.province_id.toString() === provinceId.toString();
+    });
     const total = poblacionsDeProvincia.length;
-    const trobades = poblacionsFiltrats.length;    
+    const trobades = poblacionsFiltrats.length;
 }
 
 // --- TAULA HTML ---
@@ -545,13 +565,15 @@ async function crearPoblacioJQuery() {
     const $poblacioInput = $("#poblacio");
     const nomPoblacio = $poblacioInput.val().trim();
     
-    // Calcular ID màxim
+    // Calcular ID màxim - AMB COMPROVACIÓ
     let maxId = 0;
-    if (City.length > 0) {
+    if (City && City.length > 0) {
         City.forEach(p => {
-            const val = parseInt(p.id);
-            if (!isNaN(val) && val > maxId) {
-                maxId = val;
+            if (p && p.id) {
+                const val = parseInt(p.id);
+                if (!isNaN(val) && val > maxId) {
+                    maxId = val;
+                }
             }
         });
     }
@@ -583,7 +605,12 @@ async function esborrarPoblacio(id) {
             
             // Actualitzem la llista localment per a no haver de recarregar tot
             City = City.filter(p => p.id !== id);
-            poblacionsFiltrats = City.filter(p => p.province_id.toString() === provinceId.toString());
+            poblacionsFiltrats = City.filter(p => {
+                if (!p || p.province_id === null || p.province_id === undefined) {
+                    return false;
+                }
+                return p.province_id.toString() === provinceId.toString();
+            });
             
             // Recalcular paginació després d'esborrar
             const totalPagines = Math.ceil(poblacionsFiltrats.length / itemsPerPagina);
@@ -635,14 +662,17 @@ function validarPoblacioJQuery(mode = 'crear', idIgnorar = null) {
         return false;
     }
 
-    // Duplicats dins de la mateixa província
-    const ciutatsDeProvincia = City.filter(p => 
-        p.province_id && p.province_id.toString() === provinceId.toString()
-    );
+    // Duplicats dins de la mateixa província - AMB COMPROVACIÓ
+    const ciutatsDeProvincia = City.filter(p => {
+        if (!p || !p.province_id || !p.name) {
+            return false;
+        }
+        return p.province_id.toString() === provinceId.toString();
+    });
 
     const duplicat = ciutatsDeProvincia.find(p => {
         // En mode editar, si l'ID coincideix amb el que estem editant, no és duplicat
-        if (mode === 'editar' && p.id.toString() === idIgnorar.toString()) {
+        if (mode === 'editar' && idIgnorar && p.id.toString() === idIgnorar.toString()) {
             return false;
         }
         return p.name.toLowerCase() === nomLower;
