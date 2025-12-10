@@ -495,6 +495,7 @@ function mostrarRegistresTaula(registresPagina, clients) {
         const tdAccions = document.createElement("td");
         tdAccions.setAttribute('data-cell', 'Accions : ');
         tdAccions.setAttribute('data-no-colon', 'true');
+        tdAccions.classList.add("accions");
 
         //Botó d'editar
         const btnEditar = document.createElement("a");
