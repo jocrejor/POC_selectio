@@ -27,7 +27,12 @@ button{
 select{
     color: black;
 }
-
+#btnBuscar{
+    background-color: var(--color-terciari);
+}
+#btnNetejar{
+    background-color: var(--color-boto-netejar);
+}
 /* Botó Afegir Client */
 .contingut > button {
     margin-bottom: 20px;
@@ -45,7 +50,6 @@ select{
 
 #buscadorClients input {
     padding: 6px 8px;
-    border: 1px solid #ccc;
     border-radius: 4px;
 }
 
