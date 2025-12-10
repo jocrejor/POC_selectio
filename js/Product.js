@@ -1,6 +1,26 @@
 document.addEventListener("DOMContentLoaded", main);
 
+// Inicialitzar el comparador globalment
+let comparador = null;
+
+// Funció per inicialitzar el comparador des de la API
+async function inicialitzarComparador() {
+  const apiUrl = 'https://api.serverred.es';
+  const comparatorId = sessionStorage.getItem('currentComparatorId');
+  comparador = new Comparador();
+  
+  if (comparatorId) {
+    try {
+      await comparador.carregarDesDeAPI(apiUrl, comparatorId);
+    } catch (error) {
+      console.warn('No es pot carregar comparador existent, creant-ne un de nou');
+    }
+  }
+}
+
 async function main() {
+  // Inicialitzar el comparador
+  await inicialitzarComparador();
   const llistaFamilies = document.getElementById("llistaFamilies");
   const productList = document.getElementById("productList");
   const paginacioContainer = document.getElementById("paginacio");
@@ -387,7 +407,7 @@ async function main() {
       const compIcon = document.createElement("i");
       compIcon.className = "fa-solid fa-code-compare";
       compBtn.appendChild(compIcon);
-      compBtn.onclick = () => window.location.href = `#`;
+      compBtn.onclick = () => afegirAlComparador(product);
       compBtn.addEventListener("click", e => e.stopPropagation());
 
       btnContainer.appendChild(veureBtn);
@@ -402,6 +422,25 @@ async function main() {
 
   function afegirAlCarret(producte) {
     alert(`Afegit al carret: ${producte.name}`);
+  }
+
+  async function afegirAlComparador(producte) {
+    try {
+      if (!comparador) {
+        await inicialitzarComparador();
+      }
+      
+      const apiUrl = 'https://api.serverred.es';
+      const afegit = await comparador.afegirProducte(producte, apiUrl);
+      
+      if (afegit && comparador.comparatorApiId) {
+        sessionStorage.setItem('currentComparatorId', comparador.comparatorApiId);
+        window.location.href = 'Comparador/comparador.html';
+      }
+    } catch (error) {
+      console.error('Error afegint producte al comparador:', error);
+      alert('Error afegint el producte al comparador');
+    }
   }
 
   // ==================== PAGINACIO ====================
