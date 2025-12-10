@@ -4,9 +4,21 @@ let families = [];
 let atributs = [];
 let productAtributs = [];
 let productImages = [];
+let comparador = null;
 
-const comparador = new Comparador();
-comparador.carregarLocalStorage();
+// Inicialitzar comparador
+async function inicialitzarComparador() {
+    const comparatorId = sessionStorage.getItem('currentComparatorId');
+    comparador = new Comparador();
+    
+    if (comparatorId) {
+        try {
+            await comparador.carregarDesDeAPI(Product.apiUrl, comparatorId);
+        } catch (error) {
+            console.warn('No es pot carregar comparador existent, creant-ne un de nou');
+        }
+    }
+}
 
 // ---------- CARREGAR DADES ----------
 document.addEventListener("DOMContentLoaded", async () => {
@@ -14,6 +26,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!taula) return; // Si no està la taula, no fem res
     
     taula.innerHTML = '<tr><td colspan="5">Carregant productes...</td></tr>';
+
+    // Inicialitzar comparador
+    await inicialitzarComparador();
 
     // Carregar totes les dades des de l'API
     try {
@@ -52,10 +67,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         const tdAccio = document.createElement('td');
         const btnComparar = document.createElement('button');
         btnComparar.textContent = "Comparar";
-        btnComparar.onclick = () => {
-            const afegit = comparador.afegirProducte(producte);
-            if (afegit) {
-                window.location.href = 'comparador.html';
+        btnComparar.onclick = async () => {
+            try {
+                if (!comparador) {
+                    await inicialitzarComparador();
+                }
+                
+                const afegit = await comparador.afegirProducte(producte, Product.apiUrl);
+                
+                if (afegit && comparador.comparatorApiId) {
+                    sessionStorage.setItem('currentComparatorId', comparador.comparatorApiId);
+                    window.location.href = 'comparador.html';
+                }
+            } catch (error) {
+                console.error('Error afegint producte:', error);
+                alert('Error afegint el producte al comparador');
             }
         };
         tdAccio.appendChild(btnComparar);

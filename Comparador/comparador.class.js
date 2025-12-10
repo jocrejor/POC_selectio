@@ -5,9 +5,11 @@ class Comparador {
         this.productes = [];
         this.sessionId = crypto.randomUUID();
         this.pinnedProductId = null; // Nou: ID del producte ancorat
+        this.comparatorApiId = null; // ID del comparador a l'API
+        this.nom = ''; // Nom del comparador
     }
 
-    afegirProducte(producte) {
+    async afegirProducte(producte, apiUrl) {
         // Validar que el producte té les propietats necessàries
         if (!producte || !producte.id) {
             console.error('Producte invàlid:', producte);
@@ -32,68 +34,142 @@ class Comparador {
 
         // Afegir el producte
         this.productes.push({ product: producte, sessionId: this.sessionId });
-        this.guardarLocalStorage();
+        
+        // Guardar a l'API
+        await this.guardarAPI(apiUrl);
         
         console.log('Producte afegit:', producte.name, '- Total productes:', this.productes.length);
         return true;
     }
 
-    eliminarProducte(producteId) {
+    async eliminarProducte(producteId, apiUrl) {
         this.productes = this.productes.filter(p => p.product.id !== producteId);
         // Si eliminem el producte ancorat, netegem el pin
         if (this.pinnedProductId === producteId) {
             this.pinnedProductId = null;
         }
-        this.guardarLocalStorage();
+        
+        // Eliminar de l'API si existeix el comparador
+        if (this.comparatorApiId && apiUrl) {
+            try {
+                await ComparatorProduct.eliminarComparatorProduct(apiUrl, this.comparatorApiId, producteId);
+            } catch (error) {
+                console.error('Error eliminant producte de l\'API:', error);
+            }
+        }
     }
 
     pinProducte(producteId) {
         // Canviar el producte ancorat
         this.pinnedProductId = producteId;
-        this.guardarLocalStorage();
     }
 
-    guardarLocalStorage() {
-        const dataToSave = {
-            sessionId: this.sessionId,
-            productes: this.productes.map(p => p.product),
-            pinnedProductId: this.pinnedProductId
-        };
-        
-        localStorage.setItem('comparador', JSON.stringify(dataToSave));
-        console.log('Guardat a localStorage:', dataToSave.productes.length, 'productes');
-    }
-
-    carregarLocalStorage() {
-        const data = localStorage.getItem('comparador');
-        if (!data) return;
-        
+    // Guardar o actualitzar el comparador a l'API
+    async guardarAPI(apiUrl) {
         try {
-            const obj = JSON.parse(data);
-            this.sessionId = obj.sessionId || crypto.randomUUID();
-            this.pinnedProductId = obj.pinnedProductId || null;
-            
-            // Reconstruir els productes assegurant que són objectes vàlids
-            if (obj.productes && Array.isArray(obj.productes)) {
-                this.productes = obj.productes.map(product => {
-                    // Si el producte ja és un objecte Product amb totes les propietats
-                    if (product && typeof product === 'object') {
-                        return { 
-                            product: product, 
-                            sessionId: this.sessionId 
-                        };
+            // Obtenir client_id si l'usuari està loguejat
+            const currentUser = localStorage.getItem('currentUser');
+            const clientId = currentUser ? JSON.parse(currentUser).id : null;
+            const userAgent = navigator.userAgent;
+
+            // Si ja existeix el comparador, actualitzar-lo
+            if (this.comparatorApiId) {
+                console.log('Actualitzant comparador existent:', this.comparatorApiId);
+                
+                // Actualitzar el comparador a l'API (inclou el nom)
+                await Comparador.actualitzarComparatorAPI(
+                    apiUrl,
+                    this.comparatorApiId,
+                    this.sessionId,
+                    userAgent,
+                    clientId,
+                    this.nom || null
+                );
+                
+                // Obtenir els productes actuals del comparador
+                const productesActuals = await ComparatorProduct.obtenirProductesDeComparator(
+                    apiUrl,
+                    this.comparatorApiId
+                );
+                
+                // Afegir els nous productes que no existeixin
+                const productesNous = this.obtenirProductes();
+                for (const producte of productesNous) {
+                    const existeix = productesActuals.some(cp => cp.product_id === producte.id);
+                    if (!existeix) {
+                        await ComparatorProduct.crearComparatorProduct(
+                            apiUrl,
+                            this.comparatorApiId,
+                            producte.id
+                        );
                     }
-                    return null;
-                }).filter(p => p !== null); // Filtrar nulls
+                }
+            } else {
+                // Crear nou comparador
+                console.log('Creant nou comparador');
+                const comparatorCreat = await Comparador.crearComparatorAPI(
+                    apiUrl,
+                    this.sessionId,
+                    userAgent,
+                    clientId,
+                    this.nom || null
+                );
+                
+                this.comparatorApiId = comparatorCreat.id;
+                
+                // Afegir tots els productes
+                const productesAfegir = this.obtenirProductes();
+                for (const producte of productesAfegir) {
+                    await ComparatorProduct.crearComparatorProduct(
+                        apiUrl,
+                        this.comparatorApiId,
+                        producte.id
+                    );
+                }
             }
             
-            console.log('Comparador carregat des de localStorage:', this.productes.length, 'productes');
+            console.log('Comparador guardat a l\'API amb ID:', this.comparatorApiId);
+            return this.comparatorApiId;
+            
         } catch (error) {
-            console.error('Error carregant comparador des de localStorage:', error);
-            // Si hi ha error, inicialitzar buit
-            this.productes = [];
-            this.sessionId = crypto.randomUUID();
-            this.pinnedProductId = null;
+            console.error('Error guardant el comparador a l\'API:', error);
+            throw error;
+        }
+    }
+
+    // Carregar comparador des de l'API
+    async carregarDesDeAPI(apiUrl, comparatorId) {
+        try {
+            // Obtenir el comparador
+            const comparator = await Comparador.obtenirComparatorAPI(apiUrl, comparatorId);
+            this.sessionId = comparator.session_id;
+            this.comparatorApiId = comparator.id;
+            
+            // Carregar el nom des de l'API
+            this.nom = comparator.name || '';
+            
+            // Obtenir els productes
+            const comparatorProducts = await ComparatorProduct.obtenirProductesDeComparator(
+                apiUrl,
+                comparatorId
+            );
+            
+            // Carregar els productes complets
+            const totsElsProductes = await Product.carregarProductes(apiUrl);
+            const productesDelComparador = totsElsProductes.filter(p => 
+                comparatorProducts.some(cp => cp.product_id === p.id)
+            );
+            
+            this.productes = productesDelComparador.map(p => ({
+                product: p,
+                sessionId: this.sessionId
+            }));
+            
+            console.log('Comparador carregat des de l\'API:', this.productes.length, 'productes');
+            return true;
+        } catch (error) {
+            console.error('Error carregant comparador des de l\'API:', error);
+            throw error;
         }
     }
 
@@ -150,7 +226,8 @@ class Comparador {
             closeBtn.innerHTML = "<i class=\"fa-solid fa-xmark\"></i>";
             closeBtn.className = "product-close";
             closeBtn.onclick = async () => {
-                this.eliminarProducte(p.id);
+                const apiUrl = 'https://api.serverred.es';
+                await this.eliminarProducte(p.id, apiUrl);
                 await carregarComparador();
                 await carregarCarrusel();
             };
@@ -293,11 +370,12 @@ class Comparador {
     }
 
     // Crear un nou comparador a l'API
-    static async crearComparatorAPI(apiUrl, session_id, user_agent, client_id = null) {
+    static async crearComparatorAPI(apiUrl, session_id, user_agent, client_id = null, name = null) {
         const data = {
             session_id: session_id,
             user_agent: user_agent,
-            client_id: client_id
+            client_id: client_id,
+            name: name
         };
 
         const resp = await fetch(`${apiUrl}/Comparator`, {
@@ -321,6 +399,30 @@ class Comparador {
         
         if (!resp.ok) {
             throw new Error('Comparador no trobat');
+        }
+
+        return await resp.json();
+    }
+
+    // Actualitzar un comparador
+    static async actualitzarComparatorAPI(apiUrl, id, session_id, user_agent, client_id = null, name = null) {
+        const data = {
+            session_id: session_id,
+            user_agent: user_agent,
+            client_id: client_id,
+            name: name
+        };
+
+        const resp = await fetch(`${apiUrl}/Comparator/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (!resp.ok) {
+            throw new Error('Error actualitzant el comparador');
         }
 
         return await resp.json();
