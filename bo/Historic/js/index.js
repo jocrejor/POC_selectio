@@ -532,7 +532,7 @@ function mostrarRegistresTaula(registresPagina, clients) {
         btnEsborrar.appendChild(spanBorrar);
 
         btnEsborrar.addEventListener("click", async () => {
-            if (!confirm("Vols esborrar aquest registre?")) return;
+            if (!confirm("Esteu segur que voleu eliminar aquest element? Aquesta acció no es pot desfer.")) return;
             try {
                 if (registre.id !== undefined) await deleteData(url, "Register", registre.id);
             } catch (e) { console.error('Error esborrant registre:', e); }
