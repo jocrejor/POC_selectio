@@ -7,7 +7,8 @@
     <title>Inici | Selectio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com"> <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet"> <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet"> <!-- Google Fonts -->
     <link rel="icon" type="image/png" href="./img/logo_selectio.png">
 
     <link rel="stylesheet" href="./css/normalize.css">
@@ -17,6 +18,8 @@
 
     <script src="https://kit.fontawesome.com/d9f0c40e4f.js" crossorigin="anonymous"></script> <!-- Font Awesome -->
     <script src="./js/common.js"></script>
+    <script src="./js/home.js"></script>
+    <script src="./apiAccess/crud.js"></script>
 </head>
 
 <body class="roboto-font">
@@ -89,13 +92,14 @@
 
     <!-- MAIN -->
     <main>
-        <!-- BLOQUE-1 --> 
+        <!-- BLOQUE-1 -->
         <div class="container-fluid bloque-1 mb-50">
             <div class="container-fluid">
 
                 <div class="row">
                     <div class="col-8  ">
-                        <img src="./img/img_home/portada1.jpg" alt="Lámparas colgantes" class="img-fluid main-hero-img ">
+                        <img src="./img/img_home/portada1.jpg" alt="Lámparas colgantes"
+                            class="img-fluid main-hero-img ">
                     </div>
 
                     <div class="col-4">
@@ -109,40 +113,23 @@
         <!-- BLOQUE-2 -->
         <div class="container-fluid bloque-2 mb-50">
             <div class="container-fluid">
-
                 <div class="col-12">
                     <h1 class="section-title">Tecnologia i gadgets per al teu dia a dia</h1>
                 </div>
 
+                <div class="row text-center" id="categories-container">
+                    <!-- Las categorías se insertarán aquí dinámicamente -->
+                </div>
 
-                <div class="row text-center">
-                    <div class="col-3">
-                        <a href="./Product.html" class="cat-item">
-                            <img src="./img/img_home/procesador.jpg" alt="Components">
-                            <p>Components</p>
-                        </a>
-                    </div>
-                    <div class="col-3">
-                        <a href="./Product.html" class="cat-item">
-                            <img src="./img/img_home/portatil.jpg" alt="Ordinadors">
-                            <p>Ordinadors</p>
-                        </a>
-                    </div>
-                    <div class="col-3">
-                        <a href="./Product.html" class="cat-item">
-                            <img src="./img/img_home/perifericos.jpg" alt="Perifèrics">
-                            <p>Perifèrics</p>
-                        </a>
-                    </div>
-                    <div class="col-3">
-                        <a href="./Product.html" class="cat-item">
-                            <img src="./img/img_home/smartphone.jpg" alt="Smarthpones">
-                            <p>Smarthpones</p>
-                        </a>
-                    </div>
+                <div class="text-center">
+                    <button id="prevBtn" class="custom-btn" style="display:none;"> Anterior</button>
+                    <button id="nextBtn" class="custom-btn">Més categories</button>
                 </div>
             </div>
         </div>
+
+
+
 
         <!-- BLOQUE-3 -->
         <div class="container-fluid bloque-3">
@@ -207,13 +194,16 @@
 
                 <div class="col-6 about-section">
                     <div class="about-text">
-                        <p>Consolidada com una marca de confiança dins del sector tecnològic, SELECTIO va nàixer amb la 
-                            missió d’oferir solucions modernes, eficients i accessibles que faciliten el dia a dia de les persones.
-                            Des de portàtils fins a auriculars i gadgets intel·ligents, la nostra filosofia sempre ha 
+                        <p>Consolidada com una marca de confiança dins del sector tecnològic, SELECTIO va nàixer amb la
+                            missió d’oferir solucions modernes, eficients i accessibles que faciliten el dia a dia de
+                            les persones.
+                            Des de portàtils fins a auriculars i gadgets intel·ligents, la nostra filosofia sempre ha
                             sigut apropar la tecnologia d’última generació a tothom.
                         </p>
-                        <p>Amb un ferm compromís amb la qualitat, la innovació i l’experiència d’usuari, SELECTIO s’ha consolidat 
-                            com un referent al mercat, destacant per productes fiables, dissenys cuidats i una atenció al client 
+                        <p>Amb un ferm compromís amb la qualitat, la innovació i l’experiència d’usuari, SELECTIO s’ha
+                            consolidat
+                            com un referent al mercat, destacant per productes fiables, dissenys cuidats i una atenció
+                            al client
                             pròxima i transparent.
                         </p>
                     </div>
