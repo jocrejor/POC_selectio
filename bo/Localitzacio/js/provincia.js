@@ -448,6 +448,12 @@ function mostrarLlista(array) {
         // Columna Accions
         const tdAccions = $('<td>').attr('data-cell', 'Accions : ');
 
+        // Icona Poblacions
+        const poblacions = $('<a>')
+            .addClass('icon-visualitzar')
+            .attr('href', `poblacio.html?country_id=${countryId}&country=${encodeURIComponent(countryName)}&province_id=${provincia.id}&province=${encodeURIComponent(provincia.name)}`)
+            .html('<i class="fa-solid fa-city"></i>');
+
         // Icona editar
         const editar = $('<a>')
             .addClass('icon-editar')
@@ -458,15 +464,9 @@ function mostrarLlista(array) {
         const borrar = $('<a>')
             .addClass('icon-borrar')
             .html('<i class="fa-solid fa-trash"></i>')
-            .on('click', () => esborrarProvincia(provincia.id));
+            .on('click', () => esborrarProvincia(provincia.id));        
 
-        // Icona Poblacions
-        const poblacions = $('<a>')
-            .addClass('icon-visualitzar')
-            .attr('href', `poblacio.html?country_id=${countryId}&country=${encodeURIComponent(countryName)}&province_id=${provincia.id}&province=${encodeURIComponent(provincia.name)}`)
-            .html('<i class="fa-solid fa-city"></i>');
-
-        tdAccions.append(editar, borrar, poblacions);
+        tdAccions.append(poblacions,editar, borrar);
         fila.append(tdId, tdNom, tdAccions);
         $taulaBody.append(fila);
     });

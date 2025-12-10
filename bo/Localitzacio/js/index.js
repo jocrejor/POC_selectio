@@ -432,8 +432,6 @@ function renderitzarPaginacio() {
     }
 }
 
-
-// Mostra la llista de països a la pàgina amb jQuery
 // Mostra la llista de països a la pàgina amb jQuery
 function mostrarLlista(array) {
     const $cosTaula = $("#llista");
@@ -442,7 +440,7 @@ function mostrarLlista(array) {
     // Netejar contingut
     $cosTaula.empty();
 
-    // DEBUG: Mostrar quants països es mostren
+    // Mostrar quants països es mostren
     console.log(`Mostrant ${array.length} països:`);
     array.forEach(pais => console.log(`- ${pais.id}: ${pais.name}`));
 
@@ -458,6 +456,13 @@ function mostrarLlista(array) {
         // Columna Accions
         const celdaAccions = $('<td>').attr('data-cell', 'Accions : ');
 
+
+        // Icona Províncies
+        const provincies = $('<a>')
+            .addClass('icon-visualitzar')
+            .attr('href', `provincia.html?id=${pais.id}&country=${encodeURIComponent(pais.name)}`)
+            .html('<i class="fa-solid fa-city"></i>');
+
         // Icona editar
         const editar = $('<a>')
             .addClass('icon-editar')
@@ -468,15 +473,9 @@ function mostrarLlista(array) {
         const esborrar = $('<a>')
             .addClass('icon-borrar')
             .html('<i class="fa-solid fa-trash"></i>')
-            .on('click', () => esborrarPais(pais.id));
+            .on('click', () => esborrarPais(pais.id));        
 
-        // Icona Províncies
-        const provincies = $('<a>')
-            .addClass('icon-visualitzar')
-            .attr('href', `provincia.html?id=${pais.id}&country=${encodeURIComponent(pais.name)}`)
-            .html('<i class="fa-solid fa-city"></i>');
-
-        celdaAccions.append(editar, esborrar, provincies);
+        celdaAccions.append(provincies, editar, esborrar);
         fila.append(celdaId, celdaNom, celdaAccions);
         $cosTaula.append(fila);
     });
@@ -549,7 +548,6 @@ async function esborrarPais(id) {
 
 // --- FUNCIONS AUXILIARS ---
 
-// Valida el país amb jQuery
 // Valida el país amb jQuery i comprova duplicats
 async function validarPaisJQuery() {
     const $entrada = $("#country");
@@ -610,8 +608,6 @@ async function validarPaisJQuery() {
         });
         
         if (duplicat) {
-            // Mostrar alerta igual que en el teu exemple
-            alert("Aquest país ja existeix.");
             
             // També marcar com error al formulari
             $missatgeError.text(`Aquest país "${duplicat.name}" ja existeix.`);
@@ -623,7 +619,6 @@ async function validarPaisJQuery() {
     } catch (error) {
         console.error('Error comprovant duplicats:', error);
         // Si hi ha error en la comprovació, permetem continuar
-        // per no bloquejar l'usuari
     }
     
     return true;
@@ -653,7 +648,7 @@ function actualitzarPaisLocal(id, nouNom) {
     }
 }
 
-// Verificar si venim d'una edició (podem afegir un paràmetre a l'URL)
+// Verificar si venim d'una edició
 function verificarRecarregarDespresEdicio() {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has('t')) {
