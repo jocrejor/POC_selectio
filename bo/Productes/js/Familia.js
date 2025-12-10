@@ -308,12 +308,6 @@ async function crearFamilia() {
         }
 
         missatge.appendChild(document.createTextNode("Error al crear la familia."));
-        //Desaparèixer als 3 segons
-        setTimeout(() => {
-            while (missatge.firstChild) {
-                missatge.removeChild(missatge.firstChild);
-            }
-        }, 3000);
     }
 }
 
