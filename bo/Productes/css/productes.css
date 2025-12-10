@@ -35,6 +35,10 @@ label{
     
 }
 
+.btnAnadir{
+    margin-right: 20px;
+}
+
 /* Autocomplete Filtros */
 .ui-menu-item div {
     color: black;
@@ -50,8 +54,8 @@ img {
 /* Accions */
 .acciones-container {
     display: flex;
-    gap: 10px;
-    justify-content: center;
+    gap: 5px;
+    
 }
 
 /* Links*/
@@ -70,25 +74,14 @@ img {
     color: var(--color-borrar) !important;
 }
 
-/* VISUALIZAR*/
-/* Info Productos */
-.producto-detalles .info-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-/* Titulos atributos*/
-.producto-detalles .info-item strong {
-    color: var(--color-secundari);
-    font-weight: 600;
-}
-
-.producto-detalles .info-item p {
+/* VISUALIZAR */
+.atributo span {
     color: black;
 }
 
 /* IMÁGENES */
+
+
 .imagen-producto {
     width: 70%;
 }
@@ -118,7 +111,6 @@ padding-top: 30px;
 /* Atributos del producto */
 .atributo {
     color: black;
-    border-radius: 8px;
     padding: 12px 18px;
     display: flex;
     gap: 10px;
@@ -135,12 +127,12 @@ option {
 
 /* Estado del producto */
 .estado-activo {
-    color: #2e7d32;
-    font-weight: 600;
+    color: #2e7d32 !important;
+    font-weight: 600 !important;
 }
 
 .estado-inactivo {
-    color: var(--color-borrar);
+    color: #c62828;
     font-weight: 600;
 }
 
@@ -174,7 +166,7 @@ option {
     margin-top: 20px
 }
 
-/* Estilos para mensajes de éxito y error */
+/* Esilos para mensajes de éxito y error */
 .missatge {
     padding-top: 20px;
     font-weight: 600;
@@ -187,6 +179,7 @@ option {
 .missatge-exito {
     color: var(--color-primari);
 }
+
 
 /* Telefono movil*/
 @media only screen and (max-width: 767px) {
