@@ -1,5 +1,8 @@
 document.addEventListener("DOMContentLoaded", main);
 
+// Clau per guardar els filtres al localStorage - NOU
+const FILTRES_KEY = 'ofertes_filtres';
+
 function actualitzarDades() {
     if (typeof window.renderitzarTaula === 'function') {
         window.renderitzarTaula();
@@ -17,6 +20,39 @@ function mostrarMensaje(texto, tipo = "success") {
     setTimeout(function () {
         mensaje.remove();
     }, 3000);
+}
+
+// Funció per guardar els filtres al localStorage - NOU
+function guardarFiltres() {
+    const filtres = {
+        nom: document.getElementById('filterName').value,
+        percentMin: document.getElementById('filterPercentMin').value,
+        percentMax: document.getElementById('filterPercentMax').value,
+        dataInici: document.getElementById('filterDateStart').value,
+        dataFi: document.getElementById('filterDateEnd').value
+    };
+    localStorage.setItem(FILTRES_KEY, JSON.stringify(filtres));
+}
+
+// Funció per carregar els filtres des del localStorage - NOU
+function carregarFiltres() {
+    const filtresGuardats = localStorage.getItem(FILTRES_KEY);
+    if (filtresGuardats) {
+        try {
+            const filtres = JSON.parse(filtresGuardats);
+            
+            document.getElementById('filterName').value = filtres.nom || '';
+            document.getElementById('filterPercentMin').value = filtres.percentMin || '';
+            document.getElementById('filterPercentMax').value = filtres.percentMax || '';
+            document.getElementById('filterDateStart').value = filtres.dataInici || '';
+            document.getElementById('filterDateEnd').value = filtres.dataFi || '';
+            
+            return true;
+        } catch (e) {
+            console.error('Error carregant filtres:', e);
+        }
+    }
+    return false;
 }
 
 // Funció principal que inicialitza la llista d'ofertes
@@ -97,12 +133,12 @@ async function main() {
         try {
             // Demanar confirmació a l'usuari
             const confirmacio = confirm("Esteu segur que voleu eliminar aquest element?\nAquesta acció no es pot desfer.");
-
+            
             // Si l'usuari cancela, no fer res
             if (!confirmacio) {
                 return;
             }
-
+            
             // Convertir a número
             const idNumerico = parseInt(ofertaId);
 
@@ -134,9 +170,18 @@ async function main() {
             dades = await carregarOfertesAPI();
             dadesFiltrades = [...dades];
 
-            // Cargar array para paginación
-            carregarArray(dadesFiltrades);
-            window.actualitzarDades();
+            // Carregar filtres guardats (si n'hi ha) - MODIFICAT
+            const filtresCarregats = carregarFiltres();
+            
+            // Si s'han carregat filtres, aplicar-los
+            if (filtresCarregats) {
+                aplicarFiltres();
+            } else {
+                // Si no hi ha filtres guardats, carregar totes les dades
+                carregarArray(dadesFiltrades);
+                window.actualitzarDades();
+            }
+            
             inicialitzarAutocomplete();
         } catch (error) {
             console.error('Error inicialitzant dades:', error);
@@ -357,14 +402,22 @@ async function main() {
         carregarArray(dadesFiltrades);
         window.actualitzarDades();
         amagarSuggestions();
+        
+        // GUARDAR ELS FILTRES APLICATS - NOU
+        guardarFiltres();
     }
 
+    // MODIFICADA per eliminar els filtres del localStorage
     function netejarFiltres() {
         filterName.value = '';
         filterPercentMin.value = '';
         filterPercentMax.value = '';
         filterDateStart.value = '';
         filterDateEnd.value = '';
+        
+        // Eliminar filtres guardats - NOU
+        localStorage.removeItem(FILTRES_KEY);
+        
         dadesFiltrades = [...dades];
         if (typeof paginaActual !== 'undefined') {
             paginaActual = 1;
@@ -424,6 +477,27 @@ async function main() {
                 amagarSuggestions();
             }
         });
+    }
+
+    // Guardar filtres quan es canvien els valors (opcional) - NOU
+    if (filterName) {
+        filterName.addEventListener('change', guardarFiltres);
+    }
+
+    if (filterPercentMin) {
+        filterPercentMin.addEventListener('change', guardarFiltres);
+    }
+
+    if (filterPercentMax) {
+        filterPercentMax.addEventListener('change', guardarFiltres);
+    }
+
+    if (filterDateStart) {
+        filterDateStart.addEventListener('change', guardarFiltres);
+    }
+
+    if (filterDateEnd) {
+        filterDateEnd.addEventListener('change', guardarFiltres);
     }
 
     // Funció principal per a mostrar les ofertes en la taula
