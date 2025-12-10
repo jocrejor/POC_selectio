@@ -97,3 +97,56 @@ button,
     background: #47488e;
     color: white;
 }
+/* Fondo oscurecido */
+/* Fondo oscuro */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 9999; /* 🔥 LO MÁS IMPORTANTE */
+}
+
+/* Oculto */
+.modal-ocult {
+    display: none !important;
+}
+
+/* Caja del modal */
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 350px;
+    text-align: center;
+}
+
+/* Botones */
+.modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.btn-cancelar {
+    background: #777;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+}
+
+.btn-eliminar {
+    background: #d11;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+}
+
