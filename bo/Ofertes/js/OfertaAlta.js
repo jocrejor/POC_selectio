@@ -18,20 +18,20 @@ async function main() {
         // Eliminar l'usuari actual del localStorage
         tancarSessio("../login.html");
     });
-    const formulari = document.getElementById('formOferta');
-    const entradaOferta = document.getElementById('ofertaInput');
+    const formulari          = document.getElementById('formOferta');
+    const entradaOferta      = document.getElementById('ofertaInput');
     const entradaPercentatge = document.getElementById('percentajeInput');
-    const entradaCupo = document.getElementById('couponInput');
-    const entradaDataInici = document.getElementById('dataIniciInput');
-    const entradaDataFi = document.getElementById('datafiInput');
+    const entradaCupo        = document.getElementById('couponInput');
+    const entradaDataInici   = document.getElementById('dataIniciInput');
+    const entradaDataFi      = document.getElementById('datafiInput');
 
     function obtenerFechaHoraLocal() {
-        const ahora = new Date();
-        const año = ahora.getFullYear();
-        const mes = String(ahora.getMonth() + 1).padStart(2, '0');
-        const dia = String(ahora.getDate()).padStart(2, '0');
-        const horas = String(ahora.getHours()).padStart(2, '0');
-        const minutos = String(ahora.getMinutes()).padStart(2, '0');
+        const ahora    = new Date();
+        const año      = ahora.getFullYear();
+        const mes      = String(ahora.getMonth() + 1).padStart(2, '0');
+        const dia      = String(ahora.getDate()).padStart(2, '0');
+        const horas    = String(ahora.getHours()).padStart(2, '0');
+        const minutos  = String(ahora.getMinutes()).padStart(2, '0');
         const segundos = String(ahora.getSeconds()).padStart(2, '0');
 
         return `${año}-${mes}-${dia} ${horas}:${minutos}:${segundos}`;
@@ -55,14 +55,14 @@ async function main() {
     }
 
     // Configurar fecha mínima como hoy
-    const avui = new Date().toISOString().split('T')[0];
+    const avui           = new Date().toISOString().split('T')[0];
     entradaDataInici.min = avui;
-    entradaDataFi.min = avui;
+    entradaDataFi.min    = avui;
 
 function mostrarMissatge(text, tipus = "error") {
     let missatge = document.getElementById("mensaje");
     if (!missatge) {
-        missatge = document.createElement("div");
+        missatge    = document.createElement("div");
         missatge.id = "mensaje";
         formulari.parentNode.insertBefore(missatge, formulari);
     }
