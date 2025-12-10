@@ -1,5 +1,9 @@
 document.addEventListener("DOMContentLoaded", main);
 
+// Inicialitzar el comparador globalment
+const comparador = new Comparador();
+comparador.carregarLocalStorage();
+
 async function main() {
   const llistaFamilies = document.getElementById("llistaFamilies");
   const productList = document.getElementById("productList");
@@ -387,7 +391,7 @@ async function main() {
       const compIcon = document.createElement("i");
       compIcon.className = "fa-solid fa-code-compare";
       compBtn.appendChild(compIcon);
-      compBtn.onclick = () => window.location.href = `#`;
+      compBtn.onclick = () => afegirAlComparador(product);
       compBtn.addEventListener("click", e => e.stopPropagation());
 
       btnContainer.appendChild(veureBtn);
@@ -402,6 +406,16 @@ async function main() {
 
   function afegirAlCarret(producte) {
     alert(`Afegit al carret: ${producte.name}`);
+  }
+
+  function afegirAlComparador(producte) {
+    const afegit = comparador.afegirProducte(producte);
+    if (afegit) {
+
+        window.location.href = 'Comparador/comparador.html';
+      
+    }
+
   }
 
   // ==================== PAGINACIO ====================

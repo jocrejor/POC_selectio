@@ -1,0 +1,99 @@
+:root {
+    --color-primari: #539041;
+    --color-secundari: #47488e;
+    --color-terciari: #f6b01f;
+    --color-quaternari: #ececec;
+    --color-boto-netejar: #94949d;
+    --color-general-lletra: #ffffff;
+}
+
+.contingut p{
+    color: black;
+}
+.contingut strong{
+    color:black;
+}
+
+.icon-editar {
+    background: none;
+}
+.icon-borrar{
+    background: none;
+}
+
+button{
+     cursor: pointer;
+}
+select{
+    color: black;
+}
+#btnBuscar{
+    background-color: var(--color-terciari);
+}
+#btnNetejar{
+    background-color: var(--color-boto-netejar);
+}
+/* Botó Afegir Client */
+.contingut > button {
+    margin-bottom: 20px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+/* Buscador */
+#buscadorClients {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+#buscadorClients input {
+    padding: 6px 8px;
+    border-radius: 4px;
+}
+
+#buscadorClients button {
+    padding: 6px 12px;
+    cursor: pointer;
+}
+
+/* Icones accions */
+.icon-accio {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px !important;
+    padding: 4px;
+}
+
+.icon-accio i {
+    pointer-events: none;
+}
+
+/* Cursor pointer per tot */
+button,
+.paginacio button,
+.icon-accio {
+    cursor: pointer !important;
+}
+
+/* Paginació */
+.paginacio {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+    gap: 8px;
+}
+
+.paginacio button {
+    background: #fff;
+    border: 1px solid #555;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.paginacio .activa {
+    background: #47488e;
+    color: white;
+}

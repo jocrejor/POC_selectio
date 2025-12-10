@@ -5,10 +5,15 @@ let families = [];
 let llistaAutocomplete = [];
 
 async function main() {
+
+
+    botonsTancarSessio("../login.html");
+
+
     try {
         families = await getData(url, "Family");
-        console.log("Familias cargadas:", families);
-        
+        llistaAutocomplete = families.map(f => f.name);
+
         // Ajuste por si la respuesta viene en un array anidado
         if (Array.isArray(families) && families.length > 0 && Array.isArray(families[0])) {
             families = families[0];
@@ -37,6 +42,59 @@ async function main() {
         console.error("Error en main:", error);
         alert("Error al cargar las familias.");
     }
+
+
+    $("#buscarFamilia").autocomplete({
+        source: llistaAutocomplete,
+        minLength: 1,
+        select: function (event, ui) {
+            $("#buscarFamilia").val(ui.item.value);
+            return false;
+        }
+    });
+
+
+
+    function filtrarTaula(text) {
+        $("#taulaFamilia tr").each(function () {
+            const nom = $(this).children().eq(0).text().toLowerCase();
+            const desc = $(this).children().eq(1).text().toLowerCase();
+
+            if (nom.includes(text) || desc.includes(text)) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    }
+    document.getElementById("btnCercar").addEventListener("click", () => {
+        const text = document.getElementById("buscarFamilia").value.trim().toLowerCase();
+        if (text === "") {
+            restaurarTaulaInicial();
+        } else {
+            filtrarTaula(text);
+        }
+    });
+    function restaurarTaulaInicial() {
+        const files = document.querySelectorAll("#taulaFamilia tr");
+
+        files.forEach(tr => {
+            const nivell = parseInt(tr.dataset.nivel);
+
+            if (nivell === 0) {
+                tr.style.display = "";       
+            } else {
+                tr.style.display = "";       
+                tr.classList.add("oculto");  
+            }
+        });
+    }
+
+    document.getElementById("btnNetejar").addEventListener("click", () => {
+        document.getElementById("buscarFamilia").value = "";
+        restaurarTaulaInicial();
+    });
+
 }
 
 // Recargar datos desde el API
@@ -64,7 +122,7 @@ function netejarFormulari() {
     document.getElementById("afegir").textContent = accio;
     const alerta = document.getElementById("alerta");
     alerta.textContent = "";
-    
+
     // Limpiar errores de validación
     esborrarError();
 }
@@ -73,8 +131,6 @@ function netejarFormulari() {
 function mostrarFamilies(families) {
     const taula = document.getElementById("taulaFamilia");
     taula.innerHTML = "";
-
-    console.log("Mostrando familias:", families);
 
     const childrenMap = {};
 
@@ -130,13 +186,18 @@ function mostrarFamilies(families) {
         celdaDesc.textContent = fam.description;
 
         const celdaImg = document.createElement("td");
+        const img = document.createElement("img");
+
         if (fam.image) {
-            const img = document.createElement("img");
             img.src = "./img/" + fam.image;
-            img.width = anchoImagen;
-            img.alt = fam.name;
-            celdaImg.appendChild(img);
+        } else {
+            img.src = "../../img/Productes/defaultImage.jpg"; // <-- Aquí pones la ruta de tu imagen por defecto
         }
+
+        img.width = anchoImagen;
+        img.alt = fam.name;
+        celdaImg.appendChild(img);
+
 
 
 
@@ -229,10 +290,27 @@ async function crearFamilia() {
     try {
         // POST a la API
         await postData(url, "Family", novaFamilia);
-        alert("Familia creada correctamente");
+
+        const missatge = document.getElementById("missatge");
+
+        // Eliminar qualsevol text anterior
+        while (missatge.firstChild) {
+            missatge.removeChild(missatge.firstChild);
+        }
+
+        // Afegir el nou missatge
+        missatge.appendChild(document.createTextNode("Familia creada correctamente"));
+
     } catch (error) {
         console.error("Error creando familia:", error);
-        alert("Error al crear la familia.");
+
+        const missatge = document.getElementById("missatge");
+
+        while (missatge.firstChild) {
+            missatge.removeChild(missatge.firstChild);
+        }
+
+        missatge.appendChild(document.createTextNode("Error al crear la familia."));
     }
 }
 
@@ -276,6 +354,9 @@ window.editarFamilia = function (id) {
 
     accio = "Actualitzar";
     document.getElementById("afegir").textContent = accio;
+    document.getElementById("afegir").scrollIntoView({
+        behavior: "smooth"
+    });
 };
 
 // Elimina una familia después de confirmación
@@ -288,13 +369,12 @@ async function borrarFamilia(id) {
     }
 
     // AVISO DE CONFIRMACIÓN
-    const ok = confirm("Estàs segur que vols eliminar aquesta família?");
+    const ok = confirm("Esteu segur que voleu eliminar aquest element? Aquesta acció no es pot desfer");
     if (!ok) return;
 
     try {
         // DELETE de la API
         await deleteData(url, "Family", id);
-        alert("Familia eliminada correctamente");
         await recargarDatos();
     } catch (error) {
         console.error("Error eliminando familia:", error);
