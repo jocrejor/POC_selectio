@@ -29,6 +29,7 @@ async function principal() {
     const camiActual = window.location.pathname;
     const esPaginaCrear = camiActual.includes('indexCrear.html');
     const esPaginaEditar = camiActual.includes('indexEditar.html');
+    
 
     if (esPaginaCrear) {
         // Configuració per a la pàgina de crear
@@ -38,16 +39,60 @@ async function principal() {
         configurarPaginaEditar();
     } else {
         // Configuració per a la pàgina principal
-        await configurarPaginaPrincipal();
+        await recarregarDadesIPintar();
     }
+
+    // Configurar botó de tancar sessió DESPRÉS de configurar la pàgina
+    setTimeout(() => {
+        try {
+            botonsTancarSessio("../login.html");
+        } catch (error) {
+            console.warn("No s'ha trobat el botó de tancar sessió:", error);
+        }
+    }, 100);
+}
+
+
+// Nova funció per recarregar dades i pintar
+async function recarregarDadesIPintar() {
+    // Carregar dades directament de l'API
+    try {
+        const dades = await getData('https://api.serverred.es/', 'Country');
+        Country = dades || [];
+    } catch (error) {
+        console.error('Error recarregant països:', error);
+        Country = [];
+    }
+    
+    // Inicialitzem la llista de països filtrats
+    paisosFiltrats = [...Country];
+    
+    // Resetar la pàgina
+    paginaActual = 1;
+    
+    // Pintar la llista
+    mostrarPagina();
+
+    // Configurem el botó d'afegir
+    configurarBotoAfegirPrincipal();
+
+    // Configurem el cercador amb jQuery
+    configurarCercadorJQuery();
 }
 
 // Configuració per a la pàgina principal
 async function configurarPaginaPrincipal() {
+    // Verificar si necessitem recarregar
+    verificarRecarregarDespresEdicio();
+        
     await carregarDadesInicials();
 
     // Inicialitzem la llista de països filtrats
     paisosFiltrats = [...Country];
+    
+    // DEBUG
+    console.log(`Països carregats: ${Country.length}`);
+    Country.forEach(p => console.log(`- ${p.id}: ${p.name}`));
     
     // Crida a mostrarPagina() en lloc de mostrarLlista()
     mostrarPagina();
@@ -194,14 +239,17 @@ function configurarPaginaEditar() {
             };
 
             try {
+                // 1. Actualitzar a l'API
                 await updateId('https://api.serverred.es/', 'Country', paisId, dadesActualitzades);
-                alert(`País "${nouNomPais}" actualitzat correctament.`);
                 
-                // Redirigir a la pàgina principal
-                window.location.href = "../index.html";
+                // 2. Esperar un moment per assegurar que l'API ha processat
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                // 3. Redirigir a la pàgina principal amb un paràmetre de cache busting
+                window.location.href = "../index.html?t=" + new Date().getTime();
             } catch (error) {
                 console.error('Error en actualitzar el país:', error);
-                alert('Error en actualitzar el país.');
+                alert('Error en actualitzar el país: ' + error.message);
             }
         });
     }
@@ -358,12 +406,17 @@ function renderitzarPaginacio() {
 
 
 // Mostra la llista de països a la pàgina amb jQuery
+// Mostra la llista de països a la pàgina amb jQuery
 function mostrarLlista(array) {
     const $cosTaula = $("#llista");
     if (!$cosTaula.length) return;
 
     // Netejar contingut
     $cosTaula.empty();
+
+    // DEBUG: Mostrar quants països es mostren
+    console.log(`Mostrant ${array.length} països:`);
+    array.forEach(pais => console.log(`- ${pais.id}: ${pais.name}`));
 
     array.forEach((pais, index) => {
         const fila = $('<tr>');
@@ -423,7 +476,6 @@ async function crearPaisJQuery() {
 
     try {
         await postData('https://api.serverred.es/', 'Country', nouPais);
-        alert(`País "${nomPais}" afegit correctament.`);
         
         // Redirigir a la pàgina principal
         window.location.href = "../index.html";
@@ -439,7 +491,7 @@ async function esborrarPais(id) {
     const nomPais = pais ? pais.name : '';
 
     // Finestra emergent de confirmació
-    const confirmar = confirm(`Vols eliminar el país "${nomPais}"?`);
+    const confirmar = confirm(`Segur que vols eliminar aquest element "${nomPais}"?`);
 
     if (confirmar) {
         try {
@@ -461,14 +513,10 @@ async function esborrarPais(id) {
             }
             
             mostrarPagina();
-            
-            alert(`El país "${nomPais}" s'ha eliminat correctament.`);
         } catch (error) {
             console.error('Error en eliminar el país:', error);
             alert('Error en eliminar el país.');
-        }
-    } else {
-        alert(`S'ha cancel·lat l'eliminació de "${nomPais}".`);
+        }    
     }
 }
 
@@ -519,4 +567,55 @@ function validarPais() {
 
 function configurarBotoTornar() {
     return configurarBotoTornarJQuery();
+}
+
+// Funció per actualitzar un país en l'array local
+function actualitzarPaisLocal(id, nouNom) {
+    // Actualitzar a l'array principal
+    const index = Country.findIndex(pais => pais.id === id);
+    if (index !== -1) {
+        Country[index].name = nouNom;
+    }
+    
+    // Actualitzar a l'array filtrat si existeix
+    const indexFiltrat = paisosFiltrats.findIndex(pais => pais.id === id);
+    if (indexFiltrat !== -1) {
+        paisosFiltrats[indexFiltrat].name = nouNom;
+    }
+}
+
+// Verificar si venim d'una edició (podem afegir un paràmetre a l'URL)
+function verificarRecarregarDespresEdicio() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('t')) {
+        // És una recàrrega després d'editar
+        console.log('Recarregant dades després d\'edició...');
+        // Eliminar el paràmetre de la URL sense refrescar
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+}
+
+// Funció millorada per actualitzar dades a l'API
+async function updateId(baseUrl, endpoint, id, data) {
+    try {
+        console.log(`Actualitzant ${endpoint}/${id}:`, data);
+        const response = await fetch(`${baseUrl}${endpoint}/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+        
+        const result = await response.json();
+        console.log('Resposta de l\'API:', result);
+        return result;
+    } catch (error) {
+        console.error('Error en updateId:', error);
+        throw error;
+    }
 }
