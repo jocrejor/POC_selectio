@@ -261,9 +261,9 @@ function actualitzarSelect() {
 
     // Només famílies principals (parent_id == null)
     families
-        .filter(f => f.parent_id === null)
         .forEach(f => {
             select.innerHTML += `<option value="${f.id}">${f.name}</option>`;
+            console.log(f);
         });
 }
 
