@@ -5,6 +5,13 @@ async function main() {
 
     botonsTancarSessio("../login.html");
     
+    // Mostrar missatge si és modificació
+    const editarId = sessionStorage.getItem("editId");
+    const titolPagina = document.querySelector(".row.pagina p");
+    if (editarId) {
+        alert("Estàs modificant un Històric del comparador");
+    }
+    
     // Carregar dades de les APIs
     const [clients, favorits, comparadors] = await Promise.all([
         carregarClientsApi(url),
@@ -39,8 +46,14 @@ function carregarSelects(clients, favorits, comparadors) {
     const favSelect = document.getElementById("favorite_id");
     const compSelect = document.getElementById("comparator_id");
 
-    // Informació clients
-    clients.forEach(client => {
+    // Informació clients - ordenada alfabèticament
+    const clientsOrdenats = [...clients].sort((a, b) => {
+        const nomA = `${a.name} ${a.surname}`.toLowerCase();
+        const nomB = `${b.name} ${b.surname}`.toLowerCase();
+        return nomA.localeCompare(nomB);
+    });
+    
+    clientsOrdenats.forEach(client => {
         const opcio = document.createElement("option");
         opcio.value = client.id;
         opcio.textContent = `${client.name} ${client.surname}`;
