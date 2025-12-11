@@ -1,3 +1,4 @@
+
 /* Cursor de manita para todos los elementos interactivos */
 button, 
 select{
@@ -72,6 +73,7 @@ img {
 /* Mensajes de errores*/
 .error-message {
     color: var(--color-borrar) !important;
+    font-weight: 600;
 }
 
 /* VISUALIZAR */
@@ -83,7 +85,7 @@ img {
 
 
 .imagen-producto {
-    width: 70%;
+    width: 60%;
 }
 
 .producto-detalles h3 {
@@ -96,16 +98,22 @@ padding-top: 30px;
     justify-content: space-between;
     flex-direction: column;
     align-items: center;
+    padding-bottom: 40px
 }
 
 .col-4 p {
     color: black;
     text-align: center;
+    margin-bottom: -20px;
 }
 
 /* Span nombre imagenes */
 .col-4 span {
     color: black;
+}
+
+#imagenesContainer .col-4 {
+    padding-bottom: 30px;
 }
 
 /* Atributos del producto */
@@ -182,7 +190,7 @@ option {
 
 /* Contenedor fijo para imágenes */
 .imagen-contenedor {
-    width: 60%;
+    width: 65%;
     height: 250px;
     position: relative;
 }
@@ -195,7 +203,7 @@ option {
 }
 
 .producto-detalles .imagen-contenedor {
-    height: 200px; 
+    height: 250px; 
 }
 
 /* Telefono movil*/

@@ -97,11 +97,6 @@ async function cargarImagenesProducto(id) {
         return;
     }
 
-    // Añadir el título de imágenes
-    const h3Imagenes = document.createElement("h3");
-    h3Imagenes.textContent = "Imatges";
-    contenedor.appendChild(h3Imagenes);
-
     const grid = document.createElement("div");
     grid.classList.add("row");
 

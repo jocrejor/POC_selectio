@@ -243,23 +243,6 @@ async function validarYMostrarPrimerError(productoId) {
         return false;
     }
     
-    // Validar descripción contra XSS - prohibir etiquetas HTML y scripts
-    const xssRegex = /<[^>]*>|javascript:|onclick=|onload=|onerror=|onmouseover=|alert\(|confirm\(|prompt\(|eval\(|document\.|window\./i;
-    if (xssRegex.test(description)) {
-        document.getElementById("description").classList.add("error");
-        mostrarMensaje("La descripció conté caràcters o paraules no permeses per seguretat", "error");
-        return false;
-    }
-    
-    // Validar que no contenga caracteres peligrosos pero permitir puntuación normal
-    // Permite letras, números, espacios, puntuación común, pero evita caracteres potencialmente peligrosos
-    const descripcionPermitidaRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ0-9\s.,:;!?'"()\-&%@#\$\*\+=_\/\\\[\]\n\r]+$/;
-    if (!descripcionPermitidaRegex.test(description)) {
-        document.getElementById("description").classList.add("error");
-        mostrarMensaje("La descripció conté símbols no permesos. Pots utilitzar lletres, números, puntuació i símbols com .,:;!?'\"()&-", "error");
-        return false;
-    }
-    
     // Validar que la descripción no sea solo espacios
     if (/^\s+$/.test(description)) {
         document.getElementById("description").classList.add("error");
@@ -327,15 +310,6 @@ function limpiarDescripcion(descripcion) {
     
     // Recortar espacios al inicio y final
     limpia = limpia.trim();
-    
-    // Escapar caracteres HTML para prevenir XSS (aunque el backend también debería hacerlo)
-    limpia = limpia
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#x27;')
-        .replace(/\//g, '&#x2F;');
     
     return limpia;
 }
