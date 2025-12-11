@@ -1,17 +1,17 @@
 * {
-    margin: 0;
-    padding: 0;
     box-sizing: border-box;
 }
 
 body {
     font-family: Arial, sans-serif;
-    padding: 2%;
+    margin: 0;
+    padding: 0;
 }
 
 .comparador-page {
     max-width: 100%;
     margin: 0 auto;
+    padding: 2%;
 }
 
 .comparador-header {
@@ -546,3 +546,4 @@ td.sticky-col-2 {
 .btn-afegir-carrusel:hover {
     background-color: #1976D2;
 }
+

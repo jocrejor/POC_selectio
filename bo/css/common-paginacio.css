@@ -15,7 +15,7 @@
 .paginacio {
     position: block;
     display: flex;
-    justify-content: end;
+    justify-content: flex-end;
     gap: 10px;
     padding-top: 20px;
 }
@@ -39,5 +39,5 @@
 }
 
 .no_mostrar {
-    display: none;
+    display: none !important;
 }

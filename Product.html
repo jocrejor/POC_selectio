@@ -13,10 +13,28 @@
     <link rel="stylesheet" href="./css/Product.css">
     <link rel="stylesheet" href="./css/common.css">
     <script src="https://kit.fontawesome.com/d9f0c40e4f.js" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <script src="./apiAccess/crud.js"></script>
     <script src="./js/common.js"></script>
+    <!-- Scripts del comparador -->
+    <script type="text/javascript" src="./Comparador/Product.class.js"></script>
+    <script type="text/javascript" src="./Comparador/Family.class.js"></script>
+    <script type="text/javascript" src="./Comparador/Attribute.class.js"></script>
+    <script type="text/javascript" src="./Comparador/ProductAttribute.js"></script>
+    <script type="text/javascript" src="./Comparador/ProductImage.class.js"></script>
+    <script type="text/javascript" src="./Comparador/Comparatorproduct.class.js"></script>
+    <script type="text/javascript" src="./Comparador/comparador.class.js"></script>
     <script src="./js/Product.js"></script>
+    <!-- Google tag (gtag.js) --> 
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-V7HH56DBMD"></script> 
+    <script> 
+    window.dataLayer = window.dataLayer || []; 
+    function gtag(){dataLayer.push(arguments);} 
+    gtag('js', new Date()); 
+    gtag('config', 'G-V7HH56DBMD'); 
+    </script>
 </head>
 
 <body class="roboto-font">
@@ -36,7 +54,7 @@
                         <li>
                         <li>
                             <div class="selector"></div>
-                            <a href="./Index.html">Inici</a>
+                            <a href="./index.html">Inici</a>
                         </li>
                         <li  class="actual">
                             <div class="selector"></div>
@@ -48,21 +66,21 @@
                         </li>
                         <li>
                             <div class="selector"></div>
-                            <a href="#">Comparador</a>
+                            <a href="./Comparador/comparador.html">Comparador</a>
                         </li>
                     </ul>
                     <ul class="menu">
                         <li>
                             <div class="selector"></div>
-                            <a href="#">Comandes</a>
+                            <a href="./Comandes/comandesFE.html">Comandes</a>
                         </li>
                         <li class="registre">
                             <div class="selector"></div>
-                            <a href="#">Registre</a>
+                            <a href="./Registre.html">Registre</a>
                         </li>
                         <li class="login">
                             <div class="selector"></div>
-                            <a href="#">Iniciar sessió</a>
+                            <a href="./Login.html">Iniciar sessió</a>
                         </li>
                     </ul>
                 </div>
@@ -76,9 +94,9 @@
             <div class="col-2">
                 <div class="links-header-box">
                     <ul class="links-header">
-                        <li class="contacte"><a href="#"><i class="fa-solid fa-phone"></i></a></li>
-                        <li class="usuari"><a href="#"><i class="fa-regular fa-user"></i></a></li>
-                        <li class="carret"><a href="#"><i class="fa-solid fa-cart-shopping"></i></a></li>
+                        <li class="contacte"><a href="./Contacta/contact.html"><i class="fa-solid fa-phone"></i></a></li>
+                        <li class="usuari"><a href="./AreaPersonal/index.html"><i class="fa-regular fa-user"></i></a></li>
+                        <li class="carret"><a href="./Carret/carret.html"><i class="fa-solid fa-cart-shopping"></i></a></li>
                     </ul>
                 </div>
             </div>
@@ -117,8 +135,8 @@
                         </ul>
 
                         <div class="botonsUtilAside">
-                            <button class="button"><a href="/webFake/Contacta/contact.html">Pàgina de contacte</a></button>
-                            <button class="button"><a href="#">Veure perfil</a></button>
+                            <button class="button"><a href="./Contacta/contact.html">Pàgina de contacte</a></button>
+                            <button class="button"><a href="./AreaPersonal/index.html">Veure perfil</a></button>
                         </div>
                     </aside>
 

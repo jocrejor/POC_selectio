@@ -1,6 +1,26 @@
 document.addEventListener("DOMContentLoaded", main)
 
+// Inicialitzar el comparador globalment
+let comparador = null;
+
+// Funció per inicialitzar el comparador des de la API
+async function inicialitzarComparador() {
+  const apiUrl = 'https://api.serverred.es';
+  const comparatorId = sessionStorage.getItem('currentComparatorId');
+  comparador = new Comparador();
+  
+  if (comparatorId) {
+    try {
+      await comparador.carregarDesDeAPI(apiUrl, comparatorId);
+    } catch (error) {
+      console.warn('No es pot carregar comparador existent, creant-ne un de nou');
+    }
+  }
+}
+
 async function main () {
+  // Inicialitzar el comparador
+  await inicialitzarComparador();
   // Obtenir els paràmetres de la URL
   const params = new URLSearchParams(window.location.search);
   const productId = parseInt(params.get("id"));
@@ -144,7 +164,7 @@ async function main () {
   if(productImg.length > 0){
     img.src = productImg[imgActual].url;
   }else {
-    img.src = "https://png.pngtree.com/png-vector/20221125/ourmid/pngtree-no-image-available-icon-flatvector-illustration-pic-design-profile-vector-png-image_40966566.jpg";
+    img.src = "./img/Productes/defaultImage.jpg";
   }
   carrusel.appendChild(img);
 
@@ -227,7 +247,7 @@ async function main () {
   compBtn.appendChild(document.createTextNode("Comparar"));
   compBtn.classList.add("boto-afegir-comparador", "button");
   compBtn.onclick = () => {
-    window.location.href = "#";
+    afegirAlComparador(product);
   }
   contenidorBT.appendChild(compBtn);
 
@@ -313,4 +333,24 @@ async function main () {
 
   // Afegir tot al contenidor del DOM
   container.appendChild(divPrincipal);
+}
+
+// Funció per afegir producte al comparador
+async function afegirAlComparador(producte) {
+  try {
+    if (!comparador) {
+      await inicialitzarComparador();
+    }
+    
+    const apiUrl = 'https://api.serverred.es';
+    const afegit = await comparador.afegirProducte(producte, apiUrl);
+    
+    if (afegit && comparador.comparatorApiId) {
+      sessionStorage.setItem('currentComparatorId', comparador.comparatorApiId);
+      window.location.href = 'Comparador/comparador.html';
+    }
+  } catch (error) {
+    console.error('Error afegint producte al comparador:', error);
+    alert('Error afegint el producte al comparador');
+  }
 }

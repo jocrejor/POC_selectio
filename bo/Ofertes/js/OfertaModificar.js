@@ -19,21 +19,21 @@ async function main() {
         tancarSessio("../login.html");
     });
     
-    const formulari = document.getElementById('formOferta');
-    const entradaOferta = document.getElementById('ofertaInput');
+    const formulari          = document.getElementById('formOferta');
+    const entradaOferta      = document.getElementById('ofertaInput');
     const entradaPercentatge = document.getElementById('percentajeInput');
-    const entradaCupo = document.getElementById('couponInput');
-    const entradaDataInici = document.getElementById('dataIniciInput');
-    const entradaDataFi = document.getElementById('datafiInput');
-    const pageTitle = document.querySelector('.pagina .col-12 p'); // Per al títol
+    const entradaCupo        = document.getElementById('couponInput');
+    const entradaDataInici   = document.getElementById('dataIniciInput');
+    const entradaDataFi      = document.getElementById('datafiInput');
+    const pageTitle          = document.querySelector('.pagina .col-12 p'); // Per al títol
 
     function obtenerFechaHoraLocal() {
-        const ahora = new Date();
-        const año = ahora.getFullYear();
-        const mes = String(ahora.getMonth() + 1).padStart(2, '0');
-        const dia = String(ahora.getDate()).padStart(2, '0');
-        const horas = String(ahora.getHours()).padStart(2, '0');
-        const minutos = String(ahora.getMinutes()).padStart(2, '0');
+        const ahora    = new Date();
+        const año      = ahora.getFullYear();
+        const mes      = String(ahora.getMonth() + 1).padStart(2, '0');
+        const dia      = String(ahora.getDate()).padStart(2, '0');
+        const horas    = String(ahora.getHours()).padStart(2, '0');
+        const minutos  = String(ahora.getMinutes()).padStart(2, '0');
         const segundos = String(ahora.getSeconds()).padStart(2, '0');
 
         return `${año}-${mes}-${dia} ${horas}:${minutos}:${segundos}`;
@@ -47,7 +47,7 @@ async function main() {
     }
 
     const parametres = new URLSearchParams(window.location.search);
-    const ofertaId = parametres.get('edit');
+    const ofertaId   = parametres.get('edit');
 
     // Validar si hi ha una oferta seleccionada
     if (!ofertaId) {
@@ -69,15 +69,15 @@ async function main() {
                 // Actualitzar el títol de la pàgina amb el nom de l'oferta
                 if (pageTitle) {
                     pageTitle.textContent = `Editar Oferta: ${oferta.description}`;
-                    document.title = `Editar Oferta: ${oferta.description}`;
+                    document.title        = `Editar Oferta: ${oferta.description}`;
                 }
                 
                 // Omplir el formulari amb les dades existents
-                entradaOferta.value = oferta.description || "";
+                entradaOferta.value      = oferta.description || "";
                 entradaPercentatge.value = oferta.discount_percent || "";
-                entradaCupo.value = oferta.coupon || "";
-                entradaDataInici.value = oferta.start_date ? oferta.start_date.split(' ')[0] : "";
-                entradaDataFi.value = oferta.end_date ? oferta.end_date.split(' ')[0] : "";
+                entradaCupo.value        = oferta.coupon || "";
+                entradaDataInici.value   = oferta.start_date ? oferta.start_date.split(' ')[0] : "";
+                entradaDataFi.value      = oferta.end_date ? oferta.end_date.split(' ')[0] : "";
                 return oferta;
             }
             return null;
@@ -103,11 +103,11 @@ async function main() {
     function reiniciarFormulario() {
         // Reiniciar a les dades originals
         if (oferta) {
-            entradaOferta.value = oferta.description || "";
+            entradaOferta.value      = oferta.description || "";
             entradaPercentatge.value = oferta.discount_percent || "";
-            entradaCupo.value = oferta.coupon || "";
-            entradaDataInici.value = oferta.start_date ? oferta.start_date.split(' ')[0] : "";
-            entradaDataFi.value = oferta.end_date ? oferta.end_date.split(' ')[0] : "";
+            entradaCupo.value        = oferta.coupon || "";
+            entradaDataInici.value   = oferta.start_date ? oferta.start_date.split(' ')[0] : "";
+            entradaDataFi.value      = oferta.end_date ? oferta.end_date.split(' ')[0] : "";
         }
         mostrarMissatge("Formulari reiniciat a les dades originals", "success");
     }
@@ -120,7 +120,7 @@ async function main() {
 function mostrarMissatge(text, tipus = "error") {
     let missatge = document.getElementById("mensaje");
     if (!missatge) {
-        missatge = document.createElement("div");
+        missatge    = document.createElement("div");
         missatge.id = "mensaje";
         formulari.parentNode.insertBefore(missatge, formulari);
     }

@@ -8,7 +8,9 @@ const ITEMS_PAGINA = 10;
 
 
  async function iniciar() {
+     thereIsUser("../login.html");
    await carregarDadesLocal();
+ 
 
  document.getElementById("enviar").addEventListener("click", anarcrear);
 document.getElementById("applyFilter").addEventListener("click", function (e) {
@@ -20,8 +22,8 @@ document.getElementById("clearFilter").addEventListener("click", function (e) {
     e.preventDefault();
     limpiarFiltroFamilia();
 });
-
-
+ 
+ botonsTancarSessio("../login.html");
 }
 
 function anarcrear() {
@@ -33,7 +35,18 @@ async  function carregarDadesLocal() {
   families = await getData(url, "Family");
   console.log("ATTRIBUTES ", attributes);
 console.log("FAMILIES ", families);
- 
+
+    let filtroGuardado = localStorage.getItem("filtroFamilia");
+
+    if (filtroGuardado) {
+        filtroFamilia = filtroGuardado;
+
+        let famSelected = families.find(f => String(f.id) === String(filtroFamilia));
+        if (famSelected) {
+            $("#familia").val(famSelected.name);
+            $("#familia").data("id", famSelected.id);
+        }
+    }
   mostrarPagina();
   autocompletarfamilies();
 }
@@ -242,6 +255,7 @@ function aplicarFiltroFamilia() {
 
     filtroFamilia = id ? id : "";      
  paginaActual = 1; 
+  localStorage.setItem("filtroFamilia", filtroFamilia);
     mostrarPagina();
 }
 
@@ -249,7 +263,7 @@ function limpiarFiltroFamilia() {
     $("#familia").val("");       
     $("#familia").data("id", ""); 
     filtroFamilia = "";        
-
+    localStorage.removeItem("filtroFamilia");
     mostrarPagina();           
 }
 

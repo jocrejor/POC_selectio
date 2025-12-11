@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> Gestió de Característiques </title>
             <script src="../../apiAccess/crud.js"></script>
-        <link rel="stylesheet" href="../../backoffice/css/normalize.css">
-        <link rel="stylesheet" href="../../backoffice/css/template_grid3.css">
-        <link rel="stylesheet" href="../../backoffice/css/common.css">
+        <link rel="stylesheet" href="../css/normalize.css">
+        <link rel="stylesheet" href="../css/template_grid3.css">
+        <link rel="stylesheet" href="../css/common.css">
 
         <script src="https://kit.fontawesome.com/f653e778a0.js" crossorigin="anonymous"></script>
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,7 +17,8 @@
             
      <script src="./js/AtributsModificar.js"></script>
 <link rel="stylesheet" href="./css/Atributs.css">
-  <script src="../../backoffice/js/common.js"></script>
+  <script src="../js/common.js"></script>
+      <script src="../js/logout.js"></script>
 </head>
 <body>
     
@@ -33,14 +34,15 @@
                     <div id="sessioUsuari">
                         <div class="headerUsuari">
                             <img src="img/foto_persona.png" alt="No s'ha pogut carregar l'imatge">
-                            <span>Manolo Garibolo</span>
+                         <span id="usuariNom"></span>
                             <span class="separador">&nbsp;</span>
                         </div>
-                        <div class="tancarSessio">
-                            <a href="#">
-                                <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
-                            </a>
-                        </div>
+                   <div class="tancarSessio">
+    <a href="#" id="botoTancarSessio">
+        <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
+    </a>
+</div>
+
                     </div>
                 </div>
             </div>
@@ -53,10 +55,10 @@
             <!-- Menu lateral -->
             <div class="row main">
                 <div id="menu_lateral" class="col-2">
-                    <a href="./Atributs.html" class="opcio_menu">
-                        <i class="fa-solid fa-paperclip"></i>
+                    <div class="opcio_seleccionada">
+                        <i class="fa-solid fa-user"></i>
                         Atributs
-                    </a>
+                    </div>
                     <a href="#" class="opcio_menu">
                         <i class="fa-solid fa-cart-shopping"></i>
                         Carrets
@@ -81,11 +83,8 @@
                         <i class="fa-solid fa-list"></i>
                         Families
                     </a>
-                    <a href="../Favorits/Favorits.html" class="opcio_menu">
-                        <i class="fa-solid fa-star"></i>
-                        Favorits
-                    </a>
-                    <a href="../Localitzacio/in100dex.html" class="opcio_menu">
+                 
+                    <a href="../Localitzacio/index.html" class="opcio_menu">
                         <i class="fa-solid fa-location-dot"></i>
                         Localitzacions
                     </a>
@@ -97,10 +96,10 @@
                         <i class="fa-solid fa-city"></i>
                         Productes
                     </a>
-                    <div class="opcio_seleccionada">
-                        <i class="fa-solid fa-user"></i>
+                    <a href="../Usuaris/index.html" class="opcio_menu">
+                        <i class="fa-solid fa-paperclip"></i>
                         Usuaris
-                    </div>
+                    </a>
                     <a href="#" class="opcio_menu eixir_menu">
                         <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
                         Eixir

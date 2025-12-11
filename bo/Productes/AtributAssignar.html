@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Crear i Llistar Product Attributes</title>
 
-          <link rel="stylesheet" href="../../backoffice/css/normalize.css">
-        <link rel="stylesheet" href="../../backoffice/css/template_grid3.css">
+          <link rel="stylesheet" href="../css/normalize.css">
+        <link rel="stylesheet" href="../css/template_grid3.css">
 
-      <link rel="stylesheet" href="../../backoffice/css/common.css">
-    <link rel="stylesheet" href="../../backoffice/css/common-table.css">
+      <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/common-table.css">
          <link rel="stylesheet" href="./css/Atributs.css">
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
@@ -20,13 +20,11 @@
         <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" 
         rel="stylesheet">
 
-
- 
-
   <script src="../../apiAccess/crud.js"></script>
 
   <script src="./js/AttributAssignar.js"></script>
-            <script src="../../backoffice/js/common.js"></script>
+            <script src="../js/common.js"></script>
+                <script src="../js/logout.js"></script>
 </head>
 
 <body>
@@ -43,14 +41,15 @@
                     <div id="sessioUsuari">
                         <div class="headerUsuari">
                             <img src="img/foto_persona.png" alt="No s'ha pogut carregar l'imatge">
-                            <span>Manolo Garibolo</span>
+                           <span id="usuariNom"></span>
                             <span class="separador">&nbsp;</span>
                         </div>
-                        <div class="tancarSessio">
-                            <a href="#">
-                                <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
-                            </a>
-                        </div>
+                   <div class="tancarSessio">
+    <a href="#" id="botoTancarSessio">
+        <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
+    </a>
+</div>
+
                     </div>
                 </div>
             </div>
@@ -63,10 +62,10 @@
             <!-- Menu lateral -->
             <div class="row main">
                 <div id="menu_lateral" class="col-2">
-                    <a href="./Atributs.html" class="opcio_menu">
-                        <i class="fa-solid fa-paperclip"></i>
+                    <div class="opcio_seleccionada">
+                        <i class="fa-solid fa-user"></i>
                         Atributs
-                    </a>
+                    </div>
                     <a href="#" class="opcio_menu">
                         <i class="fa-solid fa-cart-shopping"></i>
                         Carrets
@@ -104,10 +103,10 @@
                         <i class="fa-solid fa-city"></i>
                         Productes
                     </a>
-                    <div class="opcio_seleccionada">
-                        <i class="fa-solid fa-user"></i>
+                    <a href="../Usuaris/index.html" class="opcio_menu">
+                        <i class="fa-solid fa-paperclip"></i>
                         Usuaris
-                    </div>
+                    </a>
                     <a href="#" class="opcio_menu eixir_menu">
                         <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
                         Eixir
