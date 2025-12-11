@@ -4,7 +4,7 @@
     --color-terciari : #f6b01f;
     --color-quaternari : #ececec;
     --color-boto-netejar : #94949d;
-    --color-general-lletra : #ffffff;
+    --color-general-lletra: #ffffff;
     --color-vores : #495057;
     --color-boto-netejar : #94949d;
     --color-borrar : #931621;
@@ -18,7 +18,6 @@
 
 * {
     font-family: Roboto;
-    color: var(--color-general-lletra);
 }
 
 /* Estils del header */
@@ -199,6 +198,7 @@ form {
     text-align: center;
     font-weight: 400;
     font-size: 1em;
+    color: var(--color-general-lletra);
 }
 
 /* Estils per al main */
@@ -219,6 +219,7 @@ form {
     padding-top: 15px;
     padding-bottom: 17px;
     border-bottom: 1px solid var(--color-general-lletra);
+    color: var(--color-general-lletra);
 }
 
 .opcio_menu:hover {
@@ -306,6 +307,54 @@ button i {
 }
 .netejar i {
     font-size: 0.75em;
+}
+
+/* Estils autocompletar */
+.ui-autocomplete {
+    background-color: var(--color-general-lletra);
+    border: 1px solid var(--color-vores);
+    max-height: 200px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    z-index: 99;
+    padding: 0;
+    border-radius: 5px;
+    width: 25.5%;
+}
+
+.ui-autocomplete li {
+    list-style: none;
+    padding-left: 20px;
+}
+
+.ui-autocomplete li:hover {
+    background-color: var(--color-quaternari);
+    cursor: pointer;
+}
+
+.ui-autocomplete {
+    overflow-y: hidden;
+}
+
+.ui-autocomplete .ui-menu-item {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.ui-autocomplete .ui-menu-item-wrapper {
+    padding: 8px 20px !important;
+    margin: 0 !important;
+}
+
+.ui-autocomplete .ui-menu-item-wrapper.ui-state-active,
+.ui-autocomplete .ui-menu-item-wrapper.ui-state-hover,
+.ui-autocomplete .ui-menu-item-wrapper:hover,
+.ui-autocomplete li.ui-state-active .ui-menu-item-wrapper,
+.ui-autocomplete li.ui-state-hover .ui-menu-item-wrapper,
+.ui-autocomplete li:hover .ui-menu-item-wrapper {
+    background-color: var(--color-quaternari);
+    color: var(--color-letra-paginacio);
+    border: none !important;
 }
 
 /* Estils per a la taula */

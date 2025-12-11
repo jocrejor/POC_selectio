@@ -270,59 +270,134 @@ function configurarBotoTornarJQuery() {
 
 // --- CERCADOR AMB JQUERY ---
 
+// Reemplaza la función configurarCercadorJQuery() por esta versión con autocomplete:
+
 function configurarCercadorJQuery() {
-    const $buscarInput = $('#buscar');
-    const $cercarButton = $('.cercar');
-    const $netejarButton = $('.netejar');
+    const $entradaCercar = $('#buscar');
+    const $botoCercar = $('.cercar');
+    const $botoNetejar = $('.netejar');
 
-    if ($buscarInput.length) {
-        // Cerca en temps real a l'escriure
-        $buscarInput.on('input', function() {
-            const text = $(this).val();
-            filtrarIMostrarJQuery(text);
+    if ($entradaCercar.length) {
+        
+        // --- 1. CONFIGURACIÓ JQUERY UI AUTOCOMPLETE ---
+        $entradaCercar.autocomplete({
+            minLength: 1, 
+            source: function(request, response) {
+                const terme = request.term.toLowerCase();
+                
+                // IMPORTANT: Filtrar només les poblacions de la província actual
+                if (City && City.length > 0 && provinceId) {
+                    // Primer filtrar per provincia
+                    const poblacionsDeProvincia = City.filter(poblacio => {
+                        if (!poblacio || poblacio.province_id === null || poblacio.province_id === undefined) {
+                            return false;
+                        }
+                        return poblacio.province_id.toString() === provinceId.toString();
+                    });
+                    
+                    // Després filtrar per text de cerca
+                    const resultats = poblacionsDeProvincia
+                        .filter(poblacio => {
+                            if (!poblacio || !poblacio.name) return false;
+                            return poblacio.name.toLowerCase().includes(terme) ||
+                                   poblacio.id.toString().includes(terme);
+                        })
+                        .map(poblacio => {
+                            return {
+                                label: poblacio.name, 
+                                value: poblacio.name, 
+                                id: poblacio.id        
+                            };
+                        });
+                    
+                    // Ordenar alfabèticament per nom
+                    resultats.sort((a, b) => a.label.localeCompare(b.label));
+                    
+                    response(resultats);
+                } else {
+                    console.error("Falten dades: City no està definit o no hi ha provinceId");
+                    response([]);
+                }
+            },
+            select: function(event, ui) {
+                $entradaCercar.val(ui.item.value);
+                // Executar la cerca automàticament al seleccionar una opció
+                setTimeout(() => {
+                    filtrarIMostrarJQuery(ui.item.value);
+                    $botoCercar.addClass('cercant');
+                    setTimeout(() => $botoCercar.removeClass('cercant'), 300);
+                }, 100);
+                return false; 
+            },
+            focus: function(event, ui) {
+                // Mostrar el valor en el camp quan es navega amb teclat
+                $entradaCercar.val(ui.item.value);
+                return false;
+            }
         });
 
-        // Cerca al fer clic al botó
-        $cercarButton.on('click', function(e) {
+        // --- 2. GESTIÓ DEL BOTÓ CERCAR (LUPA) ---
+        $botoCercar.on('click', function(e) {
             e.preventDefault();
-            const text = $buscarInput.val();
+            const text = $entradaCercar.val();
+            
+            // Tançar l'autocomplete quan es fa clic al botó
+            $entradaCercar.autocomplete("close");
+            
             filtrarIMostrarJQuery(text);
-            
-            // Efecte visual de cerca
-            $(this).addClass('buscant');
-            setTimeout(() => {
-                $(this).removeClass('buscant');
-            }, 300);
+
+            $(this).addClass('cercant');
+            setTimeout(() => $(this).removeClass('cercant'), 300);
         });
 
-        // Netejar cerca
-        $netejarButton.on('click', function(e) {
-            e.preventDefault();
-            $buscarInput.val('');
-            filtrarIMostrarJQuery('');
-            
-            // Enfocar el camp de cerca després de netejar
-            $buscarInput.focus();
-        });
+        // --- 3. EVENTS DE TECLAT I NETEJA ---
 
-        // Permetre cerca amb Enter
-        $buscarInput.on('keypress', function(e) {
+        // Detectar "Enter" - tancar autocomplete i cercar
+        $entradaCercar.on('keypress', function(e) {
             if (e.which === 13) {
                 e.preventDefault();
-                $cercarButton.trigger('click');
+                $entradaCercar.autocomplete("close");
+                $botoCercar.trigger('click');
             }
         });
 
-        // Mostrar/amagar icona de netejar segons si hi ha text
-        $buscarInput.on('input', function() {
-            if ($(this).val().length > 0) {
-                $(this).addClass('amb-text');
-            } else {
-                $(this).removeClass('amb-text');
+        // Gestió visual mentre s'escriu
+        $entradaCercar.on('input', function() {
+            const text = $(this).val();            
+            
+            // Netejar filtres si el camp està buit
+            if (text === '') {
+                filtrarIMostrarJQuery('');
+            }
+            
+            else {
+                // Fallback si no existeix la funció global
+                if (text.length > 0) {
+                    $(this).addClass('amb-text');
+                    $botoNetejar.show();
+                } else {
+                    $(this).removeClass('amb-text');
+                    $botoNetejar.hide();
+                }
             }
         });
+
+        // Botó de netejar (la creu)
+        $botoNetejar.on('click', function(e) {
+            e.preventDefault();
+            $entradaCercar.val(''); 
+            $entradaCercar.autocomplete("close");
+            filtrarIMostrarJQuery('');
+            $entradaCercar.focus(); 
+            
+            
+        });
+
+        // Mostrar/amagar botó netejar al carregar
+        
     }
 }
+
 
 // Funció per filtrar i mostrar resultats amb jQuery
 function filtrarIMostrarJQuery(textCerca) {

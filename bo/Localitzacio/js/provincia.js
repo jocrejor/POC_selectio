@@ -134,56 +134,98 @@ async function configurarPaginaEditar() {
     }
 }
 
-// Funció per configurar el cercador amb jQuery
+// Funció per configurar el cercador amb jQuery UI Autocomplete
+// Funció per configurar el cercador amb jQuery UI Autocomplete
 function configurarCercadorJQuery() {
-    const $buscarInput = $('#buscar');
-    const $cercarButton = $('.cercar');
-    const $netejarButton = $('.netejar');
+    const $entradaCercar = $('#buscar');
+    const $botoCercar = $('.cercar');
+    const $botoNetejar = $('.netejar');
 
-    if ($buscarInput.length) {
-        // Cerca en temps real a l'escriure
-        $buscarInput.on('input', function() {
-            const text = $(this).val();
-            filtrarIMostrar(text);
-        });
-
-        // Cerca al fer clic al botó
-        $cercarButton.on('click', function(e) {
-            e.preventDefault();
-            const text = $buscarInput.val();
-            filtrarIMostrar(text);
-            
-            // Efecte visual de cerca
-            $(this).addClass('buscant');
-            setTimeout(() => {
-                $(this).removeClass('buscant');
-            }, 300);
-        });
-
-        // Netejar cerca
-        $netejarButton.on('click', function(e) {
-            e.preventDefault();
-            $buscarInput.val('');
-            filtrarIMostrar('');
-            
-            // Enfocar el camp de cerca després de netejar
-            $buscarInput.focus();
-        });
-
-        // Permetre cerca amb Enter
-        $buscarInput.on('keypress', function(e) {
-            if (e.which === 13) {
-                e.preventDefault();
-                $cercarButton.trigger('click');
+    if ($entradaCercar.length) {
+        
+        // --- 1. CONFIGURACIÓ JQUERY UI AUTOCOMPLETE ---
+        $entradaCercar.autocomplete({
+            minLength: 1, 
+            source: function(request, response) {
+                const terme = request.term.toLowerCase();
+                
+                // IMPORTANT: Filtrar només les províncies del país actual
+                if (typeof Province !== 'undefined' && countryId) {
+                    const resultats = Province
+                        .filter(provincia => 
+                            // Filtrar per país
+                            provincia.country_id.toString() === countryId.toString() &&
+                            // Filtrar per text de cerca
+                            provincia.name.toLowerCase().includes(terme)
+                        )
+                        .map(provincia => {
+                            return {
+                                label: provincia.name, 
+                                value: provincia.name, 
+                                id: provincia.id        
+                            };
+                        });
+                    response(resultats);
+                } else {
+                    console.error("Falten dades: Province o countryId no estan definits");
+                    response([]);
+                }
+            },
+            select: function(event, ui) {
+                $entradaCercar.val(ui.item.value);
+                return false; 
             }
         });
 
-        // Mostrar/amagar icona de netejar segons si hi ha text
-        $buscarInput.on('input', function() {
-            if ($(this).val().length > 0) {
-                $(this).addClass('amb-text');
+        // --- 2. GESTIÓ DEL BOTÓ CERCAR (LUPA) ---
+        $botoCercar.on('click', function(e) {
+            e.preventDefault();
+            const text = $entradaCercar.val();
+            
+            filtrarIMostrar(text);
+
+            $(this).addClass('cercant');
+            setTimeout(() => $(this).removeClass('cercant'), 300);
+        });
+
+        // --- 3. EVENTS DE TECLAT I NETEJA ---
+
+        // Detectar "Enter"
+        $entradaCercar.on('keypress', function(e) {
+            if (e.which === 13) {
+                e.preventDefault();
+                $entradaCercar.autocomplete("close");
+                $botoCercar.trigger('click');
+            }
+        });
+
+        // Gestió visual mentre s'escriu
+        $entradaCercar.on('input', function() {
+            const text = $(this).val();            
+            
+            if (text === '') {
+                filtrarIMostrar('');
+            }
+            
+            if (typeof gestionarBotoNetejar === 'function') {
+                gestionarBotoNetejar($(this), $botoNetejar);
             } else {
-                $(this).removeClass('amb-text');
+                if (text.length > 0) $(this).addClass('amb-text');
+                else $(this).removeClass('amb-text');
+            }
+        });
+
+        // Botó de netejar (la creu)
+        $botoNetejar.on('click', function(e) {
+            e.preventDefault();
+            $entradaCercar.val(''); 
+            filtrarIMostrar('');
+            $entradaCercar.focus(); 
+            
+            if (typeof gestionarBotoNetejar === 'function') {
+                gestionarBotoNetejar($entradaCercar, $botoNetejar);
+            } else {
+                $entradaCercar.removeClass('amb-text');
             }
         });
     }

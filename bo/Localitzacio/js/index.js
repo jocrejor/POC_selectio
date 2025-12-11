@@ -105,56 +105,87 @@ async function configurarPaginaPrincipal() {
 }
 
 // Funció millorada per a configurar el cercador amb jQuery
+// Funció millorada per a configurar el cercador amb jQuery UI Autocomplete
+// (Només cerca en fer clic al botó)
 function configurarCercadorJQuery() {
     const $entradaCercar = $('#buscar');
-    const $botoCercar = $('.cercar');
+    const $botoCercar = $('.cercar'); // Seleccionem el botó de la lupa
     const $botoNetejar = $('.netejar');
 
     if ($entradaCercar.length) {
-        // Cerca en temps real mentre s'escriu
-        $entradaCercar.on('input', function() {
-            const text = $(this).val(); // Ja no necessitem .toLowerCase() aquí
-            filtrarIPintar(text);
+        
+        // --- 1. CONFIGURACIÓ JQUERY UI AUTOCOMPLETE ---
+        $entradaCercar.autocomplete({
+            minLength: 1, 
+            source: function(request, response) {
+                const terme = request.term.toLowerCase();
+                
+                // Filtrar les dades de la variable global 'Country' per suggerir
+                const resultats = Country.filter(pais => 
+                    pais.name.toLowerCase().includes(terme)
+                ).map(pais => {
+                    return {
+                        label: pais.name, 
+                        value: pais.name, 
+                        id: pais.id       
+                    };
+                });
+
+                response(resultats);
+            },
+            select: function(event, ui) {
+                // CANVI IMPORTANT:
+                // Quan seleccionem, només posem el valor a l'input.
+                // NO cridem a filtrarIPintar() aquí.
+                $entradaCercar.val(ui.item.value);
+                
+                // Retornem false per evitar comportaments per defecte extra
+                return false; 
+            }
         });
 
-        // Cerca en fer clic al botó
+        // --- 2. GESTIÓ DEL BOTÓ CERCAR (LUPA) ---
         $botoCercar.on('click', function(e) {
             e.preventDefault();
-            const text = $entradaCercar.val(); // Ja no necessitem .toLowerCase() aquí
+            const text = $entradaCercar.val();
+            
+            // AQUÍ és on realment es dispara la cerca
             filtrarIPintar(text);
-            
-            // Efecte visual de cerca
+
+            // Efecte visual opcional
             $(this).addClass('cercant');
-            setTimeout(() => {
-                $(this).removeClass('cercant');
-            }, 300);
+            setTimeout(() => $(this).removeClass('cercant'), 300);
         });
 
-        // Netejar cerca
-        $botoNetejar.on('click', function(e) {
-            e.preventDefault();
-            $entradaCercar.val('');
-            filtrarIPintar('');
-            
-            // Enfocar el camp de cerca després de netejar
-            $entradaCercar.focus();
-        });
+        // --- 3. EVENTS DE TECLAT I NETEJA ---
 
-        // Permetre cerca amb Enter
+        // Detectar "Enter" -> Simula clic al botó cercar
         $entradaCercar.on('keypress', function(e) {
             if (e.which === 13) {
                 e.preventDefault();
-                $botoCercar.trigger('click');
+                $entradaCercar.autocomplete("close"); // Tanquem el menú si està obert
+                $botoCercar.trigger('click');         // Disparem el botó manualment
             }
         });
 
-        // Mostrar/amagar icona de netejar segons si hi ha text
+        // Gestió visual mentre s'escriu
         $entradaCercar.on('input', function() {
-            if ($(this).val().length > 0) {
-                $(this).addClass('amb-text');
-            } else {
-                $(this).removeClass('amb-text');
+            const text = $(this).val();            
+            
+            if (text === '') {
+                filtrarIPintar('');
             }
+            
+            gestionarBotoNetejar($(this), $botoNetejar);
+        });
+
+        // Botó de netejar (la creu)
+        $botoNetejar.on('click', function(e) {
+            e.preventDefault();
+            $entradaCercar.val(''); 
+            filtrarIPintar('');     // Aquí sí netegem la taula perquè és un botó explícit
+            $entradaCercar.focus(); 
+            gestionarBotoNetejar($entradaCercar, $botoNetejar);
         });
     }
 }
