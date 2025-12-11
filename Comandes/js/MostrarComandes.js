@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Funció per mostrar missatges d'error o notificacions
 function mostrarMissatge(text) {
-    const div = document.getElementById("missatgeError");
+    let div = document.getElementById("missatgeError");
     if (div) {
         div.textContent = text;
         div.style.display = "block";
@@ -64,7 +64,7 @@ async function carregarComandes() {
             let isMobile = window.innerWidth <= 768;
 
             if (isMobile) {
-                const camps = [
+                let camps = [
                     { label: "ID", value: o.id },
                     { label: "Data", value: formatData(o.date || o.data) },
                     { label: "Total", value: total.toFixed(2) + " €" }
@@ -85,7 +85,7 @@ async function carregarComandes() {
                 tdAccions.setAttribute("data-label", "Acció");
                 let btnVeure = document.createElement("button");
                 btnVeure.className = "accio-icon";
-                btnVeure.textContent = "Veure";
+                btnVeure.innerHTML = '<i class="fa-solid fa-eye"></i>';
                 btnVeure.onclick = () => carregarDetallsComanda(o);
                 tdAccions.appendChild(btnVeure);
                 trAccions.appendChild(tdAccions);
@@ -109,7 +109,7 @@ async function carregarComandes() {
                 let tdAccio = document.createElement("td");
                 let btnVeure = document.createElement("button");
                 btnVeure.className = "accio-icon";
-                btnVeure.textContent = "Veure";
+                btnVeure.innerHTML = '<i class="fa-solid fa-eye"></i>';
                 btnVeure.onclick = () => carregarDetallsComanda(o);
                 tdAccio.appendChild(btnVeure);
                 tr.appendChild(tdAccio);
@@ -148,9 +148,9 @@ async function carregarDetallsComanda(comanda) {
 
         await Promise.all(items.map(async (item) => {
             try {
-                const prodRes = await fetch(`https://api.serverred.es/Product/${item.product_id}`);
+                let prodRes = await fetch(`https://api.serverred.es/Product/${item.product_id}`);
                 if (prodRes.ok) {
-                    const product = await prodRes.json();
+                    let product = await prodRes.json();
                     item.product_name = product.name || "Producte no disponible";
                 } else {
                     item.product_name = "Producte no disponible";
