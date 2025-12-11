@@ -79,9 +79,13 @@ async function cargarImagenesProducto(id) {
     const contenedor = document.getElementById("imagenesContainer");
     contenedor.innerHTML = '';
 
+    // Agregar la clase producto-detalles al contenedor principal
+    contenedor.classList.add("producto-detalles");
+
     if (producto) {
         const h2 = document.createElement("h2");
         h2.textContent = `Imatges de: ${producto.name}`;
+        h2.style.paddingTop = "20px";
         contenedor.appendChild(h2);
     }
 
@@ -93,6 +97,8 @@ async function cargarImagenesProducto(id) {
         return;
     }
 
+    // Añadir el título de imágenes
+
     const grid = document.createElement("div");
     grid.classList.add("row");
 
@@ -102,22 +108,26 @@ async function cargarImagenesProducto(id) {
         card.dataset.id = img.id;
         card.dataset.productId = id;
 
-        // Imagen
+        // Imagen - AGREGAR CLASE "imagen-producto"
         const imagen = document.createElement("img");
         imagen.src = img.url;
-        imagen.alt = img.name;
+        imagen.alt = img.name || `Imatge del producte`;
+        imagen.classList.add("imagen-producto"); // AQUÍ ESTÁ EL CAMBIO
         imagen.onerror = function () {
             this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZThlOGU4Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYXRnZSBubyBkaXNwb25pYmxlPC90ZXh0Pjwvc3ZnPg==';
         };
 
-        // Contenedor para nombre (modo lectura/edición)
-        const nombreContainer = document.createElement("p");
-        nombreContainer.innerHTML = `Nom: <span class="nombre-texto">${img.name}</span>`;
-        nombreContainer.style.fontWeight = '500';
-
-        // Contenedor para orden (modo lectura/edición)
-        const ordenContainer = document.createElement("p");
-        ordenContainer.innerHTML = `Ordre: <span class="orden-texto">${img.order}</span>`;
+        // Contenedor para nombre y orden en un solo párrafo (como en ProductesVisualitzar)
+        const pInfo = document.createElement("p");
+        const nombreSpan = document.createElement("span");
+        nombreSpan.className = "nombre-texto";
+        nombreSpan.textContent = img.name || 'Sense nom';
+        
+        const ordenSpan = document.createElement("span");
+        ordenSpan.textContent = ` (Ordre: ${img.order})`;
+        
+        pInfo.appendChild(nombreSpan);
+        pInfo.appendChild(ordenSpan);
 
         // Contenedor de mensajes de error
         const errorContainer = document.createElement("div");
@@ -126,10 +136,13 @@ async function cargarImagenesProducto(id) {
         errorContainer.style.fontSize = "12px";
         errorContainer.style.marginTop = "5px";
         errorContainer.style.minHeight = "20px";
+        errorContainer.style.textAlign = "center";
 
         // Contenedor de acciones
         const acciones = document.createElement("div");
         acciones.classList.add("acciones-container");
+        acciones.style.justifyContent = "center"; // Centrar los botones
+        acciones.style.marginTop = "10px";
 
         // Icono de Editar/Guardar
         const spanEditar = document.createElement("span");
@@ -146,6 +159,7 @@ async function cargarImagenesProducto(id) {
         spanCancelar.dataset.id = img.id;
         spanCancelar.title = "Cancel·lar";
         spanCancelar.style.display = "none";
+        spanCancelar.style.marginLeft = "10px";
         const iCancelar = document.createElement("i");
         iCancelar.classList.add("fa-solid", "fa-times");
         spanCancelar.appendChild(iCancelar);
@@ -155,6 +169,7 @@ async function cargarImagenesProducto(id) {
         spanEliminar.classList.add("icon-borrar");
         spanEliminar.dataset.id = img.id;
         spanEliminar.title = "Eliminar imatge";
+        spanEliminar.style.marginLeft = "10px";
         const iEliminar = document.createElement("i");
         iEliminar.classList.add("fa-solid", "fa-trash");
         spanEliminar.appendChild(iEliminar);
@@ -164,8 +179,7 @@ async function cargarImagenesProducto(id) {
         acciones.appendChild(spanEliminar);
 
         card.appendChild(imagen);
-        card.appendChild(nombreContainer);
-        card.appendChild(ordenContainer);
+        card.appendChild(pInfo);
         card.appendChild(errorContainer);
         card.appendChild(acciones);
 
@@ -220,12 +234,14 @@ function asignarEventListenersImagenes(productId) {
 }
 
 function activarModoEdicion(card) {
-    const nombreSpan = card.querySelector('.nombre-texto');
-    const ordenSpan = card.querySelector('.orden-texto');
+    const pInfo = card.querySelector('p');
+    const nombreSpan = pInfo.querySelector('.nombre-texto');
+    const ordenSpan = pInfo.querySelector('span:not(.nombre-texto)');
     
     // Guardar valores originales
     card.dataset.originalNombre = nombreSpan.textContent;
-    card.dataset.originalOrden = ordenSpan.textContent;
+    const matchOrden = ordenSpan.textContent.match(/Ordre:\s*(\d+)/);
+    card.dataset.originalOrden = matchOrden ? matchOrden[1] : "1";
     card.dataset.originalImageId = card.dataset.id;
     
     // Crear inputs de edición
@@ -237,21 +253,29 @@ function activarModoEdicion(card) {
     
     const ordenInput = document.createElement('input');
     ordenInput.type = 'number';
-    ordenInput.value = ordenSpan.textContent;
+    ordenInput.value = card.dataset.originalOrden;
     ordenInput.className = 'edit-input';
     ordenInput.id = 'edit-orden';
     ordenInput.min = '1';
     ordenInput.max = '999';
     
-    // Reemplazar spans con inputs
-    nombreSpan.replaceWith(nombreInput);
-    ordenSpan.replaceWith(ordenInput);
+    // Reemplazar pInfo con inputs
+    const newPInfo = document.createElement('p');
+    const nombreLabel = document.createTextNode('Nom: ');
+    const ordenLabel = document.createTextNode(' Ordre: ');
+    
+    newPInfo.appendChild(nombreLabel);
+    newPInfo.appendChild(nombreInput);
+    newPInfo.appendChild(ordenLabel);
+    newPInfo.appendChild(ordenInput);
+    
+    pInfo.replaceWith(newPInfo);
     
     // Añadir estilos a los inputs
     card.querySelectorAll('.edit-input').forEach(input => {
-        input.style.width = '100%';
-        input.style.padding = '5px';
-        input.style.margin = '2px 0';
+        input.style.width = 'auto';
+        input.style.padding = '3px';
+        input.style.margin = '0 5px';
         input.style.border = '1px solid #ddd';
         input.style.borderRadius = '4px';
     });
@@ -270,6 +294,40 @@ function activarModoEdicion(card) {
             card.querySelector('.error-mensaje').textContent = '';
         }
     });
+}
+
+function cancelarEdicion(card) {
+    const newPInfo = card.querySelector('p');
+    const nombreInput = newPInfo.querySelector('#edit-nombre');
+    const ordenInput = newPInfo.querySelector('#edit-orden');
+    
+    if (nombreInput && ordenInput) {
+        // Restaurar valores originales
+        const pInfo = document.createElement("p");
+        const nombreSpan = document.createElement('span');
+        nombreSpan.className = 'nombre-texto';
+        nombreSpan.textContent = card.dataset.originalNombre;
+        
+        const ordenSpan = document.createTextNode(` (Ordre: ${card.dataset.originalOrden})`);
+        
+        pInfo.appendChild(nombreSpan);
+        pInfo.appendChild(ordenSpan);
+        
+        newPInfo.replaceWith(pInfo);
+    }
+    
+    // Limpiar mensaje de error
+    card.querySelector('.error-mensaje').textContent = '';
+    
+    // Restaurar iconos
+    const editBtn = card.querySelector('.icon-editar');
+    const cancelBtn = card.querySelector('.icon-cancelar');
+    const deleteBtn = card.querySelector('.icon-borrar');
+    
+    editBtn.querySelector('i').className = "fa-solid fa-pen-to-square";
+    editBtn.title = "Editar imatge";
+    cancelBtn.style.display = "none";
+    deleteBtn.style.display = "inline-block";
 }
 
 function cancelarEdicion(card) {
