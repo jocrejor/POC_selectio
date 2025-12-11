@@ -180,6 +180,23 @@ option {
     color: var(--color-primari);
 }
 
+/* Contenedor fijo para imágenes */
+.imagen-contenedor {
+    width: 60%;
+    height: 250px;
+    position: relative;
+}
+
+.imagen-contenedor img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.producto-detalles .imagen-contenedor {
+    height: 200px; 
+}
 
 /* Telefono movil*/
 @media only screen and (max-width: 767px) {
@@ -228,5 +245,9 @@ option {
     
     #taula_producte textarea {
         height: 80px;
+    }
+
+    .imagen-contenedor {
+        height: 180px;
     }
 }

@@ -98,6 +98,9 @@ async function cargarImagenesProducto(id) {
     }
 
     // Añadir el título de imágenes
+    const h3Imagenes = document.createElement("h3");
+    h3Imagenes.textContent = "Imatges";
+    contenedor.appendChild(h3Imagenes);
 
     const grid = document.createElement("div");
     grid.classList.add("row");
@@ -108,16 +111,21 @@ async function cargarImagenesProducto(id) {
         card.dataset.id = img.id;
         card.dataset.productId = id;
 
-        // Imagen - AGREGAR CLASE "imagen-producto"
+        // CONTENEDOR DE IMAGEN CON TAMAÑO FIJO
+        const imagenContenedor = document.createElement("div");
+        imagenContenedor.classList.add("imagen-contenedor");
+        
+        // Imagen dentro del contenedor
         const imagen = document.createElement("img");
         imagen.src = img.url;
         imagen.alt = img.name || `Imatge del producte`;
-        imagen.classList.add("imagen-producto"); // AQUÍ ESTÁ EL CAMBIO
         imagen.onerror = function () {
             this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZThlOGU4Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYXRnZSBubyBkaXNwb25pYmxlPC90ZXh0Pjwvc3ZnPg==';
         };
 
-        // Contenedor para nombre y orden en un solo párrafo (como en ProductesVisualitzar)
+        imagenContenedor.appendChild(imagen);
+
+        // Contenedor para nombre y orden en un solo párrafo
         const pInfo = document.createElement("p");
         const nombreSpan = document.createElement("span");
         nombreSpan.className = "nombre-texto";
@@ -141,7 +149,7 @@ async function cargarImagenesProducto(id) {
         // Contenedor de acciones
         const acciones = document.createElement("div");
         acciones.classList.add("acciones-container");
-        acciones.style.justifyContent = "center"; // Centrar los botones
+        acciones.style.justifyContent = "center";
         acciones.style.marginTop = "10px";
 
         // Icono de Editar/Guardar
@@ -178,7 +186,7 @@ async function cargarImagenesProducto(id) {
         acciones.appendChild(spanCancelar);
         acciones.appendChild(spanEliminar);
 
-        card.appendChild(imagen);
+        card.appendChild(imagenContenedor);
         card.appendChild(pInfo);
         card.appendChild(errorContainer);
         card.appendChild(acciones);
@@ -314,38 +322,6 @@ function cancelarEdicion(card) {
         pInfo.appendChild(ordenSpan);
         
         newPInfo.replaceWith(pInfo);
-    }
-    
-    // Limpiar mensaje de error
-    card.querySelector('.error-mensaje').textContent = '';
-    
-    // Restaurar iconos
-    const editBtn = card.querySelector('.icon-editar');
-    const cancelBtn = card.querySelector('.icon-cancelar');
-    const deleteBtn = card.querySelector('.icon-borrar');
-    
-    editBtn.querySelector('i').className = "fa-solid fa-pen-to-square";
-    editBtn.title = "Editar imatge";
-    cancelBtn.style.display = "none";
-    deleteBtn.style.display = "inline-block";
-}
-
-function cancelarEdicion(card) {
-    const nombreInput = card.querySelector('#edit-nombre');
-    const ordenInput = card.querySelector('#edit-orden');
-    
-    if (nombreInput && ordenInput) {
-        // Restaurar valores originales
-        const nombreSpan = document.createElement('span');
-        nombreSpan.className = 'nombre-texto';
-        nombreSpan.textContent = card.dataset.originalNombre;
-        
-        const ordenSpan = document.createElement('span');
-        ordenSpan.className = 'orden-texto';
-        ordenSpan.textContent = card.dataset.originalOrden;
-        
-        nombreInput.replaceWith(nombreSpan);
-        ordenInput.replaceWith(ordenSpan);
     }
     
     // Limpiar mensaje de error
