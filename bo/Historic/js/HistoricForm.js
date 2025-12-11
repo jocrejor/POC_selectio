@@ -1,6 +1,17 @@
 document.addEventListener("DOMContentLoaded", main);
 
-async function main() {    
+async function main() {
+    thereIsUser("../login.html");
+
+    botonsTancarSessio("../login.html");
+    
+    // Mostrar missatge si és modificació
+    const editarId = sessionStorage.getItem("editId");
+    const titolPagina = document.querySelector(".row.pagina p");
+    if (editarId) {
+        alert("Estàs modificant un Històric del comparador");
+    }
+    
     // Carregar dades de les APIs
     const [clients, favorits, comparadors] = await Promise.all([
         carregarClientsApi(url),
@@ -35,8 +46,14 @@ function carregarSelects(clients, favorits, comparadors) {
     const favSelect = document.getElementById("favorite_id");
     const compSelect = document.getElementById("comparator_id");
 
-    // Informació clients
-    clients.forEach(client => {
+    // Informació clients - ordenada alfabèticament
+    const clientsOrdenats = [...clients].sort((a, b) => {
+        const nomA = `${a.name} ${a.surname}`.toLowerCase();
+        const nomB = `${b.name} ${b.surname}`.toLowerCase();
+        return nomA.localeCompare(nomB);
+    });
+    
+    clientsOrdenats.forEach(client => {
         const opcio = document.createElement("option");
         opcio.value = client.id;
         opcio.textContent = `${client.name} ${client.surname}`;
@@ -70,12 +87,12 @@ function configurarFormulari(url) {
     // Configurar submit del formulari
     form.addEventListener("submit", (e) => guardarRegistre(e, url));
 
-    // botó cancel·lar
+    // botó reiniciar
     btnCancelar.addEventListener("click", (e) => {
         e.preventDefault();
+        form.reset();
         sessionStorage.removeItem("editId");
         sessionStorage.removeItem("editIndex");
-        window.location.href = "./index.html";
     });
 
     // botó tornar al llistat
@@ -108,19 +125,67 @@ async function carregarDadesEdicio(url) {
 async function guardarRegistre(e, url) {
     e.preventDefault();
 
-    const date_start = document.getElementById("date_start").value;
-    const date_end = document.getElementById("date_end").value;
+    const errorDiv = document.getElementById("errorMessages");
+    errorDiv.innerHTML = "";
 
-    // Validar dates
-    if (date_start && date_end && new Date(date_end) < new Date(date_start)) {
-        alert("ERROR. La data final no pot ser anterior a la data d'inici.");
+    // Validar de forma progressiva
+    const clientId = document.getElementById("client_id").value.trim();
+    const comparatorId = document.getElementById("comparator_id").value.trim();
+    const favoriteId = document.getElementById("favorite_id").value.trim();
+    const date_start = document.getElementById("date_start").value.trim();
+    const date_end = document.getElementById("date_end").value.trim();
+
+    // Validar ordre: client → comparador → favorit → dates
+    if (!clientId) {
+        const p = document.createElement("p");
+        p.textContent = "El camp Client ID és obligatori.";
+        errorDiv.appendChild(p);
+        return;
+    }
+
+    if (!comparatorId) {
+        const p = document.createElement("p");
+        p.textContent = "El camp Comparador ID és obligatori.";
+        errorDiv.appendChild(p);
+        return;
+    }
+
+    if (!favoriteId) {
+        const p = document.createElement("p");
+        p.textContent = "El camp Favorit ID és obligatori.";
+        errorDiv.appendChild(p);
+        return;
+    }
+
+    if (!date_start) {
+        const p = document.createElement("p");
+        p.textContent = "El camp Data inici és obligatori.";
+        errorDiv.appendChild(p);
+        return;
+    }
+
+    if (!date_end) {
+        const p = document.createElement("p");
+        p.textContent = "El camp Data fi és obligatori.";
+        errorDiv.appendChild(p);
+        return;
+    }
+
+    // Validar que la data fi no sia anterior a la de inici
+    const startDate = new Date(date_start);
+    const endDate = new Date(date_end);
+    
+    if (endDate < startDate) {
+        const p = document.createElement("p");
+        p.textContent = "La data fi no pot ser anterior a la data d'inici.";
+        errorDiv.appendChild(p);
         return;
     }
 
     const formData = {
-        client_id: document.getElementById("client_id").value,
-        comparator_id: document.getElementById("comparator_id").value,
-        favorite_id: document.getElementById("favorite_id").value,
+        client_id: clientId,
+        comparator_id: comparatorId,
+        favorite_id: favoriteId,
         date_start: date_start,
         date_end: date_end,
     };
@@ -138,7 +203,9 @@ async function guardarRegistre(e, url) {
 
     } catch (error) {
         console.error("Error guardando registro:", error);
-        alert("Error al guardar el registro. Por favor, intenta de nuevo.");
+        const p = document.createElement("p");
+        p.textContent = "Error al guardar el registro. Por favor, intenta de nuevo.";
+        errorDiv.appendChild(p);
     }
 }
 

@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="../css/common-modal.css">
     <link rel="stylesheet" href="../css/common-paginacio.css">
     <link rel="stylesheet" href="./css/historic.css">
+    <link rel="shortcut icon" href="../img/logo_tendafake.png" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -46,7 +47,7 @@
                 <div id="sessioUsuari">
                     <div class="headerUsuari">
                         <img src="../img/foto_persona.png" alt="No s'ha pogut carregar l'imatge">
-                        <span>Manolo Garibolo</span>
+                        <span id="usuariNom"></span>
                         <span class="separador">&nbsp;</span>
                     </div>
                     <div class="tancarSessio">
@@ -70,7 +71,7 @@
                     <i class="fa-solid fa-paperclip"></i>
                     Atributs
                 </a>
-                <a href="../GestioCarret/index.html " class="opcio_menu">
+                <a href="../GestioCarrets/index.html" class="opcio_menu">
                     <i class="fa-solid fa-cart-shopping"></i>
                     Carrets
                 </a>
@@ -154,6 +155,11 @@
                         </div>
                         <div class="row">
                             <div class="col-12">
+                                <div id="errorMessagesFiltres"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
                                 <div class="botons_accio">
                                     <button id="btnFiltrar" class="cercar" type="submit">
                                         <i class="fa-solid fa-magnifying-glass"></i>
@@ -173,7 +179,7 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="contingut">
-                                <button class="afegBtn" id="afegirNou">Afegir nou registre</button>
+                                <button class="afegBtn" id="afegirNou">Afegir registre</button>
                                 <div id="contingutTaula">
                                     <table id="taula">
                                         <thead>

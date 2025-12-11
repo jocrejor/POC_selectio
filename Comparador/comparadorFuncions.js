@@ -1,50 +1,53 @@
 const apiUrl = 'https://api.serverred.es';
+let comparadorGlobal = null; // Instancia global del comparador
 
 document.addEventListener('DOMContentLoaded', async () => {
     await carregarComparador();
     await carregarCarrusel();
     carregarNomComparador();
-    carregarEstatFavorit();
+    await carregarComparadorsAnteriors();
     setTimeout(updateScrollButtons, 300);
     setTimeout(updateCarruselButtons, 300);
 });
 
-async function carregarComparador(forceLocalStorage = false) {
+async function carregarComparador() {
     try {
-        // Verificar si hi ha un comparatorApiId al localStorage
-        const comparadorLocal = JSON.parse(localStorage.getItem('comparador'));
+        // Intentar obtenir l'ID del comparador actual des de sessionStorage
+        const comparatorId = sessionStorage.getItem('currentComparatorId');
         
-        // Si hi ha un ID de l'API i no forcem localStorage, intentar carregar des de l'API
-        if (!forceLocalStorage && comparadorLocal?.comparatorApiId) {
-            try {
-                await carregarComparadorDesDeAPI(comparadorLocal.comparatorApiId);
-                return; // Si té èxit, sortir
-            } catch (error) {
-                console.warn('No es pot carregar des de l\'API, carregant des de localStorage:', error);
-                // Continuar amb la càrrega normal des de localStorage
-            }
+        if (comparatorId) {
+            // Carregar comparador existent des de l'API
+            console.log('Carregant comparador existent:', comparatorId);
+            comparadorGlobal = new Comparador();
+            await comparadorGlobal.carregarDesDeAPI(apiUrl, comparatorId);
+        } else {
+            // Crear nou comparador
+            console.log('Creant nou comparador');
+            comparadorGlobal = new Comparador();
         }
-
-        // Càrrega normal des de localStorage
+        
+        // Dibuixar la taula
         await dibuixarTaulaComparador();
         
     } catch (error) {
         console.error('Error carregant el comparador:', error);
+        // Si hi ha error, crear un nou comparador
+        comparadorGlobal = new Comparador();
+        await dibuixarTaulaComparador();
     }
 }
 
-// Funció separada per dibuixar la taula
+// Funció per dibuixar la taula del comparador
 async function dibuixarTaulaComparador(contenidorId = 'comparadorContingut') {
-    const productes = await Product.carregarProductes(apiUrl);
-    const families = await Family.carregarFamilies(apiUrl);
+    if (!comparadorGlobal) {
+        comparadorGlobal = new Comparador();
+    }
+    
     const attributes = await Attribute.carregarAtributs(apiUrl);
     const productAttributes = await ProductAttribute.carregarProductAtributs(apiUrl);
     const productImages = await ProductImage.carregarProductImages(apiUrl);
 
-    const comparador = new Comparador();
-    comparador.carregarLocalStorage();
-
-    const taula = comparador.generarTaula(productAttributes, attributes, productImages);
+    const taula = comparadorGlobal.generarTaula(productAttributes, attributes, productImages);
     
     const contingut = document.getElementById(contenidorId);
     if (!contingut) {
@@ -60,7 +63,7 @@ async function dibuixarTaulaComparador(contenidorId = 'comparadorContingut') {
         contingut.innerHTML = '<p style="text-align: center; padding: 2.5rem;">No tens productes per comparar.</p>';
     }
     
-    // Actualitzar botons després que la taula estiga renderitzada (només si existeix la funció)
+    // Actualitzar botons després que la taula estiga renderitzada
     if (typeof updateScrollButtons === 'function') {
         setTimeout(() => {updateScrollButtons();}, 150);
     }
@@ -117,13 +120,14 @@ function updateScrollButtons() {
 // Carregar carrusel de productes relacionats
 async function carregarCarrusel() {
     try {
+        if (!comparadorGlobal) {
+            comparadorGlobal = new Comparador();
+        }
+        
         const productes = await Product.carregarProductes(apiUrl);
         const productImages = await ProductImage.carregarProductImages(apiUrl);
-
-        const comparador = new Comparador();
-        comparador.carregarLocalStorage();
         
-        const productesComparador = comparador.obtenirProductes();
+        const productesComparador = comparadorGlobal.obtenirProductes();
         if (productesComparador.length === 0) {
             document.querySelector('.carrusel-wrapper').style.display = 'none';
             return;
@@ -203,22 +207,17 @@ function crearTargetaProducte(producte, productImages) {
     btnAfegir.textContent = 'Comparar';
     btnAfegir.onclick = async () => {
         try {
-            // Carregar dades de localStorage
-            const comparadorData = localStorage.getItem('comparador');
-            let comparador = new Comparador();
-            
-            if (comparadorData) {
-                const obj = JSON.parse(comparadorData);
-                comparador.sessionId = obj.sessionId;
-                comparador.pinnedProductId = obj.pinnedProductId || null;
-                comparador.productes = obj.productes.map(p => ({ 
-                    product: p, 
-                    sessionId: obj.sessionId 
-                }));
+            if (!comparadorGlobal) {
+                comparadorGlobal = new Comparador();
             }
             
-            // Afegir el nou producte
-            if (comparador.afegirProducte(producte)) {
+            // Afegir el nou producte (ara guarda automàticament a l'API)
+            const afegit = await comparadorGlobal.afegirProducte(producte, apiUrl);
+            
+            if (afegit && comparadorGlobal.comparatorApiId) {
+                // Guardar l'ID a sessionStorage
+                sessionStorage.setItem('currentComparatorId', comparadorGlobal.comparatorApiId);
+                
                 // Recarregar la visualització
                 await carregarComparador();
                 await carregarCarrusel();
@@ -299,87 +298,71 @@ document.addEventListener('DOMContentLoaded', () => {
             updateCarruselButtons();
         });
     }
-    
-    // Guardar nom del comparador quan canvia
-    const nomInput = document.getElementById('nomComparador');
-    if (nomInput) {
-        nomInput.addEventListener('input', () => {
-            localStorage.setItem('nomComparador', nomInput.value);
-        });
-    }
 });
 
-// Carregar nom del comparador des de localStorage
+// Carregar nom del comparador
 function carregarNomComparador() {
     const nomInput = document.getElementById('nomComparador');
     if (nomInput) {
-        const nomGuardat = localStorage.getItem('nomComparador');
-        if (nomGuardat) {
-            nomInput.value = nomGuardat;
+        if (comparadorGlobal && comparadorGlobal.nom) {
+            nomInput.value = comparadorGlobal.nom;
         }
+        
+        // Event listener per detectar canvis en el nom (es dispara quan perd el focus)
+        nomInput.addEventListener('blur', async () => {
+            if (!comparadorGlobal) return;
+            
+            const nouNom = nomInput.value.trim();
+            const nomAnterior = comparadorGlobal.nom || '';
+            
+            // Si el nom no ha canviat, no fer res
+            if (nouNom === nomAnterior) return;
+            
+            // Si ja existeix un comparador amb nom i aquest canvia
+            if (nomAnterior && nouNom !== nomAnterior) {
+                const confirmacio = confirm('Canviar el nom crearà un nou comparador amb aquest nom. El comparador anterior es mantindrà. Vols continuar?');
+                if (confirmacio) {
+                    // Crear un nou comparador amb el nom nou
+                    const productesCopia = [...comparadorGlobal.productes];
+                    comparadorGlobal = new Comparador();
+                    comparadorGlobal.nom = nouNom;
+                    comparadorGlobal.productes = productesCopia;
+                    await comparadorGlobal.guardarAPI(apiUrl);
+                    sessionStorage.setItem('currentComparatorId', comparadorGlobal.comparatorApiId);
+                    console.log('Nou comparador creat amb nom:', nouNom);
+                } else {
+                    // Restaurar el nom anterior
+                    nomInput.value = nomAnterior;
+                }
+            } else {
+                // Actualitzar el nom i guardar a l'API
+                comparadorGlobal.nom = nouNom;
+                if (comparadorGlobal.comparatorApiId) {
+                    await comparadorGlobal.guardarAPI(apiUrl);
+                }
+            }
+        });
     }
 }
 
-// Carregar estat del favorit des de localStorage
-function carregarEstatFavorit() {
-    const btnFavorit = document.getElementById('btnFavorit');
-    if (btnFavorit) {
-        const esFavorit = localStorage.getItem('comparadorFavorit') === 'true';
-        if (esFavorit) {
-            btnFavorit.classList.add('favorit-actiu');
-            btnFavorit.querySelector('i').classList.remove('fa-regular');
-            btnFavorit.querySelector('i').classList.add('fa-solid');
-        }
-    }
-}
 
-// Guardar comparador a l'API
+
+// Guardar comparador a l'API (ara es fa automàticament)
 async function guardarComparadorAPI() {
     try {
-        // Obtenir dades del localStorage
-        const comparadorLocal = JSON.parse(localStorage.getItem('comparador'));
-        
-        if (!comparadorLocal || !comparadorLocal.productes || comparadorLocal.productes.length === 0) {
+        if (!comparadorGlobal || comparadorGlobal.obtenirProductes().length === 0) {
             alert('No hi ha productes per guardar al comparador');
             return;
         }
 
-        // Obtenir sessionId i user agent
-        const sessionId = comparadorLocal.sessionId || generarSessionId();
-        const userAgent = navigator.userAgent;
-        const clientId = null; // O obtenir de localStorage si hi ha usuari loguejat
-
-        // 1. Crear el Comparator a l'API
-        const comparatorCreat = await Comparador.crearComparatorAPI(
-            apiUrl,
-            sessionId,
-            userAgent,
-            clientId
-        );
-
-        console.log('Comparator creat amb ID:', comparatorCreat.id);
-
-        // 2. Crear les relacions Comparator_Product per cada producte
-        const promesesProductes = comparadorLocal.productes.map(async (producte) => {
-            const productId = producte.id || producte.product?.id;
-            if (productId) {
-                await ComparatorProduct.crearComparatorProduct(
-                    apiUrl,
-                    comparatorCreat.id,
-                    productId
-                );
-            }
-        });
-
-        await Promise.all(promesesProductes);
-
-        // 3. Guardar l'ID del comparador al localStorage
-        comparadorLocal.comparatorApiId = comparatorCreat.id;
-        localStorage.setItem('comparador', JSON.stringify(comparadorLocal));
-
-        alert(`Comparador guardat correctament a l'API amb ID: ${comparatorCreat.id}`);
+        await comparadorGlobal.guardarAPI(apiUrl);
         
-        return comparatorCreat.id;
+        if (comparadorGlobal.comparatorApiId) {
+            sessionStorage.setItem('currentComparatorId', comparadorGlobal.comparatorApiId);
+            alert(`Comparador guardat correctament amb ID: ${comparadorGlobal.comparatorApiId}`);
+        }
+        
+        return comparadorGlobal.comparatorApiId;
 
     } catch (error) {
         console.error('Error guardant el comparador:', error);
@@ -387,56 +370,129 @@ async function guardarComparadorAPI() {
     }
 }
 
-// Carregar comparador des de l'API
-async function carregarComparadorDesDeAPI(comparatorId, contenidorId = 'comparadorContingut') {
-    try {
-        // 1. Obtenir el Comparator
-        const comparator = await Comparador.obtenirComparatorAPI(apiUrl, comparatorId);
-        console.log('Comparator carregat:', comparator);
 
-        // 2. Obtenir els productes del comparador
-        const comparatorProducts = await ComparatorProduct.obtenirProductesDeComparator(
-            apiUrl,
-            comparatorId
-        );
-
-        // 3. Carregar els productes complets
-        const productes = await Product.carregarProductes(apiUrl);
-        
-        // 4. Filtrar només els productes del comparador
-        const productesDelComparador = productes.filter(p => 
-            comparatorProducts.some(cp => cp.product_id === p.id)
-        );
-
-        // 5. Actualitzar localStorage amb els productes
-        const comparadorLocal = {
-            sessionId: comparator.session_id,
-            comparatorApiId: comparator.id,
-            productes: productesDelComparador,
-            pinnedProductId: null
-        };
-
-        localStorage.setItem('comparador', JSON.stringify(comparadorLocal));
-
-        // 6. Dibuixar la taula directament sense cridar carregarComparador (per evitar bucle)
-        await dibuixarTaulaComparador(contenidorId);
-        
-        // 7. Carregar el carrusel només si existeix la funció
-        if (typeof carregarCarrusel === 'function') {
-            await carregarCarrusel();
-        }
-
-        console.log('Comparador carregat des de l\'API amb èxit');
-
-    } catch (error) {
-        console.error('Error carregant el comparador des de l\'API:', error);
-        alert('Error carregant el comparador des de l\'API');
-    }
-}
 
 // Generar un sessionId únic
 function generarSessionId() {
     let uuid = self.crypto.randomUUID();
     return 'sess_' + uuid;
+}
+
+// Carregar i mostrar els comparadors anteriors
+async function carregarComparadorsAnteriors() {
+    try {
+        const container = document.getElementById('comparadorsAnteriorsList');
+        if (!container) return;
+        
+        // Obtenir el client_id si l'usuari està loguejat
+        const currentUser = localStorage.getItem('currentUser');
+        let comparadors = [];
+        
+        if (currentUser) {
+            const userId = JSON.parse(currentUser).id;
+            
+            // Carregar tots els comparadors de l'API
+            const totsComparadors = await Comparador.carregarComparatorsAPI(apiUrl);
+            
+            // Filtrar només els del usuari actual
+            comparadors = totsComparadors.filter(c => c.client_id === userId);
+        } else {
+            // Si no hi ha usuari, mostrar els de la sessió actual
+            const sessionId = sessionStorage.getItem('currentSessionId') || generarSessionId();
+            sessionStorage.setItem('currentSessionId', sessionId);
+            
+            const totsComparadors = await Comparador.carregarComparatorsAPI(apiUrl);
+            comparadors = totsComparadors.filter(c => c.session_id === sessionId);
+        }
+        
+        // Netejar el container
+        container.innerHTML = '';
+        
+        if (comparadors.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: #666;">No tens comparadors guardats.</p>';
+            return;
+        }
+        
+        // Ordenar per ID descendent (més recents primer)
+        comparadors.sort((a, b) => b.id - a.id);
+        
+        // Crear una llista amb els comparadors
+        const ul = document.createElement('ul');
+        ul.className = 'comparadors-anteriors-list';
+        
+        for (const comp of comparadors) {
+            const li = document.createElement('li');
+            li.className = 'comparador-item';
+            
+            // Obtenir el número de productes d'aquest comparador
+            let numProductes = 0;
+            try {
+                const productes = await ComparatorProduct.obtenirProductesDeComparator(apiUrl, comp.id);
+                numProductes = productes.length;
+            } catch (error) {
+                console.error('Error obtenint productes del comparador:', error);
+            }
+            
+            // Nom del comparador
+            const nomSpan = document.createElement('span');
+            nomSpan.className = 'comparador-nom';
+            nomSpan.textContent = comp.name || `Comparador ${comp.id}`;
+            
+            // Info adicional
+            const infoSpan = document.createElement('span');
+            infoSpan.className = 'comparador-info';
+            infoSpan.textContent = ` (${numProductes} productes)`;
+            
+            // Botó per carregar
+            const btnCarregar = document.createElement('button');
+            btnCarregar.className = 'btn-carregar-comparador';
+            btnCarregar.innerHTML = '<i class="fa-solid fa-eye"></i> Veure';
+            btnCarregar.onclick = async () => {
+                sessionStorage.setItem('currentComparatorId', comp.id);
+                await carregarComparador();
+                await carregarCarrusel();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+            
+            // Botó per eliminar
+            const btnEliminar = document.createElement('button');
+            btnEliminar.className = 'btn-eliminar-comparador';
+            btnEliminar.innerHTML = '<i class="fa-solid fa-trash"></i>';
+            btnEliminar.title = 'Eliminar comparador';
+            btnEliminar.onclick = async () => {
+                if (confirm(`Segur que vols eliminar "${comp.name || 'aquest comparador'}"?`)) {
+                    try {
+                        await Comparador.eliminarComparatorAPI(apiUrl, comp.id);
+                        await carregarComparadorsAnteriors();
+                        
+                        // Si era el comparador actual, crear un de nou
+                        if (sessionStorage.getItem('currentComparatorId') == comp.id) {
+                            sessionStorage.removeItem('currentComparatorId');
+                            comparadorGlobal = new Comparador();
+                            await carregarComparador();
+                        }
+                    } catch (error) {
+                        console.error('Error eliminant comparador:', error);
+                        alert('Error eliminant el comparador');
+                    }
+                }
+            };
+            
+            li.appendChild(nomSpan);
+            li.appendChild(infoSpan);
+            li.appendChild(btnCarregar);
+            li.appendChild(btnEliminar);
+            ul.appendChild(li);
+        }
+        
+        container.appendChild(ul);
+        
+    } catch (error) {
+        console.error('Error carregant comparadors anteriors:', error);
+        const container = document.getElementById('comparadorsAnteriorsList');
+        if (container) {
+            container.innerHTML = '<p style="text-align: center; color: #d32f2f;">Error carregant comparadors.</p>';
+        }
+    }
 }
 

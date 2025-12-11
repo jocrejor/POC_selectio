@@ -59,19 +59,26 @@
 .section-title {
   font-weight: 700;
   margin-bottom: 20px;
-  
 }
-
 
 .bloque-2 h1 {
   margin-bottom: 50px;
 }
 
-.cat-item img {
-  margin-bottom: 10px;
-  max-height: 250px;
-  width: auto;
+.cat-item {
+    display: flex;
+    flex-direction: column; /* Aseguramos que la imagen y el texto estén apilados */
+    align-items: center; /* Alineamos las imágenes verticalmente */
+    justify-content: center; /* Asegura que el contenido esté centrado en el contenedor */
 }
+
+.cat-item img {
+    margin-bottom: 10px;
+    max-width: 100%; /* Se ajusta automáticamente al tamaño del contenedor */
+    max-height: 250px; /* Aseguramos que las imágenes no sean demasiado grandes */
+    object-fit: cover; /* Mantiene la proporción de la imagen y evita que se deforme */
+}
+
 
 .cat-item p {
   font-weight: 500;
@@ -81,6 +88,37 @@
 .cat-item:hover p {
   color: var(--color-primari);
 }
+
+/* Estilo para el botón "Més categories" */
+.custom-btn {
+    background-color: var(--color-primari); /* Color de fondo */
+    color: white; /* Color de texto */
+    border: none; /* Sin borde */
+    padding: 12px 30px; /* Relleno y tamaño del botón */
+    font-size: 16px; /* Tamaño de la fuente */
+    font-weight: bold; /* Negrita */
+    transition: all 0.3s ease; /* Transición suave */
+    cursor: pointer; /* Apuntar como cursor */
+}
+
+.custom-btn:hover {
+    background-color: #0056b3; /* Color de fondo al pasar el ratón */
+}
+
+.custom-btn:focus {
+    outline: none; /* Eliminar el borde de enfoque */
+}
+
+.custom-btn:active {
+    background-color: #004085; /* Color de fondo al hacer clic */
+}
+
+
+
+
+
+
+
 
 /* === SECCIÓN 3: Ofertas y Banners (Ajustado) === */
 
@@ -391,4 +429,14 @@
   .contact-info-strip {
     text-align: center;
   }
+
+  .about-section {
+  background-color: #1a1a1a;
+  color: white;
+  background-size: cover;
+  background-position: center;
+  padding: 40px 30px;
+  position: relative;
+  height: 800px;
+}
 }

@@ -18,11 +18,11 @@
         rel="stylesheet">
     <script src="../js/common.js"></script>
     <script src="../js/logout.js"></script>
-    <script src="Familia.js"></script>
-    <title>Formulario Alta Familias</title>
-    <link rel="stylesheet" href="index.css">
+    <title>Llistat Usuaris</title>
     <script src="../../apiAccess/crud.js"></script>
     <script src="js/Familia.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
 
 </head>
 
@@ -61,15 +61,15 @@
         <!-- Menu lateral -->
         <div class="row main">
             <div id="menu_lateral" class="col-2">
-                <a href="#" class="opcio_menu">
+                <a href="Atributs.html" class="opcio_menu">
                     <i class="fa-solid fa-paperclip"></i>
                     Atributs
                 </a>
-                <a href="#" class="opcio_menu">
+                <a href="../GestioCarrets/index.html" class="opcio_menu">
                     <i class="fa-solid fa-cart-shopping"></i>
                     Carrets
                 </a>
-                <a href="#" class="opcio_menu">
+                <a href="../Clients/index.html" class="opcio_menu">
                     <i class="fa-solid fa-person"></i>
                     Clients
                 </a>
@@ -77,11 +77,11 @@
                     <i class="fa-solid fa-sliders"></i>
                     Configuracions
                 </a>
-                <a href="#" class="opcio_menu">
+                <a href="../Comandes/index.html" class="opcio_menu">
                     <i class="fa-solid fa-pen-to-square"></i>
                     Comandes
                 </a>
-                <a href="#" class="opcio_menu">
+                <a href="../Historic/index.html" class="opcio_menu">
                     <i class="fa-solid fa-chart-line"></i>
                     Estadístiques
                 </a>
@@ -89,19 +89,19 @@
                     <i class="fa-solid fa-list"></i>
                     Families
                 </div>
-                <a href="#" class="opcio_menu">
+                <a href="../Localitzacio/index.html" class="opcio_menu">
                     <i class="fa-solid fa-location-dot"></i>
                     Localitzacions
                 </a>
-                <a href="#" class="opcio_menu">
+                <a href="../Ofertes/index.html" class="opcio_menu">
                     <i class="fa-solid fa-tag"></i>
                     Ofertes
                 </a>
-                <a href="#" class="opcio_menu">
+                <a href="index.html" class="opcio_menu">
                     <i class="fa-solid fa-city"></i>
                     Productes
                 </a>
-                <a href="#" class="opcio_menu">
+                <a href="../Clients/index.html" class="opcio_menu">
                     <i class="fa-solid fa-user"></i>
                     Usuaris
                 </a>
@@ -122,8 +122,13 @@
                             <div class="contingut">
                                 <div id="contingutTaula">
                                     <h3>Buscar</h3>
-                                    <input type="text" id="buscarFamilia"
-                                        placeholder="Buscar família o subfamília..." />
+                                    <div class="cercarBOTO">
+                                        <input type="text" id="buscarFamilia"
+                                            placeholder="Buscar família o subfamília..." />
+                                        <button id="btnCercar">Cercar</button>
+                                        <button id="btnNetejar">Netejar</button>
+                                    </div>
+
                                     <table id="taula">
                                         <thead>
                                             <tr>
@@ -136,8 +141,6 @@
                                         <tbody id="taulaFamilia"></tbody>
                                     </table>
                                 </div>
-                                </section>
-
                                 <section class="seccion-formulario">
                                     <div class="cabecera-seccion">
                                         <h2>Formulario</h2>
@@ -176,6 +179,7 @@
                                         <button id="afegir" class="btn-principal">Añadir</button>
                                         <button type="button" onclick="netejarFormulari()"
                                             class="btn-secundario">Limpiar</button>
+                                        <p id="missatge"></p>
                                     </div>
 
                                     <p id="alerta" class="mensaje-alerta"></p>

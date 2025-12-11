@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", main);
 
 async function main() {
@@ -51,9 +50,7 @@ async function main() {
         targeta.dataset.id = familia.id;
 
         // URL imatge
-        const urlImatge = familia.image
-            ? `./backoffice/Productes/img/${familia.image}`
-            : "./img/Productes/defaultImage.jpg";
+        const urlImatge = familia.image ? `./bo/Productes/img/${familia.image}` : "./img/Productes/defaultImage.jpg";
 
         const contenidorImatge = document.createElement("div");
         contenidorImatge.classList.add("contenidor-imatge-familia");
@@ -128,7 +125,6 @@ async function main() {
                 icon.className = "fa-solid fa-chevron-right";
                 liSep.appendChild(icon);
                 miguesPa.appendChild(liSep);
-
 
                 // Familia
                 const liFam = document.createElement("li");

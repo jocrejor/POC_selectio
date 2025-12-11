@@ -1,5 +1,9 @@
 document.addEventListener("DOMContentLoaded", main);
 
+// Inicialitzar el comparador globalment
+const comparador = new Comparador();
+comparador.carregarLocalStorage();
+
 async function main() {
   const llistaFamilies = document.getElementById("llistaFamilies");
   const productList = document.getElementById("productList");
@@ -328,12 +332,20 @@ async function main() {
         now <= new Date(s.end_date)
       );
 
+      //Variables per afegir al carret
       const pPrice = document.createElement("p");
       pPrice.className = "preu-producte";
+
+      let preuPerCarret = product.price;
+      let ofertaPerCarret = null;
 
       if (oPrice.length > 0) {
         const oferta = oPrice[0];
         const priceWithDiscount = product.price * (1 - oferta.discount_percent / 100);
+
+        preuPerCarret = priceWithDiscount;
+        ofertaPerCarret = oferta;
+
         pPrice.classList.add("preu-producte-descompte");
 
         const priceSpan = document.createElement("span");
@@ -378,8 +390,16 @@ async function main() {
       const afegirIcon = document.createElement("i");
       afegirIcon.className = "fa-solid fa-cart-shopping";
       afegirBtn.appendChild(afegirIcon);
-      afegirBtn.onclick = () => afegirAlCarret(product);
-      afegirBtn.addEventListener("click", e => e.stopPropagation());
+      
+      afegirBtn.addEventListener("click", async (e) => {
+        e.stopPropagation();
+        if (typeof window.afegirAlCarret === 'function') {
+          await window.afegirAlCarret(product, preuPerCarret, ofertaPerCarret);
+        } else {
+          console.error('La funció afegirAlCarret no està disponible');
+          alert('Error: No es pot afegir al carret');
+        }
+      });
 
       const compBtn = document.createElement("button");
       compBtn.classList.add("btn-afegir", "button");
@@ -387,7 +407,7 @@ async function main() {
       const compIcon = document.createElement("i");
       compIcon.className = "fa-solid fa-code-compare";
       compBtn.appendChild(compIcon);
-      compBtn.onclick = () => window.location.href = `#`;
+      compBtn.onclick = () => afegirAlComparador(product);
       compBtn.addEventListener("click", e => e.stopPropagation());
 
       btnContainer.appendChild(veureBtn);
@@ -400,8 +420,14 @@ async function main() {
     });
   }
 
-  function afegirAlCarret(producte) {
-    alert(`Afegit al carret: ${producte.name}`);
+  function afegirAlComparador(producte) {
+    const afegit = comparador.afegirProducte(producte);
+    if (afegit) {
+
+        window.location.href = 'Comparador/comparador.html';
+      
+    }
+
   }
 
   // ==================== PAGINACIO ====================
