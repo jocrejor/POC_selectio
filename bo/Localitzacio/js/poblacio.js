@@ -48,9 +48,11 @@ async function main() {
 
 // Pàgina Principal
 async function configurarPaginaPrincipal() {
-    await carregarDadesInicials();
+    
     llegirParametresURL();
     mostrarInformacioContext();
+
+    await carregarDadesInicials();
 
     if (!provinceId) {
         console.warn("No s'ha pogut determinar la província seleccionada.");
