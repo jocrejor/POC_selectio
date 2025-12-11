@@ -46,13 +46,11 @@
 .autocomplete-item {
     padding: 6px 10px;
     cursor: pointer;
-    color: black  ; 
-
+    color: black !important; 
 }
 
 .autocomplete-item:hover {
-    background: #eee;
-    
+    background: #eee; 
 }
 
 

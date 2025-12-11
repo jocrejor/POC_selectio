@@ -39,3 +39,33 @@
     border-bottom: none;
     color: #000000;
 }
+
+/* Estils autocompletar */
+
+.ui-autocomplete {
+    background-color: var(--color-general-lletra);
+    border: 1px solid var(--color-vores);
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 99;
+    padding: 0;
+    border-radius: 5px;
+    width: 26.5%;
+}
+
+.ui-autocomplete li {
+    list-style: none;
+    padding-left: 20px;
+}
+
+.ui-autocomplete li:hover{
+    background-color: var(--color-quaternari);
+    cursor: pointer;
+}
+
+
+.ui-menu-item-wrapper  {
+    color: var(--color-vores);
+    padding: 5px 0px 5px 0px;
+}

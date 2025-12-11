@@ -332,12 +332,20 @@ async function main() {
         now <= new Date(s.end_date)
       );
 
+      //Variables per afegir al carret
       const pPrice = document.createElement("p");
       pPrice.className = "preu-producte";
+
+      let preuPerCarret = product.price;
+      let ofertaPerCarret = null;
 
       if (oPrice.length > 0) {
         const oferta = oPrice[0];
         const priceWithDiscount = product.price * (1 - oferta.discount_percent / 100);
+
+        preuPerCarret = priceWithDiscount;
+        ofertaPerCarret = oferta;
+
         pPrice.classList.add("preu-producte-descompte");
 
         const priceSpan = document.createElement("span");
@@ -382,8 +390,16 @@ async function main() {
       const afegirIcon = document.createElement("i");
       afegirIcon.className = "fa-solid fa-cart-shopping";
       afegirBtn.appendChild(afegirIcon);
-      afegirBtn.onclick = () => afegirAlCarret(product);
-      afegirBtn.addEventListener("click", e => e.stopPropagation());
+      
+      afegirBtn.addEventListener("click", async (e) => {
+        e.stopPropagation();
+        if (typeof window.afegirAlCarret === 'function') {
+          await window.afegirAlCarret(product, preuPerCarret, ofertaPerCarret);
+        } else {
+          console.error('La funció afegirAlCarret no està disponible');
+          alert('Error: No es pot afegir al carret');
+        }
+      });
 
       const compBtn = document.createElement("button");
       compBtn.classList.add("btn-afegir", "button");
@@ -402,10 +418,6 @@ async function main() {
 
       productList.appendChild(div);
     });
-  }
-
-  function afegirAlCarret(producte) {
-    alert(`Afegit al carret: ${producte.name}`);
   }
 
   function afegirAlComparador(producte) {

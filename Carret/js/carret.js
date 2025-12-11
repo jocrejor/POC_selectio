@@ -1,14 +1,8 @@
 document.addEventListener("DOMContentLoaded", main);
 
 async function main() {
-    // Comprova si hi ha usuari (si aquesta funció existeix al teu projecte)
-    if (typeof thereIsUser === 'function') {
-        thereIsUser('../Login.html');
-    }
-
     await mostrarInfoCliente();
     await mostrarCarret();
-    actualitzarBotonsNav();
 
     // Botó finalitzar comanda
     const btnFinalitzar = document.getElementById("btnFinalitzar");
@@ -19,28 +13,18 @@ async function main() {
     }
 
     // Botons "Seguir comprant"
-    const btnsSeguirComprant = document.querySelectorAll("#btnSeguirComprant");
-    btnsSeguirComprant.forEach(btn => {
-        btn.addEventListener("click", () => {
-            window.location.href = 'listarproductes.html';
-        });
-    });
+    const btnSeguirComprant1 = document.getElementById("btnSeguirComprant");
+    const btnSeguirComprant2 = document.getElementById("btnSeguirComprant2");
 
-    // Botó Login 
-    const btnLogin = document.querySelector('button[data-action="login"]');
-    if (btnLogin) {
-        btnLogin.addEventListener("click", (e) => {
-            e.preventDefault();
-            mostrarFormularioLogin();
+    if (btnSeguirComprant1) {
+        btnSeguirComprant1.addEventListener("click", () => {
+            window.location.href = "../../Product.html";
         });
     }
 
-    // Botó Tancar sessió
-    const btnTancarSessio = document.querySelector('button[data-action="logout"]');
-    if (btnTancarSessio) {
-        btnTancarSessio.addEventListener("click", (e) => {
-            e.preventDefault();
-            cerrarSesion();
+    if (btnSeguirComprant2) {
+        btnSeguirComprant2.addEventListener("click", () => {
+            window.location.href = "../../Product.html";
         });
     }
 }
@@ -48,37 +32,6 @@ async function main() {
 // ====================================================================
 // FUNCIONS DE SESSIÓ I LOGIN
 // ====================================================================
-
-function mostrarFormularioLogin() {
-    console.log("Redirigint a login...");
-    window.location.href = '../Login.html';
-}
-
-function cerrarSesion() {
-    console.log("Intentant tancar sessió...");
-    if (confirm("Vols tancar sessió?")) {
-        localStorage.removeItem("currentUser");
-        console.log("Sessió tancada");
-        alert("Sessió tancada correctament");
-        window.location.reload();
-    }
-}
-
-function actualitzarBotonsNav() {
-    const user = obtenerUser();
-    const btnLogin = document.querySelector('button[data-action="login"]');
-    const btnLogout = document.querySelector('button[data-action="logout"]');
-
-    console.log("Actualitzant botons. Usuari:", user);
-
-    if (user) {
-        if (btnLogin) btnLogin.style.display = 'none';
-        if (btnLogout) btnLogout.style.display = 'inline-block';
-    } else {
-        if (btnLogin) btnLogin.style.display = 'inline-block';
-        if (btnLogout) btnLogout.style.display = 'none';
-    }
-}
 
 function obtenerUser() {
     const user = localStorage.getItem("currentUser");
@@ -131,7 +84,7 @@ async function obtenerOCrearCart() {
 async function mostrarInfoCliente() {
     const cont = document.getElementById("infoClient");
     if (!cont) return;
-    
+
     while (cont.firstChild) {
         cont.removeChild(cont.firstChild);
     }
@@ -140,10 +93,10 @@ async function mostrarInfoCliente() {
     const cartId = obtenerOCrearCartId();
 
     const box = document.createElement("div");
-    box.style.cssText = "padding:10px;background:#f0f0f0;border-radius:5px;margin-bottom:20px;";
+    box.classList.add("box");
 
     const h3 = document.createElement("h3");
-    
+
     if (user) {
         h3.textContent = "Informació del client";
         box.appendChild(h3);
@@ -196,7 +149,6 @@ async function mostrarInfoCliente() {
 
     cont.appendChild(box);
 }
-
 
 // ====================================================================
 // MOSTRAR CARRET
@@ -333,6 +285,62 @@ async function mostrarCarret() {
     totalSpan.textContent = total.toFixed(2) + " €";
 }
 
+// ====================================================================
+// ACTUALITZAR TOTAL DEL CARRET
+// ====================================================================
+
+async function actualitzarTotalCarret(cartId) {
+    let detalls = await getData(url, "Cartdetail");
+    if (!detalls) detalls = [];
+    if (!Array.isArray(detalls)) detalls = [detalls];
+
+    detalls = detalls.filter(d => d.Cart?.id === cartId);
+
+    const total = Math.round(detalls.reduce((s, d) => s + (d.price * d.quantity), 0) * 100) / 100;
+
+    await updateId(url, "Cart", cartId, {
+        total_amount: total
+    });
+}
+
+// ====================================================================
+// AFEGIR AL CARRET - FUNCIÓ GLOBAL ACCESSIBLE DES D'ALTRES JS
+// ====================================================================
+
+async function afegirAlCarret(producte, preuFinal, oferta = null) {
+    const cart = await obtenerOCrearCart();
+    if (!cart) {
+        showModal("Error al crear/obrir el carret");
+        return;
+    }
+
+    let detalls = await getData(url, "Cartdetail");
+    if (!detalls) detalls = [];
+    if (!Array.isArray(detalls)) detalls = [detalls];
+
+    detalls = detalls.filter(d => d.Cart?.id === cart.id);
+
+    // Ja existeix aquest producte?
+    const existent = detalls.find(d => d.Product?.id === producte.id);
+
+    if (existent) {
+        await updateId(url, "Cartdetail", existent.id, {
+            quantity: existent.quantity + 1
+        });
+    } else {
+        await postData(url, "Cartdetail", {
+            Cart: { id: cart.id },
+            Product: { id: producte.id },
+            quantity: 1,
+            price: preuFinal,
+            discount: oferta ? oferta.discount_percent : 0
+        });
+    }
+
+    await actualitzarTotalCarret(cart.id);
+
+    showModal(`Producte "${producte.name}" afegit al carret!`);
+};
 
 // ====================================================================
 // FINALITZAR COMANDA
@@ -352,9 +360,8 @@ async function finalitzarComanda() {
     window.location.href = 'finalitzar.html';
 }
 
-
 // ====================================================================
-// MODAL (opcional)
+// MODAL
 // ====================================================================
 
 function showModal(message, onClose = null) {
