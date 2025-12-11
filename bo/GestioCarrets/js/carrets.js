@@ -27,7 +27,8 @@ async function main() {
     clients = await getData(url, "Client");
 
     actualitzarDades();
-
+    autocompletar();
+    
     // BOTÓ CERCA
     botoCercar.addEventListener("click", e => {
         e.preventDefault();
@@ -94,12 +95,14 @@ function crearElementsTaula(carretsFiltrats = null) {
             }
         }
 
+        console.log("Carret ID:", c.id, "User_agent:", c.User_agent, "Usuari resolt:", usuari);
+
         elementsTaula.push({
             id: c.id,
             session_id: c.session_id,
             usuari: usuari,
             date: new Date(c.date).toLocaleString(),
-            total_amount: c.total_amount.toFixed(2)
+            total_amount: Math.round(c.total_amount * 100) / 100
         });
     });
 }
@@ -319,3 +322,25 @@ function actualitzarDades(carretsFiltrats = null) {
     const paginats = aplicarPaginacio(elementsTaula);
     mostraTaula(paginats);
 }
+
+function autocompletar(){
+    let clientsDisponibles = [];
+    let sessioDisponible= [];
+
+    clients.forEach(c => {
+        clientsDisponibles.push(c.name);
+    })
+
+     $("#filtreUsuari").autocomplete({
+        source: clientsDisponibles
+    });
+
+    carrets.forEach(ca => {
+        sessioDisponible.push(ca.session_id);
+    })
+
+    $("#filtreSessio").autocomplete({
+        source: sessioDisponible
+    });
+}
+   

@@ -15,12 +15,16 @@
     <link rel="stylesheet" href="../css/normalize.css">
     <link rel="stylesheet" href="../css/grid.css">
     <link rel="stylesheet" href="../css/common.css">
-     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles.css">
     <script src="https://kit.fontawesome.com/d9f0c40e4f.js" crossorigin="anonymous"></script> 
    
-    <script src="./js/common.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="../js/common.js"></script>
     <script src="../apiAccess/crud.js"></script>
     <script src="js/carret.js"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-V7HH56DBMD"></script> <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date());gtag('config', 'G-V7HH56DBMD'); </script>
 </head>
 
 <body class="roboto-font">
@@ -36,9 +40,9 @@
                 <div class="menu-box">
                     <div class="tancar-menu"><i class="fa-solid fa-xmark"></i></div>
                     <ul class="menu">
-                        <li class="actual">
+                        <li>
                             <div class="selector"></div>
-                            <a href="../Index.html">Inici</a>
+                            <a href="../index.html">Inici</a>
                         </li>
                         <li>
                             <div class="selector"></div>
@@ -56,7 +60,7 @@
                     <ul class="menu">
                         <li>
                             <div class="selector"></div>
-                            <a href="#">Comandes</a>
+                            <a href="../Comandes/comandesFE.html">Comandes</a>
                         </li>
                         <li class="registre">
                             <div class="selector"></div>
@@ -88,10 +92,6 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div style="margin-top: 15px;">
-        <button data-action="login">Login</button>
-        <button data-action="logout">Tancar sessió</button>
     </div>
     <main>
         <h1>El teu carret de compra</h1>
