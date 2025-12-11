@@ -190,7 +190,7 @@ option {
 
 /* Contenedor fijo para imágenes */
 .imagen-contenedor {
-    width: 65%;
+    width: 60%;
     height: 250px;
     position: relative;
 }
