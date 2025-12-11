@@ -1,11 +1,6 @@
 document.addEventListener("DOMContentLoaded", main);
 
 async function main() {
-    // Comprova si hi ha usuari (si aquesta funció existeix al teu projecte)
-    if (typeof thereIsUser === 'function') {
-        thereIsUser('../Login.html');
-    }
-
     await mostrarInfoCliente();
     await mostrarCarret();
 
@@ -18,12 +13,20 @@ async function main() {
     }
 
     // Botons "Seguir comprant"
-    const btnsSeguirComprant = document.getElementById("btnSeguirComprant");
-        btnsSeguirComprant.addEventListener("click", () => {
+    const btnSeguirComprant1 = document.getElementById("btnSeguirComprant");
+    const btnSeguirComprant2 = document.getElementById("btnSeguirComprant2");
+
+    if (btnSeguirComprant1) {
+        btnSeguirComprant1.addEventListener("click", () => {
             window.location.href = "../../Product.html";
         });
-    
+    }
 
+    if (btnSeguirComprant2) {
+        btnSeguirComprant2.addEventListener("click", () => {
+            window.location.href = "../../Product.html";
+        });
+    }
 }
 
 // ====================================================================
@@ -146,7 +149,6 @@ async function mostrarInfoCliente() {
 
     cont.appendChild(box);
 }
-
 
 // ====================================================================
 // MOSTRAR CARRET
@@ -283,6 +285,62 @@ async function mostrarCarret() {
     totalSpan.textContent = total.toFixed(2) + " €";
 }
 
+// ====================================================================
+// ACTUALITZAR TOTAL DEL CARRET
+// ====================================================================
+
+async function actualitzarTotalCarret(cartId) {
+    let detalls = await getData(url, "Cartdetail");
+    if (!detalls) detalls = [];
+    if (!Array.isArray(detalls)) detalls = [detalls];
+
+    detalls = detalls.filter(d => d.Cart?.id === cartId);
+
+    const total = Math.round(detalls.reduce((s, d) => s + (d.price * d.quantity), 0) * 100) / 100;
+
+    await updateId(url, "Cart", cartId, {
+        total_amount: total
+    });
+}
+
+// ====================================================================
+// AFEGIR AL CARRET - FUNCIÓ GLOBAL ACCESSIBLE DES D'ALTRES JS
+// ====================================================================
+
+async function afegirAlCarret(producte, preuFinal, oferta = null) {
+    const cart = await obtenerOCrearCart();
+    if (!cart) {
+        showModal("Error al crear/obrir el carret");
+        return;
+    }
+
+    let detalls = await getData(url, "Cartdetail");
+    if (!detalls) detalls = [];
+    if (!Array.isArray(detalls)) detalls = [detalls];
+
+    detalls = detalls.filter(d => d.Cart?.id === cart.id);
+
+    // Ja existeix aquest producte?
+    const existent = detalls.find(d => d.Product?.id === producte.id);
+
+    if (existent) {
+        await updateId(url, "Cartdetail", existent.id, {
+            quantity: existent.quantity + 1
+        });
+    } else {
+        await postData(url, "Cartdetail", {
+            Cart: { id: cart.id },
+            Product: { id: producte.id },
+            quantity: 1,
+            price: preuFinal,
+            discount: oferta ? oferta.discount_percent : 0
+        });
+    }
+
+    await actualitzarTotalCarret(cart.id);
+
+    showModal(`Producte "${producte.name}" afegit al carret!`);
+};
 
 // ====================================================================
 // FINALITZAR COMANDA
@@ -302,9 +360,8 @@ async function finalitzarComanda() {
     window.location.href = 'finalitzar.html';
 }
 
-
 // ====================================================================
-// MODAL (opcional)
+// MODAL
 // ====================================================================
 
 function showModal(message, onClose = null) {
