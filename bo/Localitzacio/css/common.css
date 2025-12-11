@@ -98,7 +98,8 @@ input #buscar, #country, #poblacio, #province{
     padding: 8px;
     border: 1px solid var(--color-secundari);
     border-radius: 4px;
-    margin: 10px;
+    margin: 8px;
+    margin-left: 15px;
 }
 
 button {
@@ -177,6 +178,7 @@ button i {
 
 .netejar {
     background-color: var(--color-boto-netejar);
+    margin-right: 15px;
 }
 
 .netejar i {
@@ -286,7 +288,7 @@ form {
     display: flex;
     align-items: center;
     justify-content: left;
-    padding-left: 35px;
+    padding-left: 15px;
     margin-top: -2px;
 }
 
@@ -447,14 +449,20 @@ input {
 button {
     border-radius: 5px;
     padding: 9px;
-    padding-left: 12px;
+    margin-left: 15px;
+    padding-left: 15px;
     padding-right: 12px;
     border: none;
 }
 
 label {
     color : var(--color-secundari);
-    margin-left: 10px;
+}
+
+.nom{
+    color : var(--color-secundari);
+    margin-left: 17px;
+    font-weight: 500;
 }
 
 .filtre_select {
