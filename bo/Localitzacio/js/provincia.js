@@ -114,11 +114,31 @@ async function configurarPaginaEditar() {
             };
 
             try {
-                await updateId('https://api.serverred.es/', 'Province', provinciaId, dadesActualitzades);
+                // 1. Actualitzar a l'API manualment usant PUT
+                const urlDesti = `https://api.serverred.es/Province/${provinciaId}`;
                 
-                window.location.href = `../provincia.html?id=${countryId}&country=${encodeURIComponent(countryName)}`;
+                const response = await fetch(urlDesti, {
+                    method: 'PUT', // Canviem PATCH per PUT
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(dadesActualitzades)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error API: ${response.status} ${response.statusText}`);
+                }
+                
+                // 2. Esperar un moment
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                // 3. Redirigir
+                const timestamp = new Date().getTime();
+                window.location.href = `../provincia.html?id=${countryId}&country=${encodeURIComponent(countryName)}&t=${timestamp}`;
+                
             } catch (error) {
-                console.error('Error actualitzant província:', error);
+                console.error('Error actualitzant la província:', error);
+                $("#missatgeError").text("Error: " + error.message);
             }
         });
     }
@@ -135,7 +155,6 @@ async function configurarPaginaEditar() {
 }
 
 // Funció per configurar el cercador amb jQuery UI Autocomplete
-// Funció per configurar el cercador amb jQuery UI Autocomplete
 function configurarCercadorJQuery() {
     const $entradaCercar = $('#buscar');
     const $botoCercar = $('.cercar');
@@ -143,13 +162,13 @@ function configurarCercadorJQuery() {
 
     if ($entradaCercar.length) {
         
-        // --- 1. CONFIGURACIÓ JQUERY UI AUTOCOMPLETE ---
+        // --- CONFIGURACIÓ JQUERY UI AUTOCOMPLETE ---
         $entradaCercar.autocomplete({
             minLength: 1, 
             source: function(request, response) {
                 const terme = request.term.toLowerCase();
                 
-                // IMPORTANT: Filtrar només les províncies del país actual
+                // Filtrar només les províncies del país actual
                 if (typeof Province !== 'undefined' && countryId) {
                     const resultats = Province
                         .filter(provincia => 
@@ -177,7 +196,7 @@ function configurarCercadorJQuery() {
             }
         });
 
-        // --- 2. GESTIÓ DEL BOTÓ CERCAR (LUPA) ---
+        // --- GESTIÓ DEL BOTÓ CERCAR---
         $botoCercar.on('click', function(e) {
             e.preventDefault();
             const text = $entradaCercar.val();
@@ -188,7 +207,7 @@ function configurarCercadorJQuery() {
             setTimeout(() => $(this).removeClass('cercant'), 300);
         });
 
-        // --- 3. EVENTS DE TECLAT I NETEJA ---
+        // --- EVENTS DE TECLAT I NETEJA ---
 
         // Detectar "Enter"
         $entradaCercar.on('keypress', function(e) {
@@ -215,7 +234,7 @@ function configurarCercadorJQuery() {
             }
         });
 
-        // Botó de netejar (la creu)
+        // Botó de netejar
         $botoNetejar.on('click', function(e) {
             e.preventDefault();
             $entradaCercar.val(''); 
@@ -343,8 +362,6 @@ function renderitzarPaginacio() {
         $paginacioContainer.append($btnNext);
     }
 }
-
-
 
 // Mostrar missatge si no hi ha resultats
 function mostrarMissatgeSenseResultats() {

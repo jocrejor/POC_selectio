@@ -293,33 +293,33 @@ function configurarPaginaEditar() {
             $("#missatgeError").text("");
         });
     }
-// Dins de configurarPaginaEditar()
-$formulari.on("submit", async function(event) {
-    event.preventDefault();
+    // Dins de configurarPaginaEditar()
+    $formulari.on("submit", async function(event) {
+        event.preventDefault();
 
-    // Esperar a que es completi la validació (inclosa comprovació de duplicats)
-    const esValid = await validarPaisJQuery();
-    if (!esValid) return;
+        // Esperar a que es completi la validació (inclosa comprovació de duplicats)
+        const esValid = await validarPaisJQuery();
+        if (!esValid) return;
 
-    const nouNomPais = $inputPais.val().trim();
-    
-    const dadesActualitzades = {
-        name: nouNomPais
-    };
-
-    try {
-        // 1. Actualitzar a l'API
-        await updateId('https://api.serverred.es/', 'Country', paisId, dadesActualitzades);
+        const nouNomPais = $inputPais.val().trim();
         
-        // 2. Esperar un moment per assegurar que l'API ha processat
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        // 3. Redirigir a la pàgina principal amb un paràmetre de cache busting
-        window.location.href = "../index.html?t=" + new Date().getTime();
-    } catch (error) {
-        console.error('Error en actualitzar el país:', error);
-    }
-});
+        const dadesActualitzades = {
+            name: nouNomPais
+        };
+
+        try {
+            // 1. Actualitzar a l'API
+            await updateId('https://api.serverred.es/', 'Country', paisId, dadesActualitzades);
+            
+            // 2. Esperar un moment per assegurar que l'API ha processat
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // 3. Redirigir a la pàgina principal amb un paràmetre de cache busting
+            window.location.href = "../index.html?t=" + new Date().getTime();
+        } catch (error) {
+            console.error('Error en actualitzar el país:', error);
+        }
+    });
 }
 
 // Configura el botó d'afegir a la pàgina principal amb jQuery
