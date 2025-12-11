@@ -159,10 +159,28 @@ async function configurarPaginaEditar() {
             };
 
             try {
-                await updateId('https://api.serverred.es/', 'City', poblacioId, dadesActualitzades);
+                // MODIFICACIÓ: En lloc d'usar updateId (que usa PATCH), fem el fetch manualment amb PUT
+                const url = `https://api.serverred.es/City/${poblacioId}`;
+                
+                const response = await fetch(url, {
+                    method: 'PUT', // Canviem PATCH per PUT per evitar l'error CORS
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(dadesActualitzades)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error HTTP: ${response.status}`);
+                }
+
+                // Si tot ha anat bé, redirigim
                 window.location.href = `../poblacio.html?country_id=${countryId}&country=${encodeURIComponent(countryName)}&province_id=${provinceId}&province=${encodeURIComponent(provinceName)}`;
+            
             } catch (error) {
                 console.error('Error actualitzant:', error);
+                // Opcional: Mostrar l'error en pantalla
+                $("#mensajeError").text("Error al guardar: " + error.message);
             }
         });
     } else {
