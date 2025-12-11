@@ -52,7 +52,7 @@
                         <span class="separador">&nbsp;</span>
                     </div>
                     <div class="tancarSessio">
-                        <a href="#">
+                        <a id="botoTancarSessio"  href="#">
                             <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
                         </a>
                     </div>
@@ -128,7 +128,10 @@
                 <div class="container-fluid sense-separacio">
                     <div class="row">
                         <div class="col-12">
-                        <div class="contingut">
+                        <div class="contingut_main">
+
+                            <div class="element_main">
+
                                 <form id="formEditar">
                                     <input type="hidden" id="id">
 
@@ -149,10 +152,12 @@
 
                                     <label for="cp">Codi Postal:</label><br>
                                     <input type="text" id="cp" required><br>
-
+                                 
                                     <button type="submit">Guardar Canvis</button>
                                     <button type="button" onclick="window.location.href='index.html'">Cancel·lar</button>
+                                    
                                 </form>
+                                </div>
                                 </div>
                              </div>
                         </div>
