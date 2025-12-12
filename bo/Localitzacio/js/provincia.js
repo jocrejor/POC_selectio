@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    main();
+    main1();
 });
 
 // Variables globals
@@ -27,7 +27,7 @@ async function carregarProvincies() {
 }
 
 // Funció principal que s'executa quan es carrega la pàgina
-async function main() {
+async function main1() {
     const isCrearPage = window.location.pathname.includes('provinciaCrear.html');
     const isEditarPage = window.location.pathname.includes('provinciaEditar.html');
 
@@ -41,6 +41,14 @@ async function main() {
         // Configuració per a la pàgina principal
         await configurarPaginaPrincipal();
     }
+    // Configurar botó de tancar sessió DESPRÉS de configurar la pàgina
+    setTimeout(() => {
+        try {
+            botonsTancarSessio("../login.html");
+        } catch (error) {
+            console.warn("No s'ha trobat el botó de tancar sessió:", error);
+        }
+    }, 100);
 }
 
 // Configuració per a la pàgina principal
@@ -50,10 +58,7 @@ async function configurarPaginaPrincipal() {
     llegirParametresURL();    
     mostrarInformacioContext();
 
-    if (!countryId) {
-        alert("No s'ha pogut determinar el país seleccionat.");
-        return;
-    }
+    
 
     // Inicialitzem la llista de províncies filtrats pel país
     provinciesFiltrats = Province.filter(p => p.country_id.toString() === countryId.toString());
@@ -117,13 +122,31 @@ async function configurarPaginaEditar() {
             };
 
             try {
-                await updateId('https://api.serverred.es/', 'Province', provinciaId, dadesActualitzades);
-                alert(`Província "${nouNomProvincia}" actualitzada correctament.`);
+                // 1. Actualitzar a l'API manualment usant PUT
+                const urlDesti = `https://api.serverred.es/Province/${provinciaId}`;
                 
-                window.location.href = `../provincia.html?id=${countryId}&country=${encodeURIComponent(countryName)}`;
+                const response = await fetch(urlDesti, {
+                    method: 'PUT', // Canviem PATCH per PUT
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(dadesActualitzades)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error API: ${response.status} ${response.statusText}`);
+                }
+                
+                // 2. Esperar un moment
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                // 3. Redirigir
+                const timestamp = new Date().getTime();
+                window.location.href = `../provincia.html?id=${countryId}&country=${encodeURIComponent(countryName)}&t=${timestamp}`;
+                
             } catch (error) {
-                console.error('Error actualitzant província:', error);
-                alert('Error actualitzant la província.');
+                console.error('Error actualitzant la província:', error);
+                $("#missatgeError").text("Error: " + error.message);
             }
         });
     }
@@ -139,56 +162,97 @@ async function configurarPaginaEditar() {
     }
 }
 
-// Funció per configurar el cercador amb jQuery
+// Funció per configurar el cercador amb jQuery UI Autocomplete
 function configurarCercadorJQuery() {
-    const $buscarInput = $('#buscar');
-    const $cercarButton = $('.cercar');
-    const $netejarButton = $('.netejar');
+    const $entradaCercar = $('#buscar');
+    const $botoCercar = $('.cercar');
+    const $botoNetejar = $('.netejar');
 
-    if ($buscarInput.length) {
-        // Cerca en temps real a l'escriure
-        $buscarInput.on('input', function() {
-            const text = $(this).val();
-            filtrarIMostrar(text);
-        });
-
-        // Cerca al fer clic al botó
-        $cercarButton.on('click', function(e) {
-            e.preventDefault();
-            const text = $buscarInput.val();
-            filtrarIMostrar(text);
-            
-            // Efecte visual de cerca
-            $(this).addClass('buscant');
-            setTimeout(() => {
-                $(this).removeClass('buscant');
-            }, 300);
-        });
-
-        // Netejar cerca
-        $netejarButton.on('click', function(e) {
-            e.preventDefault();
-            $buscarInput.val('');
-            filtrarIMostrar('');
-            
-            // Enfocar el camp de cerca després de netejar
-            $buscarInput.focus();
-        });
-
-        // Permetre cerca amb Enter
-        $buscarInput.on('keypress', function(e) {
-            if (e.which === 13) {
-                e.preventDefault();
-                $cercarButton.trigger('click');
+    if ($entradaCercar.length) {
+        
+        // --- CONFIGURACIÓ JQUERY UI AUTOCOMPLETE ---
+        $entradaCercar.autocomplete({
+            minLength: 1, 
+            source: function(request, response) {
+                const terme = request.term.toLowerCase();
+                
+                // Filtrar només les províncies del país actual
+                if (typeof Province !== 'undefined' && countryId) {
+                    const resultats = Province
+                        .filter(provincia => 
+                            // Filtrar per país
+                            provincia.country_id.toString() === countryId.toString() &&
+                            // Filtrar per text de cerca
+                            provincia.name.toLowerCase().includes(terme)
+                        )
+                        .map(provincia => {
+                            return {
+                                label: provincia.name, 
+                                value: provincia.name, 
+                                id: provincia.id        
+                            };
+                        });
+                    response(resultats);
+                } else {
+                    console.error("Falten dades: Province o countryId no estan definits");
+                    response([]);
+                }
+            },
+            select: function(event, ui) {
+                $entradaCercar.val(ui.item.value);
+                return false; 
             }
         });
 
-        // Mostrar/amagar icona de netejar segons si hi ha text
-        $buscarInput.on('input', function() {
-            if ($(this).val().length > 0) {
-                $(this).addClass('amb-text');
+        // --- GESTIÓ DEL BOTÓ CERCAR---
+        $botoCercar.on('click', function(e) {
+            e.preventDefault();
+            const text = $entradaCercar.val();
+            
+            filtrarIMostrar(text);
+
+            $(this).addClass('cercant');
+            setTimeout(() => $(this).removeClass('cercant'), 300);
+        });
+
+        // --- EVENTS DE TECLAT I NETEJA ---
+
+        // Detectar "Enter"
+        $entradaCercar.on('keypress', function(e) {
+            if (e.which === 13) {
+                e.preventDefault();
+                $entradaCercar.autocomplete("close");
+                $botoCercar.trigger('click');
+            }
+        });
+
+        // Gestió visual mentre s'escriu
+        $entradaCercar.on('input', function() {
+            const text = $(this).val();            
+            
+            if (text === '') {
+                filtrarIMostrar('');
+            }
+            
+            if (typeof gestionarBotoNetejar === 'function') {
+                gestionarBotoNetejar($(this), $botoNetejar);
             } else {
-                $(this).removeClass('amb-text');
+                if (text.length > 0) $(this).addClass('amb-text');
+                else $(this).removeClass('amb-text');
+            }
+        });
+
+        // Botó de netejar
+        $botoNetejar.on('click', function(e) {
+            e.preventDefault();
+            $entradaCercar.val(''); 
+            filtrarIMostrar('');
+            $entradaCercar.focus(); 
+            
+            if (typeof gestionarBotoNetejar === 'function') {
+                gestionarBotoNetejar($entradaCercar, $botoNetejar);
+            } else {
+                $entradaCercar.removeClass('amb-text');
             }
         });
     }
@@ -306,8 +370,6 @@ function renderitzarPaginacio() {
         $paginacioContainer.append($btnNext);
     }
 }
-
-
 
 // Mostrar missatge si no hi ha resultats
 function mostrarMissatgeSenseResultats() {
@@ -453,6 +515,12 @@ function mostrarLlista(array) {
         // Columna Accions
         const tdAccions = $('<td>').attr('data-cell', 'Accions : ');
 
+        // Icona Poblacions
+        const poblacions = $('<a>')
+            .addClass('icon-visualitzar')
+            .attr('href', `poblacio.html?country_id=${countryId}&country=${encodeURIComponent(countryName)}&province_id=${provincia.id}&province=${encodeURIComponent(provincia.name)}`)
+            .html('<i class="fa-solid fa-building-circle-arrow-right"></i>');
+
         // Icona editar
         const editar = $('<a>')
             .addClass('icon-editar')
@@ -463,15 +531,9 @@ function mostrarLlista(array) {
         const borrar = $('<a>')
             .addClass('icon-borrar')
             .html('<i class="fa-solid fa-trash"></i>')
-            .on('click', () => esborrarProvincia(provincia.id));
+            .on('click', () => esborrarProvincia(provincia.id));        
 
-        // Icona Poblacions
-        const poblacions = $('<a>')
-            .addClass('icon-visualitzar')
-            .attr('href', `poblacio.html?country_id=${countryId}&country=${encodeURIComponent(countryName)}&province_id=${provincia.id}&province=${encodeURIComponent(provincia.name)}`)
-            .html('<i class="fa-solid fa-city"></i>');
-
-        tdAccions.append(editar, borrar, poblacions);
+        tdAccions.append(poblacions,editar, borrar);
         fila.append(tdId, tdNom, tdAccions);
         $taulaBody.append(fila);
     });
@@ -501,13 +563,11 @@ async function crearProvinciaJQuery() {
 
     try {
         await postData('https://api.serverred.es/', 'Province', novaProvincia);
-        alert(`Província "${nomProvincia}" afegida correctament.`);
         
         // Redirigir a la pàgina principal de províncies
         window.location.href = `../provincia.html?id=${countryId}&country=${encodeURIComponent(countryName)}`;
     } catch (error) {
         console.error('Error creant província:', error);
-        alert('Error afegint la província.');
     }
 }
 
@@ -517,7 +577,7 @@ async function esborrarProvincia(id) {
     const provinciaNom = provincia ? provincia.name : '';
 
     // Finestra emergent de confirmació
-    const confirmar = confirm(`Vols eliminar la província "${provinciaNom}"?`);
+    const confirmar = confirm(`Segur que vols eliminar "${provinciaNom}"?`);
 
     if (confirmar) {
         try {
@@ -539,14 +599,9 @@ async function esborrarProvincia(id) {
             }
             
             mostrarPagina(); // Redibuixa la llista i la paginació
-
-            alert(`La província "${provinciaNom}" s'ha eliminat correctament.`);
         } catch (error) {
             console.error('Error eliminant província:', error);
-            alert('Error eliminant la província.');
         }
-    } else {
-        alert(`S'ha cancel·lat l'eliminació de "${provinciaNom}".`);
     }
 }
 
@@ -599,7 +654,7 @@ function validarProvinciaJQuery() {
         // Filtrar províncies del mateix país
         const provinciesDelPais = Province.filter(p => p.country_id.toString() === countryId.toString());
         if (provinciesDelPais.some(p => p.name.toLowerCase() === nomLower)) {
-            $missatgeError.text("La província ja existeix en este país.");
+            alert("La província ja existeix en este país.");
             $input.addClass("error");
             $input.focus();
             return false;
@@ -613,7 +668,7 @@ function validarProvinciaJQuery() {
         
         const provinciesDelPais = Province.filter(p => p.country_id.toString() === countryId.toString());
         if (provinciesDelPais.some(p => p.name.toLowerCase() === nomLower && p.id !== provinciaIdActual)) {
-            $missatgeError.text("La província ja existeix en este país.");
+            alert("La província ja existeix en este país.");
             $input.addClass("error");
             $input.focus();
             return false;

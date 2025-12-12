@@ -18,10 +18,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
-    
     <script type="text/javascript" src="../../apiAccess/crud.js"></script>
     <script type="text/javascript" src="../js/logout.js"></script>
     <script type="text/javascript" src="../js/common.js"></script>
@@ -88,28 +84,85 @@
                     <!-- Filtres -->
                     <div class="container-fluid sense-separacio">
                         <div class="row">
+
+                            <h1 style="padding-left: 1%;">SFTP</h1>
                             <div class="col-3">
                                 <div class="element_main">
-                                    <label>ID Carret</label>
+                                    <label>Servidor sftp</label>
                                     <input id="filtreId" type="text">
                                 </div>
                             </div>
                             <div class="col-3">
                                 <div class="element_main">
-                                    <label>Session ID</label>
+                                    <label>Login servidor sftp</label>
                                     <input id="filtreSessio" type="text">
                                 </div>
                             </div>
                             <div class="col-3">
                                 <div class="element_main">
-                                    <label>Usuari</label>
+                                    <label>Password servidor sftp</label>
                                     <input id="filtreUsuari" type="text">
                                 </div>
                             </div>
-                        </div>
+                            
 
+
+                        </div>
                         
                         <div class="row">
+
+                            <h1 style="padding-left: 1%;">CSV</h1>
+
+                            <div class="col-3">
+                                <div class="element_main">
+                                    <label>Ruta base d’on llegir els fitxers csv</label>
+                                    <input id="filtreUsuari" type="text">
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div class="row">
+
+                            <h1 style="padding-left: 1%;">API</h1>
+
+                            <div class="col-3">
+                                <div class="element_main">
+                                    <label>Nom del fitxer de producte</label>
+                                    <input id="filtreUsuari" type="text">
+                                </div>
+                            </div>
+
+
+                            <div class="col-3">
+                                <div class="element_main">
+                                    <label>Nom del fitxer de families</label>
+                                    <input id="filtreUsuari" type="text">
+                                </div>
+                            </div>
+
+                            <div class="col-3">
+                                <div class="element_main">
+                                    <label>Nom del fitxer d'ofertes</label>
+                                    <input id="filtreUsuari" type="text">
+                                </div>
+                            </div>
+
+                            <div class="col-3">
+                                <div class="element_main">
+                                    <label>Nom del fitxer d'atributs</label>
+                                    <input id="filtreUsuari" type="text">
+                                </div>
+                            </div>
+
+                        </div>
+                        
+                        
+                        <div class="row">
+
+                            
+                            
                             <div class="col-12">
                                 <div class="botons_accio">
                                     <button id="cercar" class="cercar"><i class="fa-solid fa-magnifying-glass"></i>Cercar</button>
@@ -120,28 +173,7 @@
                     </div>
                 </div>
 
-                <!-- TAULA -->
-                <div class="container-fluid sense-separacio">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="noElements">
-                                <p>No hi ha carrets registrats</p>
-                            </div>
-
-                            <div class="contingut">
-                                <div id="contingutTaula">
-                                    <table id="taula"></table>
-                                </div>
-
-                                <div class="paginacio">
-                                    <button id="anterior">Anterior</button>
-                                    <div id="pagines"></div>
-                                    <button id="posterior">Següent</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                
 
             </div>
         </div>

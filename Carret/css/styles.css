@@ -36,7 +36,6 @@
 
 /* Aplica les classes comunes a tot el main */
 .carret {
-    background-color: var(--color-terciari);
     color: var(--color-quaternari);
 }
 
@@ -120,10 +119,12 @@ button:hover {
 #carretBuit {
     background-color: var(--color-quinari);
     border: 3px dashed var(--color-primari);
+    
 }
 
 #carretBuit p {
     color: var(--color-primari);
+    padding-left: 10px;
 }
 
 /* Contingut del carret */
@@ -152,6 +153,12 @@ button:hover {
 
 .info-client-card strong {
     color: var(--color-primari);
+}
+.box{
+    padding: 10px;
+    background: #f0f0f0;
+    border-radius: 5px;
+    margin-bottom: 20px;
 }
 
 /* Total */

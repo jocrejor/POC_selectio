@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Selectio: Editar País</title>
+    <title>Editar Països</title>
     <link rel="shortcut icon" href="../img/logo_tendafake.png" type="image/x-icon">
     
     <!-- Enllaços a fitxers CSS -->
     <link rel="stylesheet" href="../css/normalize.css">
     <link rel="stylesheet" href="../css/common.css">
     <link rel="stylesheet" href="../css/template_grid3.css">
-    <link rel="stylesheet" href="../css/common-table.css">
     
     <!-- Enllaços a fonts externes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,6 +21,7 @@
     <script src="../../../apiAccess/crud.js"></script>
     <script src="../js/common.js"></script>
     <script src="../js/index.js"></script>
+    <script src="../../js/logout.js"></script>
     
     <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/f653e778a0.js" crossorigin="anonymous"></script>
@@ -40,11 +40,11 @@
                 <div id="sessioUsuari">
                     <div class="headerUsuari">
                         <img src="../img/foto_persona.png" alt="No s'ha pogut carregar l'imatge">
-                        <span>Manolo Garibolo</span>
+                        <span id="usuariNom"></span>
                         <span class="separador">&nbsp;</span>
                     </div>
                     <div class="tancarSessio">
-                        <a href="../../login.html">
+                        <a id="botoTancarSessio" href="#">
                             <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
                         </a>
                     </div>
@@ -58,7 +58,7 @@
         <!-- Titol de la pàgina -->
         <div class="row pagina">
             <div class="col-12">
-                <p>Editar País</p>
+                <p>Editar Països</p>
             </div>
         </div>
         
@@ -66,11 +66,11 @@
         <div class="row main">
             <!-- Menú lateral -->
             <div id="menu_lateral" class="col-2">
-                <a href="../Productes/Atributs.html" class="opcio_menu">
+                <a href="../../Productes/Atributs.html" class="opcio_menu">
                     <i class="fa-solid fa-paperclip"></i>
                     Atributs
                 </a>
-                <a href="../../GestioCarret/index.html " class="opcio_menu">
+                <a href="../../GestioCarrets/index.html" class="opcio_menu">
                     <i class="fa-solid fa-cart-shopping"></i>
                     Carrets
                 </a>
@@ -78,7 +78,7 @@
                     <i class="fa-solid fa-person"></i>
                     Clients
                 </a>
-                <a href="../../Configuracions/Configuracio.html" class="opcio_menu">
+                <a href="#" class="opcio_menu">
                     <i class="fa-solid fa-sliders"></i>
                     Configuracions
                 </a>
@@ -94,10 +94,6 @@
                     <i class="fa-solid fa-list"></i>
                     Families
                 </a>
-                <a href="../../Favorits/Favorits.html" class="opcio_menu">
-                    <i class="fa-solid fa-star"></i>
-                    Favorits
-                </a>
                 <div class="opcio_seleccionada">
                     <i class="fa-solid fa-location-dot"></i>
                     Localitzacions
@@ -110,11 +106,11 @@
                     <i class="fa-solid fa-city"></i>
                     Productes
                 </a>
-                <a href="../../Usuaris/usuaris.html" class="opcio_menu">                
+                <a href="../../Usuaris/index.html" class="opcio_menu">                
                     <i class="fa-solid fa-user"></i>
                     Usuaris
                 </a>
-                <a href="#" class="opcio_menu eixir_menu">
+                <a href="../../login.html" id="tancarSessioLateral" class="opcio_menu eixir_menu">
                     <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
                     Eixir
                 </a>
@@ -122,7 +118,7 @@
             
             <!-- Contingut de la pàgina -->
             <div class="col-10">
-                <form action="" class="contingut_main">
+                <form action="">
                     <div class="col-12">
                         <div class="botons_accio2">
                             <button class="tornar" type="button" id="tornar">
@@ -134,7 +130,7 @@
                         <div class="row">
                             <div class="col-4">
                                 <div class="element_main"> 
-                                    <label>Nom País</label>   
+                                    <label class="nom">Nom País</label>
                                     <input type="text" id="country"
                                         maxlength="30" minlength="3"
                                         required pattern="^[A-Za-zÀ-ÿ\\s]{3,30}$">

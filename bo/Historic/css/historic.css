@@ -37,6 +37,7 @@
     cursor: pointer;
 }
 
+
 /* Assegurar que els links dels botons d'accions mantinguen el seu estil */
 #taula td a.accio {
     color: inherit !important; /* Mantenir el color original dels botons */
@@ -60,6 +61,10 @@
 .filtre_select option {
     background-color: white;
     color: black;
+}
+
+.accions {
+    min-width: 80px;
 }
 
 /* ------------- Estils per al JQuery ------------- */
@@ -155,4 +160,18 @@
 
 .btnAccio{
     margin-top: 20px;
+    cursor: pointer;
+    margin-right: 15px;
+}
+
+#errorMessages {
+    margin-bottom: 20px;
+    min-height: 20px;
+}
+
+#errorMessages p {
+    color: red;
+    font-weight: bold;
+    margin: 5px 0;
+    font-size: 14px;
 }

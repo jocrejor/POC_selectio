@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    main();
+    main1();
 });
 
 // Variables globals
@@ -16,10 +16,9 @@ const API_URL = 'https://api.serverred.es/City';
 let paginaActual = 1;
 const itemsPerPagina = 10;
 
-
 // Funció principal que s'executa quan es carrega la pàgina
-async function main() {
-    console.log("DEBUG: Iniciant main()");
+async function main1() {
+    console.log("DEBUG: Iniciant main1()");
 
     // Detectar pàgina actual de forma més robusta
     const formCrear = $('#form-crear');
@@ -43,21 +42,39 @@ async function main() {
     } else {
         console.warn("DEBUG: No s'ha pogut identificar la pàgina.");
     }
+
+    // Configurar botó de tancar sessió DESPRÉS de configurar la pàgina
+    setTimeout(() => {
+        try {
+            botonsTancarSessio("../login.html");
+        } catch (error) {
+            console.warn("No s'ha trobat el botó de tancar sessió:", error);
+        }
+    }, 100);
 }
 
 // --- CONFIGURACIÓ DE PÀGINES ---
 
 // Pàgina Principal
 async function configurarPaginaPrincipal() {
-    await carregarDadesInicials();
+    
     llegirParametresURL();
     mostrarInformacioContext();
 
+    await carregarDadesInicials();
+
     if (!provinceId) {
         console.warn("No s'ha pogut determinar la província seleccionada.");
+        // Inicialitzem amb array buit si no hi ha provinceId
+        poblacionsFiltrats = [];
     } else {
-        // Inicialitzem la llista de poblacions filtrats
-        poblacionsFiltrats = City.filter(p => p.province_id.toString() === provinceId.toString());
+        // Inicialitzem la llista de poblacions filtrats - AMB COMPROVACIÓ DE NULL
+        poblacionsFiltrats = City.filter(p => {
+            if (!p || p.province_id === null || p.province_id === undefined) {
+                return false;
+            }
+            return p.province_id.toString() === provinceId.toString();
+        });
         // Crida a mostrarPagina() en lloc de mostrarLlista()
         mostrarPagina();
     }
@@ -153,12 +170,28 @@ async function configurarPaginaEditar() {
             };
 
             try {
-                await updateId('https://api.serverred.es/', 'City', poblacioId, dadesActualitzades);
-                alert(`Població "${nouNomPoblacio}" actualitzada correctament.`);
+                // MODIFICACIÓ: En lloc d'usar updateId (que usa PATCH), fem el fetch manualment amb PUT
+                const url = `https://api.serverred.es/City/${poblacioId}`;
+                
+                const response = await fetch(url, {
+                    method: 'PUT', // Canviem PATCH per PUT per evitar l'error CORS
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(dadesActualitzades)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error HTTP: ${response.status}`);
+                }
+
+                // Si tot ha anat bé, redirigim
                 window.location.href = `../poblacio.html?country_id=${countryId}&country=${encodeURIComponent(countryName)}&province_id=${provinceId}&province=${encodeURIComponent(provinceName)}`;
+            
             } catch (error) {
                 console.error('Error actualitzant:', error);
-                alert('Error actualitzant la població.');
+                // Opcional: Mostrar l'error en pantalla
+                $("#mensajeError").text("Error al guardar: " + error.message);
             }
         });
     } else {
@@ -266,76 +299,157 @@ function configurarBotoTornarJQuery() {
 
 // --- CERCADOR AMB JQUERY ---
 
+// Reemplaza la función configurarCercadorJQuery() por esta versión con autocomplete:
+
 function configurarCercadorJQuery() {
-    const $buscarInput = $('#buscar');
-    const $cercarButton = $('.cercar');
-    const $netejarButton = $('.netejar');
+    const $entradaCercar = $('#buscar');
+    const $botoCercar = $('.cercar');
+    const $botoNetejar = $('.netejar');
 
-    if ($buscarInput.length) {
-        // Cerca en temps real a l'escriure
-        $buscarInput.on('input', function() {
-            const text = $(this).val();
-            filtrarIMostrarJQuery(text);
+    if ($entradaCercar.length) {
+        
+        // --- 1. CONFIGURACIÓ JQUERY UI AUTOCOMPLETE ---
+        $entradaCercar.autocomplete({
+            minLength: 1, 
+            source: function(request, response) {
+                const terme = request.term.toLowerCase();
+                
+                // IMPORTANT: Filtrar només les poblacions de la província actual
+                if (City && City.length > 0 && provinceId) {
+                    // Primer filtrar per provincia
+                    const poblacionsDeProvincia = City.filter(poblacio => {
+                        if (!poblacio || poblacio.province_id === null || poblacio.province_id === undefined) {
+                            return false;
+                        }
+                        return poblacio.province_id.toString() === provinceId.toString();
+                    });
+                    
+                    // Després filtrar per text de cerca
+                    const resultats = poblacionsDeProvincia
+                        .filter(poblacio => {
+                            if (!poblacio || !poblacio.name) return false;
+                            return poblacio.name.toLowerCase().includes(terme) ||
+                                   poblacio.id.toString().includes(terme);
+                        })
+                        .map(poblacio => {
+                            return {
+                                label: poblacio.name, 
+                                value: poblacio.name, 
+                                id: poblacio.id        
+                            };
+                        });
+                    
+                    // Ordenar alfabèticament per nom
+                    resultats.sort((a, b) => a.label.localeCompare(b.label));
+                    
+                    response(resultats);
+                } else {
+                    console.error("Falten dades: City no està definit o no hi ha provinceId");
+                    response([]);
+                }
+            },
+            select: function(event, ui) {
+                $entradaCercar.val(ui.item.value);
+                // Executar la cerca automàticament al seleccionar una opció
+                setTimeout(() => {
+                    filtrarIMostrarJQuery(ui.item.value);
+                    $botoCercar.addClass('cercant');
+                    setTimeout(() => $botoCercar.removeClass('cercant'), 300);
+                }, 100);
+                return false; 
+            },
+            focus: function(event, ui) {
+                // Mostrar el valor en el camp quan es navega amb teclat
+                $entradaCercar.val(ui.item.value);
+                return false;
+            }
         });
 
-        // Cerca al fer clic al botó
-        $cercarButton.on('click', function(e) {
+        // --- 2. GESTIÓ DEL BOTÓ CERCAR (LUPA) ---
+        $botoCercar.on('click', function(e) {
             e.preventDefault();
-            const text = $buscarInput.val();
+            const text = $entradaCercar.val();
+            
+            // Tançar l'autocomplete quan es fa clic al botó
+            $entradaCercar.autocomplete("close");
+            
             filtrarIMostrarJQuery(text);
-            
-            // Efecte visual de cerca
-            $(this).addClass('buscant');
-            setTimeout(() => {
-                $(this).removeClass('buscant');
-            }, 300);
+
+            $(this).addClass('cercant');
+            setTimeout(() => $(this).removeClass('cercant'), 300);
         });
 
-        // Netejar cerca
-        $netejarButton.on('click', function(e) {
-            e.preventDefault();
-            $buscarInput.val('');
-            filtrarIMostrarJQuery('');
-            
-            // Enfocar el camp de cerca després de netejar
-            $buscarInput.focus();
-        });
+        // --- 3. EVENTS DE TECLAT I NETEJA ---
 
-        // Permetre cerca amb Enter
-        $buscarInput.on('keypress', function(e) {
+        // Detectar "Enter" - tancar autocomplete i cercar
+        $entradaCercar.on('keypress', function(e) {
             if (e.which === 13) {
                 e.preventDefault();
-                $cercarButton.trigger('click');
+                $entradaCercar.autocomplete("close");
+                $botoCercar.trigger('click');
             }
         });
 
-        // Mostrar/amagar icona de netejar segons si hi ha text
-        $buscarInput.on('input', function() {
-            if ($(this).val().length > 0) {
-                $(this).addClass('amb-text');
-            } else {
-                $(this).removeClass('amb-text');
+        // Gestió visual mentre s'escriu
+        $entradaCercar.on('input', function() {
+            const text = $(this).val();            
+            
+            // Netejar filtres si el camp està buit
+            if (text === '') {
+                filtrarIMostrarJQuery('');
+            }
+            
+            else {
+                // Fallback si no existeix la funció global
+                if (text.length > 0) {
+                    $(this).addClass('amb-text');
+                    $botoNetejar.show();
+                } else {
+                    $(this).removeClass('amb-text');
+                    $botoNetejar.hide();
+                }
             }
         });
+
+        // Botó de netejar (la creu)
+        $botoNetejar.on('click', function(e) {
+            e.preventDefault();
+            $entradaCercar.val(''); 
+            $entradaCercar.autocomplete("close");
+            filtrarIMostrarJQuery('');
+            $entradaCercar.focus(); 
+            
+            
+        });
+
+        // Mostrar/amagar botó netejar al carregar
+        
     }
 }
+
 
 // Funció per filtrar i mostrar resultats amb jQuery
 function filtrarIMostrarJQuery(textCerca) {
     const textCercaLower = textCerca.toLowerCase().trim();
 
-    // Filtrar per província seleccionada
-    let poblacionsDeProvincia = City.filter(p => p.province_id.toString() === provinceId.toString());
+    // Filtrar per província seleccionada - AMB COMPROVACIÓ DE NULL
+    let poblacionsDeProvincia = City.filter(p => {
+        if (!p || p.province_id === null || p.province_id === undefined) {
+            return false;
+        }
+        return p.province_id.toString() === provinceId.toString();
+    });
     
     if (textCercaLower === '') {
         // Si no hi ha text, mostrar totes les poblacions de la província
         poblacionsFiltrats = poblacionsDeProvincia;
     } else {
-        // Filtrar poblacions segons el text de cerca
-        poblacionsFiltrats = poblacionsDeProvincia.filter(poblacio => 
-            poblacio.name.toLowerCase().includes(textCercaLower) ||
-            poblacio.id.toString().includes(textCercaLower)
-        );
+        // Filtrar poblacions segons el text de cerca - AMB COMPROVACIÓ
+        poblacionsFiltrats = poblacionsDeProvincia.filter(poblacio => {
+            if (!poblacio || !poblacio.name) return false;
+            return poblacio.name.toLowerCase().includes(textCercaLower) ||
+                   poblacio.id.toString().includes(textCercaLower);
+        });
     }
     
     // Resetar la pàgina a 1 i mostrar la nova pàgina
@@ -359,7 +473,6 @@ function mostrarPagina() {
     // Renderitzar els botons de paginació
     renderitzarPaginacio();
 }
-
 
 // --- FUNCIÓ PER A LA PAGINACIÓ LLISCANT I CENTRADA ---
 function renderitzarPaginacio() {
@@ -451,7 +564,6 @@ function renderitzarPaginacio() {
     }
 }
 
-
 // Mostrar missatge si no hi ha resultats
 function mostrarMissatgeSenseResultatsJQuery() {
     const $taulaBody = $('#llista');
@@ -460,8 +572,13 @@ function mostrarMissatgeSenseResultatsJQuery() {
     $('#missatgeSenseResultats').remove();
     $('#missatgeSensePoblacions').remove();
 
-    // Obtenir totes les poblacions de la província actual
-    const poblacionsDeProvincia = City.filter(p => p.province_id.toString() === provinceId.toString());
+    // Obtenir totes les poblacions de la província actual - AMB COMPROVACIÓ DE NULL
+    const poblacionsDeProvincia = City.filter(p => {
+        if (!p || p.province_id === null || p.province_id === undefined) {
+            return false;
+        }
+        return p.province_id.toString() === provinceId.toString();
+    });
 
     if (poblacionsDeProvincia.length === 0) {
         // Si no hi ha poblacions a la base de dades per eixa província
@@ -484,9 +601,14 @@ function actualitzarComptadorResultatsJQuery() {
     
     // Crear nou comptador
     const textCerca = $('#buscar').val();
-    const poblacionsDeProvincia = City.filter(p => p.province_id.toString() === provinceId.toString());
+    const poblacionsDeProvincia = City.filter(p => {
+        if (!p || p.province_id === null || p.province_id === undefined) {
+            return false;
+        }
+        return p.province_id.toString() === provinceId.toString();
+    });
     const total = poblacionsDeProvincia.length;
-    const trobades = poblacionsFiltrats.length;    
+    const trobades = poblacionsFiltrats.length;
 }
 
 // --- TAULA HTML ---
@@ -545,13 +667,15 @@ async function crearPoblacioJQuery() {
     const $poblacioInput = $("#poblacio");
     const nomPoblacio = $poblacioInput.val().trim();
     
-    // Calcular ID màxim
+    // Calcular ID màxim - AMB COMPROVACIÓ
     let maxId = 0;
-    if (City.length > 0) {
+    if (City && City.length > 0) {
         City.forEach(p => {
-            const val = parseInt(p.id);
-            if (!isNaN(val) && val > maxId) {
-                maxId = val;
+            if (p && p.id) {
+                const val = parseInt(p.id);
+                if (!isNaN(val) && val > maxId) {
+                    maxId = val;
+                }
             }
         });
     }
@@ -565,11 +689,9 @@ async function crearPoblacioJQuery() {
 
     try {
         await postData('https://api.serverred.es/', 'City', novaPoblacio);
-        alert(`Població "${nomPoblacio}" afegida correctament.`);
         window.location.href = `../poblacio.html?country_id=${countryId}&country=${encodeURIComponent(countryName)}&province_id=${provinceId}&province=${encodeURIComponent(provinceName)}`;
     } catch (error) {
         console.error('Error creant població:', error);
-        alert('Error afegint la població: ' + error.message);
     }
 }
 
@@ -577,13 +699,18 @@ async function esborrarPoblacio(id) {
     const poblacio = City.find(p => p.id === id);
     const nom = poblacio ? poblacio.name : id;
     
-    if (confirm(`Vols eliminar la població "${nom}"?`)) {
+    if (confirm(`Segur que vols eliminar "${nom}"?`)) {
         try {
             await deleteData('https://api.serverred.es/', 'City', id);
             
             // Actualitzem la llista localment per a no haver de recarregar tot
             City = City.filter(p => p.id !== id);
-            poblacionsFiltrats = City.filter(p => p.province_id.toString() === provinceId.toString());
+            poblacionsFiltrats = City.filter(p => {
+                if (!p || p.province_id === null || p.province_id === undefined) {
+                    return false;
+                }
+                return p.province_id.toString() === provinceId.toString();
+            });
             
             // Recalcular paginació després d'esborrar
             const totalPagines = Math.ceil(poblacionsFiltrats.length / itemsPerPagina);
@@ -594,11 +721,8 @@ async function esborrarPoblacio(id) {
             }
             
             mostrarPagina(); // Redibuixa la llista i la paginació
-            
-            alert(`La població "${nom}" s'ha eliminat correctament.`);
         } catch (error) {
             console.error('Error eliminant:', error);
-            alert('Error eliminant la població.');
         }
     }
 }
@@ -635,21 +759,24 @@ function validarPoblacioJQuery(mode = 'crear', idIgnorar = null) {
         return false;
     }
 
-    // Duplicats dins de la mateixa província
-    const ciutatsDeProvincia = City.filter(p => 
-        p.province_id && p.province_id.toString() === provinceId.toString()
-    );
+    // Duplicats dins de la mateixa província - AMB COMPROVACIÓ
+    const ciutatsDeProvincia = City.filter(p => {
+        if (!p || !p.province_id || !p.name) {
+            return false;
+        }
+        return p.province_id.toString() === provinceId.toString();
+    });
 
     const duplicat = ciutatsDeProvincia.find(p => {
         // En mode editar, si l'ID coincideix amb el que estem editant, no és duplicat
-        if (mode === 'editar' && p.id.toString() === idIgnorar.toString()) {
+        if (mode === 'editar' && idIgnorar && p.id.toString() === idIgnorar.toString()) {
             return false;
         }
         return p.name.toLowerCase() === nomLower;
     });
 
     if (duplicat) {
-        $errorMsg.text("Aquesta població ja existeix en aquesta província.");
+        alert("Aquesta població ja existeix en aquesta província.");
         $input.addClass("error");
         $input.focus();
         return false;
