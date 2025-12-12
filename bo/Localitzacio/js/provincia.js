@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    main();
+    main1();
 });
 
 // Variables globals
@@ -27,7 +27,7 @@ async function carregarProvincies() {
 }
 
 // Funció principal que s'executa quan es carrega la pàgina
-async function main() {
+async function main1() {
     const isCrearPage = window.location.pathname.includes('provinciaCrear.html');
     const isEditarPage = window.location.pathname.includes('provinciaEditar.html');
 
@@ -41,6 +41,14 @@ async function main() {
         // Configuració per a la pàgina principal
         await configurarPaginaPrincipal();
     }
+    // Configurar botó de tancar sessió DESPRÉS de configurar la pàgina
+    setTimeout(() => {
+        try {
+            botonsTancarSessio("../login.html");
+        } catch (error) {
+            console.warn("No s'ha trobat el botó de tancar sessió:", error);
+        }
+    }, 100);
 }
 
 // Configuració per a la pàgina principal
