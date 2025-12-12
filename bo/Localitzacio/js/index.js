@@ -29,6 +29,7 @@ async function principal() {
     const camiActual = window.location.pathname;
     const esPaginaCrear = camiActual.includes('indexCrear.html');
     const esPaginaEditar = camiActual.includes('indexEditar.html');
+    
 
     if (esPaginaCrear) {
         // Configuració per a la pàgina de crear
@@ -38,16 +39,60 @@ async function principal() {
         configurarPaginaEditar();
     } else {
         // Configuració per a la pàgina principal
-        await configurarPaginaPrincipal();
+        await recarregarDadesIPintar();
     }
+
+    // Configurar botó de tancar sessió DESPRÉS de configurar la pàgina
+    setTimeout(() => {
+        try {
+            botonsTancarSessio("../login.html");
+        } catch (error) {
+            console.warn("No s'ha trobat el botó de tancar sessió:", error);
+        }
+    }, 100);
+}
+
+
+// Nova funció per recarregar dades i pintar
+async function recarregarDadesIPintar() {
+    // Carregar dades directament de l'API
+    try {
+        const dades = await getData('https://api.serverred.es/', 'Country');
+        Country = dades || [];
+    } catch (error) {
+        console.error('Error recarregant països:', error);
+        Country = [];
+    }
+    
+    // Inicialitzem la llista de països filtrats
+    paisosFiltrats = [...Country];
+    
+    // Resetar la pàgina
+    paginaActual = 1;
+    
+    // Pintar la llista
+    mostrarPagina();
+
+    // Configurem el botó d'afegir
+    configurarBotoAfegirPrincipal();
+
+    // Configurem el cercador amb jQuery
+    configurarCercadorJQuery();
 }
 
 // Configuració per a la pàgina principal
 async function configurarPaginaPrincipal() {
+    // Verificar si necessitem recarregar
+    verificarRecarregarDespresEdicio();
+        
     await carregarDadesInicials();
 
     // Inicialitzem la llista de països filtrats
     paisosFiltrats = [...Country];
+    
+    // DEBUG
+    console.log(`Països carregats: ${Country.length}`);
+    Country.forEach(p => console.log(`- ${p.id}: ${p.name}`));
     
     // Crida a mostrarPagina() en lloc de mostrarLlista()
     mostrarPagina();
@@ -60,56 +105,87 @@ async function configurarPaginaPrincipal() {
 }
 
 // Funció millorada per a configurar el cercador amb jQuery
+// Funció millorada per a configurar el cercador amb jQuery UI Autocomplete
+// (Només cerca en fer clic al botó)
 function configurarCercadorJQuery() {
     const $entradaCercar = $('#buscar');
-    const $botoCercar = $('.cercar');
+    const $botoCercar = $('.cercar'); // Seleccionem el botó de la lupa
     const $botoNetejar = $('.netejar');
 
     if ($entradaCercar.length) {
-        // Cerca en temps real mentre s'escriu
-        $entradaCercar.on('input', function() {
-            const text = $(this).val(); // Ja no necessitem .toLowerCase() aquí
-            filtrarIPintar(text);
+        
+        // --- 1. CONFIGURACIÓ JQUERY UI AUTOCOMPLETE ---
+        $entradaCercar.autocomplete({
+            minLength: 1, 
+            source: function(request, response) {
+                const terme = request.term.toLowerCase();
+                
+                // Filtrar les dades de la variable global 'Country' per suggerir
+                const resultats = Country.filter(pais => 
+                    pais.name.toLowerCase().includes(terme)
+                ).map(pais => {
+                    return {
+                        label: pais.name, 
+                        value: pais.name, 
+                        id: pais.id       
+                    };
+                });
+
+                response(resultats);
+            },
+            select: function(event, ui) {
+                // CANVI IMPORTANT:
+                // Quan seleccionem, només posem el valor a l'input.
+                // NO cridem a filtrarIPintar() aquí.
+                $entradaCercar.val(ui.item.value);
+                
+                // Retornem false per evitar comportaments per defecte extra
+                return false; 
+            }
         });
 
-        // Cerca en fer clic al botó
+        // --- 2. GESTIÓ DEL BOTÓ CERCAR (LUPA) ---
         $botoCercar.on('click', function(e) {
             e.preventDefault();
-            const text = $entradaCercar.val(); // Ja no necessitem .toLowerCase() aquí
+            const text = $entradaCercar.val();
+            
+            // AQUÍ és on realment es dispara la cerca
             filtrarIPintar(text);
-            
-            // Efecte visual de cerca
+
+            // Efecte visual opcional
             $(this).addClass('cercant');
-            setTimeout(() => {
-                $(this).removeClass('cercant');
-            }, 300);
+            setTimeout(() => $(this).removeClass('cercant'), 300);
         });
 
-        // Netejar cerca
-        $botoNetejar.on('click', function(e) {
-            e.preventDefault();
-            $entradaCercar.val('');
-            filtrarIPintar('');
-            
-            // Enfocar el camp de cerca després de netejar
-            $entradaCercar.focus();
-        });
+        // --- 3. EVENTS DE TECLAT I NETEJA ---
 
-        // Permetre cerca amb Enter
+        // Detectar "Enter" -> Simula clic al botó cercar
         $entradaCercar.on('keypress', function(e) {
             if (e.which === 13) {
                 e.preventDefault();
-                $botoCercar.trigger('click');
+                $entradaCercar.autocomplete("close"); // Tanquem el menú si està obert
+                $botoCercar.trigger('click');         // Disparem el botó manualment
             }
         });
 
-        // Mostrar/amagar icona de netejar segons si hi ha text
+        // Gestió visual mentre s'escriu
         $entradaCercar.on('input', function() {
-            if ($(this).val().length > 0) {
-                $(this).addClass('amb-text');
-            } else {
-                $(this).removeClass('amb-text');
+            const text = $(this).val();            
+            
+            if (text === '') {
+                filtrarIPintar('');
             }
+            
+            gestionarBotoNetejar($(this), $botoNetejar);
+        });
+
+        // Botó de netejar (la creu)
+        $botoNetejar.on('click', function(e) {
+            e.preventDefault();
+            $entradaCercar.val(''); 
+            filtrarIPintar('');     // Aquí sí netegem la taula perquè és un botó explícit
+            $entradaCercar.focus(); 
+            gestionarBotoNetejar($entradaCercar, $botoNetejar);
         });
     }
 }
@@ -194,14 +270,16 @@ function configurarPaginaEditar() {
             };
 
             try {
+                // 1. Actualitzar a l'API
                 await updateId('https://api.serverred.es/', 'Country', paisId, dadesActualitzades);
-                alert(`País "${nouNomPais}" actualitzat correctament.`);
                 
-                // Redirigir a la pàgina principal
-                window.location.href = "../index.html";
+                // 2. Esperar un moment per assegurar que l'API ha processat
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                // 3. Redirigir a la pàgina principal amb un paràmetre de cache busting
+                window.location.href = "../index.html?t=" + new Date().getTime();
             } catch (error) {
                 console.error('Error en actualitzar el país:', error);
-                alert('Error en actualitzar el país.');
             }
         });
     }
@@ -215,6 +293,33 @@ function configurarPaginaEditar() {
             $("#missatgeError").text("");
         });
     }
+    // Dins de configurarPaginaEditar()
+    $formulari.on("submit", async function(event) {
+        event.preventDefault();
+
+        // Esperar a que es completi la validació (inclosa comprovació de duplicats)
+        const esValid = await validarPaisJQuery();
+        if (!esValid) return;
+
+        const nouNomPais = $inputPais.val().trim();
+        
+        const dadesActualitzades = {
+            name: nouNomPais
+        };
+
+        try {
+            // 1. Actualitzar a l'API
+            await updateId('https://api.serverred.es/', 'Country', paisId, dadesActualitzades);
+            
+            // 2. Esperar un moment per assegurar que l'API ha processat
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // 3. Redirigir a la pàgina principal amb un paràmetre de cache busting
+            window.location.href = "../index.html?t=" + new Date().getTime();
+        } catch (error) {
+            console.error('Error en actualitzar el país:', error);
+        }
+    });
 }
 
 // Configura el botó d'afegir a la pàgina principal amb jQuery
@@ -245,7 +350,9 @@ function configurarFormulariCrearJQuery() {
         $formulari.on("submit", async function(event) {
             event.preventDefault();
             
-            if (!validarPaisJQuery()) return;
+            // Esperar a que es completi la validació (inclosa comprovació de duplicats)
+            const esValid = await validarPaisJQuery();
+            if (!esValid) return;
             
             await crearPaisJQuery();
         });
@@ -356,7 +463,6 @@ function renderitzarPaginacio() {
     }
 }
 
-
 // Mostra la llista de països a la pàgina amb jQuery
 function mostrarLlista(array) {
     const $cosTaula = $("#llista");
@@ -364,6 +470,10 @@ function mostrarLlista(array) {
 
     // Netejar contingut
     $cosTaula.empty();
+
+    // Mostrar quants països es mostren
+    console.log(`Mostrant ${array.length} països:`);
+    array.forEach(pais => console.log(`- ${pais.id}: ${pais.name}`));
 
     array.forEach((pais, index) => {
         const fila = $('<tr>');
@@ -377,6 +487,13 @@ function mostrarLlista(array) {
         // Columna Accions
         const celdaAccions = $('<td>').attr('data-cell', 'Accions : ');
 
+
+        // Icona Províncies
+        const provincies = $('<a>')
+            .addClass('icon-visualitzar')
+            .attr('href', `provincia.html?id=${pais.id}&country=${encodeURIComponent(pais.name)}`)
+            .html('<i class="fa-solid fa-city"></i>');
+
         // Icona editar
         const editar = $('<a>')
             .addClass('icon-editar')
@@ -387,15 +504,9 @@ function mostrarLlista(array) {
         const esborrar = $('<a>')
             .addClass('icon-borrar')
             .html('<i class="fa-solid fa-trash"></i>')
-            .on('click', () => esborrarPais(pais.id));
+            .on('click', () => esborrarPais(pais.id));        
 
-        // Icona Províncies
-        const provincies = $('<a>')
-            .addClass('icon-visualitzar')
-            .attr('href', `provincia.html?id=${pais.id}&country=${encodeURIComponent(pais.name)}`)
-            .html('<i class="fa-solid fa-city"></i>');
-
-        celdaAccions.append(editar, esborrar, provincies);
+        celdaAccions.append(provincies, editar, esborrar);
         fila.append(celdaId, celdaNom, celdaAccions);
         $cosTaula.append(fila);
     });
@@ -423,7 +534,6 @@ async function crearPaisJQuery() {
 
     try {
         await postData('https://api.serverred.es/', 'Country', nouPais);
-        alert(`País "${nomPais}" afegit correctament.`);
         
         // Redirigir a la pàgina principal
         window.location.href = "../index.html";
@@ -439,7 +549,7 @@ async function esborrarPais(id) {
     const nomPais = pais ? pais.name : '';
 
     // Finestra emergent de confirmació
-    const confirmar = confirm(`Vols eliminar el país "${nomPais}"?`);
+    const confirmar = confirm(`Segur que vols eliminar "${nomPais}"?`);
 
     if (confirmar) {
         try {
@@ -461,23 +571,19 @@ async function esborrarPais(id) {
             }
             
             mostrarPagina();
-            
-            alert(`El país "${nomPais}" s'ha eliminat correctament.`);
         } catch (error) {
             console.error('Error en eliminar el país:', error);
-            alert('Error en eliminar el país.');
-        }
-    } else {
-        alert(`S'ha cancel·lat l'eliminació de "${nomPais}".`);
+        }    
     }
 }
 
 // --- FUNCIONS AUXILIARS ---
 
-// Valida el país amb jQuery
-function validarPaisJQuery() {
+// Valida el país amb jQuery i comprova duplicats
+async function validarPaisJQuery() {
     const $entrada = $("#country");
     const $missatgeError = $("#missatgeError");
+    const $paisId = $("#paisId"); // Per a mode editar
     const nom = $entrada.val().trim();
     
     // Netejar missatge d'error
@@ -503,10 +609,47 @@ function validarPaisJQuery() {
     // Validar patró
     const patro = /^[A-Za-zÀ-ÿ\s]{3,30}$/;
     if (!patro.test(nom)) {
-        $missatgeError.text("Només es permeten lletres i espais (3-30 caràcters).");
+        $missatgeError.text("Nomós es permeten lletres i espais (3-30 caràcters).");
         $entrada.addClass("error");
         $entrada.focus();
         return false;
+    }
+    
+    // --- COMPROVACIÓ DE DUPLICATS ---
+    const nomLower = nom.toLowerCase();
+    
+    try {
+        // Carregar tots els països per comprovar duplicats
+        const païsosExistent = await getData('https://api.serverred.es/', 'Country');
+        
+        // Verificar si estem en mode editar o crear
+        const mode = window.location.pathname.includes('indexEditar.html') ? 'editar' : 'crear';
+        const idIgnorar = mode === 'editar' && $paisId.length ? $paisId.val() : null;
+        
+        // Buscar duplicats
+        const duplicat = païsosExistent.find(p => {
+            if (!p || !p.id || !p.name) return false;
+            
+            // En mode editar, si l'ID coincideix amb el que estem editant, no és duplicat
+            if (mode === 'editar' && idIgnorar && p.id.toString() === idIgnorar.toString()) {
+                return false;
+            }
+            
+            return p.name.toLowerCase() === nomLower;
+        });
+        
+        if (duplicat) {
+            
+            // També marcar com error al formulari
+            $missatgeError.text(`Aquest país "${duplicat.name}" ja existeix.`);
+            $entrada.addClass("error");
+            $entrada.focus();
+            return false;
+        }
+        
+    } catch (error) {
+        console.error('Error comprovant duplicats:', error);
+        // Si hi ha error en la comprovació, permetem continuar
     }
     
     return true;
@@ -519,4 +662,55 @@ function validarPais() {
 
 function configurarBotoTornar() {
     return configurarBotoTornarJQuery();
+}
+
+// Funció per actualitzar un país en l'array local
+function actualitzarPaisLocal(id, nouNom) {
+    // Actualitzar a l'array principal
+    const index = Country.findIndex(pais => pais.id === id);
+    if (index !== -1) {
+        Country[index].name = nouNom;
+    }
+    
+    // Actualitzar a l'array filtrat si existeix
+    const indexFiltrat = paisosFiltrats.findIndex(pais => pais.id === id);
+    if (indexFiltrat !== -1) {
+        paisosFiltrats[indexFiltrat].name = nouNom;
+    }
+}
+
+// Verificar si venim d'una edició
+function verificarRecarregarDespresEdicio() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('t')) {
+        // És una recàrrega després d'editar
+        console.log('Recarregant dades després d\'edició...');
+        // Eliminar el paràmetre de la URL sense refrescar
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+}
+
+// Funció millorada per actualitzar dades a l'API
+async function updateId(baseUrl, endpoint, id, data) {
+    try {
+        console.log(`Actualitzant ${endpoint}/${id}:`, data);
+        const response = await fetch(`${baseUrl}${endpoint}/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+        
+        const result = await response.json();
+        console.log('Resposta de l\'API:', result);
+        return result;
+    } catch (error) {
+        console.error('Error en updateId:', error);
+        throw error;
+    }
 }

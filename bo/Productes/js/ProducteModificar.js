@@ -6,8 +6,10 @@ async function main() {
     
     const id = obtenerIdDeUrl();
     if (!id) {
-        alert("ID de producte no especificat.");
-        window.location.href = "index.html";
+        mostrarMensaje("ID de producte no especificat.", "error");
+        setTimeout(() => {
+            window.location.href = "index.html";
+        }, 2000);
         return;
     }
 
@@ -32,8 +34,20 @@ async function main() {
         restaurarValoresOriginales(id);
     });
 
-    // Afegir validació en temps real
-    agregarValidacionEnTiempoReal(id);
+    // Agregar estilos de error en tiempo real
+    agregarEstilosErrorEnTiempoReal(id);
+}
+
+// Función simple para mostrar mensajes
+function mostrarMensaje(mensaje, tipo = "error") {
+    const mensajeDiv = document.getElementById("missatgeError");
+    mensajeDiv.innerHTML = '';
+    
+    const div = document.createElement("div");
+    div.className = `missatge missatge-${tipo}`;
+    div.textContent = mensaje;
+    
+    mensajeDiv.appendChild(div);
 }
 
 function obtenerIdDeUrl() {
@@ -46,17 +60,10 @@ async function cargarFamilias() {
         const select = document.getElementById("family_id");
         const familias = await getData(url, "Family");
 
-        // Netejar opcions existents
-        select.innerHTML = '';
+        // Limpiar opciones existentes
+        select.innerHTML = '<option value="">Selecciona una família</option>';
 
-        // Afegir opció per defecte
-        const defaultOption = document.createElement("option");
-        defaultOption.value = "";
-        defaultOption.textContent = "Selecciona una família";
-        defaultOption.disabled = true;
-        select.appendChild(defaultOption);
-
-        // Afegir famílies
+        // Añadir familias
         familias.forEach(familia => {
             const option = document.createElement("option");
             option.value = familia.id;
@@ -65,7 +72,7 @@ async function cargarFamilias() {
         });
     } catch (error) {
         console.error("Error cargando familias:", error);
-        alert("Error al cargar las familias.");
+        mostrarMensaje("Error al cargar las familias.", "error");
     }
 }
 
@@ -74,8 +81,10 @@ async function cargarProducto(id) {
         const producto = await getIdData(url, "Product", id);
 
         if (!producto) {
-            alert("Producte no trobat.");
-            window.location.href = "index.html";
+            mostrarMensaje("Producte no trobat.", "error");
+            setTimeout(() => {
+                window.location.href = "index.html";
+            }, 2000);
             return;
         }
 
@@ -85,94 +94,55 @@ async function cargarProducto(id) {
         document.getElementById("family_id").value = producto.family_id;
     } catch (error) {
         console.error("Error cargando producto:", error);
-        alert("Error al cargar el producto.");
+        mostrarMensaje("Error al cargar el producto.", "error");
     }
 }
 
-function agregarValidacionEnTiempoReal(productoId) {
+// Función para limpiar errores de los inputs (clases de error)
+function limpiarErroresInputs() {
+    let formulari = document.getElementById("productForm");
+    for (let i = 0; i < formulari.elements.length; i++) {
+        formulari.elements[i].classList.remove("error");
+    }
+}
+
+// Función para limpiar mensajes de error generales
+function esborrarError() {
+    const contError = document.getElementById("missatgeError");
+    contError.innerHTML = '';
+}
+
+// Función para agregar estilos de error en tiempo real (sin mensajes)
+function agregarEstilosErrorEnTiempoReal(productoId) {
     const nameInput = document.getElementById("name");
     const priceInput = document.getElementById("price");
     const descriptionInput = document.getElementById("description");
     const familySelect = document.getElementById("family_id");
 
-    // Validar nom
-    nameInput.addEventListener("blur", async function () {
-        const name = this.value.trim();
-        if (name === "") {
-            mostrarError(this, "El nom és obligatori");
-        } else if (name.length < 2) {
-            mostrarError(this, "El nom ha de tenir almenys 2 caràcters");
-        } else if (name.length > 100) {
-            mostrarError(this, "El nom no pot tenir més de 100 caràcters");
-        } else if (await existeProductoConNombre(name, productoId)) {
-            mostrarError(this, "Ja existeix un producte amb este nom");
-        } else {
-            limpiarError(this);
+    // Quitar error al escribir/cambiar
+    nameInput.addEventListener("input", function() {
+        if (this.value.trim() !== "") {
+            this.classList.remove("error");
         }
     });
 
-    // Validar preu
-    priceInput.addEventListener("blur", function () {
-        const price = parseFloat(this.value);
-        if (isNaN(price)) {
-            mostrarError(this, "El preu ha de ser un número vàlid");
-        } else if (price <= 0) {
-            mostrarError(this, "El preu no pot ser zero o negatiu");
-        } else if (price > 1000000) {
-            mostrarError(this, "El preu no pot ser major a 1.000.000");
-        } else {
-            limpiarError(this);
+    priceInput.addEventListener("input", function() {
+        if (this.value.trim() !== "") {
+            this.classList.remove("error");
         }
     });
 
-    // Validar descripció
-    descriptionInput.addEventListener("blur", function () {
-        const description = this.value.trim();
-        if (description === "") {
-            mostrarError(this, "La descripció és obligatòria");
-        } else if (description.length > 500) {
-            mostrarError(this, "La descripció no pot tenir més de 500 caràcters");
-        } else {
-            limpiarError(this);
+    descriptionInput.addEventListener("input", function() {
+        if (this.value.trim() !== "") {
+            this.classList.remove("error");
         }
     });
 
-    // Validar família
-    familySelect.addEventListener("change", function () {
-        const familyId = parseInt(this.value);
-        if (isNaN(familyId)) {
-            mostrarError(this, "Has de seleccionar una família vàlida");
-        } else {
-            limpiarError(this);
+    familySelect.addEventListener("change", function() {
+        if (this.value !== "") {
+            this.classList.remove("error");
         }
     });
-}
-
-function mostrarError(input, mensaje) {
-    // Netejar error anterior
-    limpiarError(input);
-
-    // Afegir classe d'error
-    input.classList.add("error");
-
-    // Crear element d'error
-    const errorElement = document.createElement("div");
-    errorElement.className = "error-message";
-    errorElement.textContent = mensaje;
-
-    // Inserir després de l'input
-    input.parentNode.insertBefore(errorElement, input.nextSibling);
-}
-
-function limpiarError(input) {
-    // Eliminar classe d'error
-    input.classList.remove("error");
-
-    // Eliminar missatge d'error si existeix
-    const errorElement = input.parentNode.querySelector(".error-message");
-    if (errorElement) {
-        errorElement.remove();
-    }
 }
 
 async function existeProductoConNombre(nombre, productoId) {
@@ -188,64 +158,118 @@ async function existeProductoConNombre(nombre, productoId) {
     }
 }
 
-async function validarFormulario(productoId) {
+// Función para validar y mostrar solo el primer error
+async function validarYMostrarPrimerError(productoId) {
     const name = document.getElementById("name").value.trim();
-    const price = parseFloat(document.getElementById("price").value);
+    const price = document.getElementById("price").value.trim();
+    const priceNum = parseFloat(price);
     const description = document.getElementById("description").value.trim();
-    const familyId = parseInt(document.getElementById("family_id").value);
+    const familyId = document.getElementById("family_id").value;
 
-    let esValido = true;
-
-    // Validar nom
+    // Limpiar clases de error anteriores
+    limpiarErroresInputs();
+    
+    // 1. Validar nombre (PRIMERO)
     if (name === "") {
-        mostrarError(document.getElementById("name"), "El nom és obligatori");
-        esValido = false;
+        document.getElementById("name").classList.add("error");
+        mostrarMensaje("El nom del producte és obligatori", "error");
+        return false;
     } else if (name.length < 2) {
-        mostrarError(document.getElementById("name"), "El nom ha de tenir almenys 2 caràcters");
-        esValido = false;
+        document.getElementById("name").classList.add("error");
+        mostrarMensaje("El nom ha de tenir almenys 2 caràcters", "error");
+        return false;
     } else if (name.length > 100) {
-        mostrarError(document.getElementById("name"), "El nom no pot tenir més de 100 caràcters");
-        esValido = false;
-    } else if (await existeProductoConNombre(name, productoId)) {
-        mostrarError(document.getElementById("name"), "Ja existeix un producte amb este nom");
-        esValido = false;
+        document.getElementById("name").classList.add("error");
+        mostrarMensaje("El nom no pot tenir més de 100 caràcters", "error");
+        return false;
+    }
+    
+    // Validar que el nombre no contenga símbolos raros
+    // Permite letras (incluyendo acentos), números, espacios y algunos caracteres básicos
+    const nombreRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ0-9\s.,:;!?'"()\-&]+$/;
+    if (!nombreRegex.test(name)) {
+        document.getElementById("name").classList.add("error");
+        mostrarMensaje("El nom només pot contenir lletres, números, espais i símbols bàsics (.,:;!?'\"()-&)", "error");
+        return false;
+    }
+    
+    // Validar que no tenga múltiples espacios consecutivos
+    if (/\s{2,}/.test(name)) {
+        document.getElementById("name").classList.add("error");
+        mostrarMensaje("El nom no pot tenir múltiples espais consecutius", "error");
+        return false;
+    }
+    
+    // Validar que no empiece ni termine con espacio
+    if (name.startsWith(" ") || name.endsWith(" ")) {
+        document.getElementById("name").classList.add("error");
+        mostrarMensaje("El nom no pot començar ni acabar amb espai", "error");
+        return false;
     }
 
-    // Validar preu
-    if (isNaN(price)) {
-        mostrarError(document.getElementById("price"), "El preu ha de ser un número vàlid");
-        esValido = false;
-    } else if (price <= 0) {
-        mostrarError(document.getElementById("price"), "El preu no pot ser zero o negatiu");
-        esValido = false;
-    } else if (price > 1000000) {
-        mostrarError(document.getElementById("price"), "El preu no pot ser major a 1.000.000");
-        esValido = false;
+    if (await existeProductoConNombre(name, productoId)) {
+        document.getElementById("name").classList.add("error");
+        mostrarMensaje("Ja existeix un producte amb este nom", "error");
+        return false;
     }
 
-    // Validar descripció
+    // 2. Validar precio (SEGUNDO)
+    if (price === "") {
+        document.getElementById("price").classList.add("error");
+        mostrarMensaje("El preu és obligatori", "error");
+        return false;
+    } else if (isNaN(priceNum)) {
+        document.getElementById("price").classList.add("error");
+        mostrarMensaje("El preu ha de ser un número vàlid", "error");
+        return false;
+    } else if (priceNum <= 0) {
+        document.getElementById("price").classList.add("error");
+        mostrarMensaje("El preu no pot ser zero o negatiu", "error");
+        return false;
+    } else if (priceNum > 1000000) {
+        document.getElementById("price").classList.add("error");
+        mostrarMensaje("El preu no pot ser major a 1.000.000", "error");
+        return false;
+    }
+
+    // 3. Validar descripción (TERCERO)
     if (description === "") {
-        mostrarError(document.getElementById("description"), "La descripció és obligatòria");
-        esValido = false;
-    } else if (description.length > 500) {
-        mostrarError(document.getElementById("description"), "La descripció no pot tenir més de 500 caràcters");
-        esValido = false;
+        document.getElementById("description").classList.add("error");
+        mostrarMensaje("La descripció és obligatòria", "error");
+        return false;
+    } else if (description.length > 2000) {
+        document.getElementById("description").classList.add("error");
+        mostrarMensaje("La descripció no pot tenir més de 2000 caràcters", "error");
+        return false;
+    }
+    
+    // Validar que la descripción no sea solo espacios
+    if (/^\s+$/.test(description)) {
+        document.getElementById("description").classList.add("error");
+        mostrarMensaje("La descripció no pot contenir només espais", "error");
+        return false;
     }
 
-    // Validar família
-    if (isNaN(familyId)) {
-        mostrarError(document.getElementById("family_id"), "Has de seleccionar una família vàlida");
-        esValido = false;
+    // 4. Validar familia (CUARTO)
+    if (familyId === "") {
+        document.getElementById("family_id").classList.add("error");
+        mostrarMensaje("Has de seleccionar una família", "error");
+        return false;
     }
 
-    return esValido;
+    // Si pasa todas las validaciones
+    return true;
 }
 
 async function guardarCambios(id) {
-    // Validar formulari
-    if (!await validarFormulario(id)) {
-        alert("Per favor, corregeix els errors en el formulari");
-        return;
+    // Limpiar mensajes anteriores
+    esborrarError();
+    
+    // Validar formulario - solo muestra el primer error
+    const esValido = await validarYMostrarPrimerError(id);
+    
+    if (!esValido) {
+        return; // Se detiene si hay algún error
     }
 
     const name = document.getElementById("name").value.trim();
@@ -253,35 +277,50 @@ async function guardarCambios(id) {
     const description = document.getElementById("description").value.trim();
     const family_id = parseInt(document.getElementById("family_id").value);
 
-    // Actualitzar el producte
+    // Limpiar posibles caracteres peligrosos de la descripción antes de enviar
+    const descripcionLimpia = limpiarDescripcion(description);
+
+    // Actualizar el producto
     const productoActualizado = {
         name,
         price,
-        description,
+        description: descripcionLimpia,
         family_id
     };
 
     try {
+        // Mostrar mensaje de carga
+        mostrarMensaje("Modificant producte...", "info");
+        
         await updateId(url, "Product", id, productoActualizado);
-        alert("Producte modificat correctament");
-        window.location.href = "index.html";
+        
+        // Mostrar mensaje de éxito
+        mostrarMensaje("Producte modificat correctament", "exito");
+        
     } catch (error) {
         console.error("Error actualizando producto:", error);
-        alert("Error al modificar el producte.");
+        mostrarMensaje("Error al modificar el producte.", "error");
     }
 }
 
+// Función para limpiar la descripción de posibles problemas de seguridad
+function limpiarDescripcion(descripcion) {
+    // Reemplazar múltiples espacios consecutivos por uno solo
+    let limpia = descripcion.replace(/\s{2,}/g, ' ');
+    
+    // Recortar espacios al inicio y final
+    limpia = limpia.trim();
+    
+    return limpia;
+}
+
 function restaurarValoresOriginales(id) {
+    // Limpiar mensajes de error
+    esborrarError();
+    limpiarErroresInputs();
+    
     // Recargar los valores originales del producto
     cargarProducto(id);
-    
-    // Limpiar todos los mensajes de error
-    const form = document.getElementById("productForm");
-    const inputs = form.querySelectorAll('input, select, textarea');
-    inputs.forEach(input => {
-        limpiarError(input);
-        input.classList.remove("error");
-    });
     
     console.log("Formulario reiniciado a valores originales");
 }

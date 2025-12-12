@@ -66,16 +66,16 @@ async function cargarDetallesProducto(id) {
         
         infoItems.forEach(item => {
             const divItem = document.createElement("div");
-            divItem.classList.add("info-item");
+            divItem.classList.add("atributo"); // Cambiado de "info-item" a "atributo"
             
             const strong = document.createElement("strong");
-            strong.textContent = `${item.etiqueta}:`;
+            strong.textContent = `${item.etiqueta}: `; // Añadido espacio después de los dos puntos
             
-            const p = document.createElement("p");
-            p.innerHTML = item.valor;
+            const span = document.createElement("span"); // Cambiado de p a span
+            span.innerHTML = item.valor;
             
             divItem.appendChild(strong);
-            divItem.appendChild(p);
+            divItem.appendChild(span);
             divInfo.appendChild(divItem);
         });
         
@@ -84,17 +84,17 @@ async function cargarDetallesProducto(id) {
         // Descripción
         if (producto.description) {
             const divDesc = document.createElement("div");
-            divDesc.classList.add("info-item");
+            divDesc.classList.add("atributo", "descripcio"); // Añadida clase adicional
             
             const strongDesc = document.createElement("strong");
-            strongDesc.textContent = "Descripció:";
+            strongDesc.textContent = "Descripció: ";
             
-            const pDesc = document.createElement("p");
-            pDesc.textContent = producto.description;
-            pDesc.style.whiteSpace = "pre-line";
+            const spanDesc = document.createElement("span");
+            spanDesc.textContent = producto.description;
+            spanDesc.style.whiteSpace = "pre-line";
             
             divDesc.appendChild(strongDesc);
-            divDesc.appendChild(pDesc);
+            divDesc.appendChild(spanDesc);
             contenedor.appendChild(divDesc);
         }
 

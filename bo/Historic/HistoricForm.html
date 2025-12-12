@@ -14,10 +14,13 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
     rel="stylesheet">
+  <link rel="shortcut icon" href="../img/logo_tendafake.png" type="image/x-icon">
+
 
   <!--Scripts-->
   <script src="../../apiAccess/crud.js"></script>
   <script src="../js/common.js"></script>
+  <script src="../js/logout.js"></script>
   <script src="./js/HistoricForm.js"></script>
   <script src="https://kit.fontawesome.com/f653e778a0.js" crossorigin="anonymous"></script>
 </head>
@@ -36,11 +39,11 @@
         <div id="sessioUsuari">
           <div class="headerUsuari">
             <img src="../img/foto_persona.png" alt="No s'ha pogut carregar l'imatge">
-            <span>Manolo Garibolo</span>
+            <span id="usuariNom"></span>
             <span class="separador">&nbsp;</span>
           </div>
           <div class="tancarSessio">
-            <a href="../../Logout.html">
+            <a id="botoTancarSessio" href="#">
               <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
             </a>
           </div>
@@ -60,15 +63,15 @@
           <i class="fa-solid fa-paperclip"></i>
           Atributs
         </a>
-        <a href="../GestioCarret/index.html " class="opcio_menu">
+        <a href="../GestioCarrets/index.html" class="opcio_menu">
           <i class="fa-solid fa-cart-shopping"></i>
           Carrets
         </a>
-        <a href="#" class="opcio_menu">
+        <a href="../Clients/index.html" class="opcio_menu">
           <i class="fa-solid fa-person"></i>
           Clients
         </a>
-        <a href="../Clients/index.html" class="opcio_menu">
+        <a href="../Configuracions/index.html" class="opcio_menu">
           <i class="fa-solid fa-sliders"></i>
           Configuracions
         </a>
@@ -96,11 +99,11 @@
           <i class="fa-solid fa-city"></i>
           Productes
         </a>
-        <a href="../Usuaris/.html" class="opcio_menu">
+        <a href="../Usuaris/index.html" class="opcio_menu">
           <i class="fa-solid fa-user"></i>
           Usuaris
         </a>
-        <a href="../../Logout.html" class="opcio_menu eixir_menu">
+        <a href="#" id="tancarSessioLateral" class="opcio_menu eixir_menu">
           <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
           Eixir
         </a>
@@ -112,43 +115,44 @@
             <div class="col-5">
               <div class="contingut">
 
-                <button class="btnTornar" id="afegirNou">Tornar al
-                  Llistat</button>
-                <form id="formRegistre">
+                <button class="btnTornar" id="afegirNou">Tornar a la llista</button>
+                <form id="formRegistre" novalidate>
 
                   <div class="form-group">
                     <label for="client_id">Client ID:</label>
-                    <select class id="client_id" name="client_id" required>
-                      <option value>-- Selecciona un client --</option>
+                    <select id="client_id" name="client_id" required>
+                      <option value="">-- Selecciona un client --</option>
                     </select>
                   </div>
 
                   <div class="form-group">
                     <label for="comparator_id">Comparador ID:</label>
-                    <select class id="comparator_id" name="comparator_id" required>
-                      <option value>-- Selecciona un comparador --</option>
+                    <select id="comparator_id" name="comparator_id" required>
+                      <option value="">-- Selecciona un comparador --</option>
                     </select>
                   </div>
 
                   <div class="form-group">
                     <label for="favorite_id">Favorit ID:</label>
-                    <select class id="favorite_id" name="favorite_id" required>
-                      <option value>-- Selecciona un favorit --</option>
+                    <select id="favorite_id" name="favorite_id" required>
+                      <option value="">-- Selecciona un favorit --</option>
                     </select>
                   </div>
 
                   <div class="form-group">
                     <label for="date_start">Data inici:</label>
-                    <input type="date" id="date_start" name="date_start" />
+                    <input type="date" id="date_start" name="date_start" required />
                   </div>
 
                   <div class="form-group">
                     <label for="date_end">Data fi:</label>
-                    <input type="date" id="date_end" name="date_end" />
+                    <input type="date" id="date_end" name="date_end" required />
                   </div>
 
-                  <button class="btnAccio" type="submit">Guardar</button>
-                  <button class="btnAccio" type="button" id="btnCancelar" name="btnCancelar">Cancel·lar</button>
+                  <div id="errorMessages"></div>
+
+                  <button class="btnAccio" type="submit">Actualitzar</button>
+                  <button class="btnAccio" type="button" id="btnCancelar" name="btnCancelar">Reiniciar</button>
                 </form>
               </div>
             </div>

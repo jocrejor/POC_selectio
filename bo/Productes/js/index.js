@@ -9,10 +9,38 @@ let atributosCompletos = [];
 
 // Variable para guardar la página temporalmente
 let paginaTemporal = null;
+// Variable para guardar el estado global temporal
+let estadoGlobal = null;
 
 function main() {
     thereIsUser("../login.html");
     botonsTancarSessio("../login.html");
+    
+    // Verificar si hay estado global guardado para restaurar
+    const estadoGuardado = sessionStorage.getItem('estadoGlobal');
+    if (estadoGuardado) {
+        try {
+            estadoGlobal = JSON.parse(estadoGuardado);
+            
+            // Verificar que el estado no sea muy viejo (máximo 5 minutos)
+            const ahora = Date.now();
+            if (ahora - estadoGlobal.timestamp < 300000) { // 5 minutos en milisegundos
+                // Restaurar página desde el estado global
+                paginaTemporal = estadoGlobal.pagina;
+                console.log("Restaurando página:", paginaTemporal, "desde estado global");
+            } else {
+                // El estado es viejo, limpiarlo
+                estadoGlobal = null;
+            }
+            
+            // Limpiar el estado global después de usarlo
+            sessionStorage.removeItem('estadoGlobal');
+        } catch (error) {
+            console.error("Error al parsear estado global:", error);
+            sessionStorage.removeItem('estadoGlobal');
+            estadoGlobal = null;
+        }
+    }
 
     const btnCrear = document.getElementById("btnCrear");
     if (btnCrear) {
@@ -21,10 +49,12 @@ function main() {
         });
     }
 
-    // Inicializar jQuery cuando el DOM esté listo
-    $(document).ready(function () {
-        inicializarFiltros();
-        cargarDatosCompletos();
+    // Primero cargar datos, luego inicializar filtros
+    cargarDatosCompletos().then(() => {
+        // Solo después de cargar los datos, inicializar los filtros
+        $(document).ready(function () {
+            inicializarFiltros();
+        });
     });
 }
 
@@ -59,6 +89,8 @@ function inicializarFiltros() {
             aplicarFiltros();
         }, 0);
     });
+    
+    // NO llamar a aplicarFiltros() aquí - ya se llama desde cargarDatosCompletos()
 }
 
 async function cargarDatosCompletos() {
@@ -71,7 +103,20 @@ async function cargarDatosCompletos() {
         ]);
 
         llenarSelectorFamilias();
-        aplicarFiltros();
+        
+        // Si hay estado global, restaurar filtros inmediatamente
+        if (estadoGlobal && estadoGlobal.filtros) {
+            $('#searchName').val(estadoGlobal.filtros.nombre || '');
+            $('#filterFamily').val(estadoGlobal.filtros.familia || 'all');
+            $('#filterStatus').val(estadoGlobal.filtros.estado || 'all');
+            $('#filterSort').val(estadoGlobal.filtros.orden || 'id_asc');
+            
+            // Aplicar filtros inmediatamente con los valores restaurados
+            aplicarFiltrosConEstado();
+        } else {
+            // Sin estado global, aplicar filtros normales
+            aplicarFiltros();
+        }
     } catch (error) {
         console.error("Error cargando datos completos:", error);
     }
@@ -90,6 +135,73 @@ function llenarSelectorFamilias() {
         filterFamily.appendChild(option);
     });
 }
+
+function aplicarFiltrosConEstado() {
+    const filtroNombre = $('#searchName').val().toLowerCase();
+    const filtroFamilia = $('#filterFamily').val();
+    const filtroEstado = $('#filterStatus').val();
+    const orden = $('#filterSort').val();
+
+    let productosFiltrados = [...productosCompletos];
+
+    if (filtroNombre) {
+        productosFiltrados = productosFiltrados.filter(producto =>
+            producto.name.toLowerCase().includes(filtroNombre)
+        );
+    }
+
+    if (filtroFamilia !== 'all') {
+        productosFiltrados = productosFiltrados.filter(producto =>
+            producto.family_id == filtroFamilia
+        );
+    }
+
+    if (filtroEstado !== 'all') {
+        const estadoActivo = filtroEstado === 'active';
+        productosFiltrados = productosFiltrados.filter(producto =>
+            producto.active === estadoActivo
+        );
+    }
+
+    productosFiltrados.sort((a, b) => {
+        switch (orden) {
+            case 'name_asc':
+                return a.name.localeCompare(b.name);
+            case 'name_desc':
+                return b.name.localeCompare(a.name);
+            case 'price_asc':
+                return a.price - b.price;
+            case 'price_desc':
+                return b.price - a.price;
+            case 'id_asc':
+                return a.id - b.id;
+            case 'id_desc':
+                return b.id - a.id;
+            default:
+                return 0;
+        }
+    });
+
+    productesFiltrats = productosFiltrados;
+    
+    // Cargar el array en el sistema de paginación
+    carregarArray(productesFiltrats);
+    
+    // Usar la página del estado global si existe
+    if (paginaTemporal !== null) {
+        paginaActual = paginaTemporal;
+        paginaTemporal = null;
+    } else if (estadoGlobal && estadoGlobal.pagina) {
+        // Si hay estado global, usar esa página
+        paginaActual = estadoGlobal.pagina;
+    }
+    
+    actualitzarDades();
+    
+    // Limpiar estado global después de usarlo
+    estadoGlobal = null;
+}
+
 
 function aplicarFiltros() {
     const filtroNombre = $('#searchName').val().toLowerCase();
@@ -139,11 +251,12 @@ function aplicarFiltros() {
 
     productesFiltrats = productosFiltrados;
     
-    // Cargar el array en el sistema de paginación de common-paginacio.js
+    // Cargar el array en el sistema de paginación
     carregarArray(productesFiltrats);
     
-    // IMPORTANTE: Solo restablecer a página 1 si NO es una operación temporal
-    if (!paginaTemporal) {
+    // Solo ir a página 1 si hay filtros activos y no es una operación temporal
+    const hayFiltros = filtroNombre || filtroFamilia !== 'all' || filtroEstado !== 'all';
+    if (hayFiltros && !paginaTemporal) {
         paginaActual = 1;
     }
     
@@ -153,7 +266,6 @@ function aplicarFiltros() {
     if (paginaTemporal !== null) {
         paginaActual = paginaTemporal;
         paginaTemporal = null;
-        // No necesitamos llamar a actualitzarDades() aquí porque ya lo hicimos
     }
 }
 
@@ -332,6 +444,7 @@ function asignarEventListeners() {
         link.addEventListener("click", (e) => {
             e.preventDefault();
             const id = parseInt(link.getAttribute("data-id"));
+            guardarEstadoGlobal(id, "imagenes");
             window.location.href = `./ProductesImg/ProducteImg.html?id=${id}`;
         });
     });
@@ -339,6 +452,7 @@ function asignarEventListeners() {
     document.querySelectorAll(".icon-visualitzar").forEach(icon => {
         icon.addEventListener("click", () => {
             const id = parseInt(icon.getAttribute("data-id"));
+            guardarEstadoGlobal(id, "visualizar");
             window.location.href = `ProductesVisualitzar.html?id=${id}`;
         });
     });
@@ -346,6 +460,7 @@ function asignarEventListeners() {
     document.querySelectorAll(".icon-editar").forEach(icon => {
         icon.addEventListener("click", () => {
             const id = parseInt(icon.getAttribute("data-id"));
+            guardarEstadoGlobal(id, "editar");
             window.location.href = `ProducteModificar.html?id=${id}`;
         });
     });
@@ -361,6 +476,7 @@ function asignarEventListeners() {
         link.addEventListener("click", (e) => {
             e.preventDefault();
             const id = parseInt(link.getAttribute("data-id"));
+            guardarEstadoGlobal(id, "atributos");
             window.location.href = `AtributAssignar.html?id=${id}`;
         });
     });
@@ -373,6 +489,26 @@ function asignarEventListeners() {
             }
         });
     });
+}
+
+// Función para guardar el estado global
+function guardarEstadoGlobal(productId, accion) {
+    console.log("Guardando estado global. Página actual:", paginaActual);
+    const estadoGlobal = {
+        pagina: paginaActual,
+        filtros: {
+            nombre: $('#searchName').val(),
+            familia: $('#filterFamily').val(),
+            estado: $('#filterStatus').val(),
+            orden: $('#filterSort').val()
+        },
+        productoId: productId,
+        accion: accion,
+        timestamp: Date.now()
+    };
+    
+    console.log("Estado guardado:", estadoGlobal);
+    sessionStorage.setItem('estadoGlobal', JSON.stringify(estadoGlobal));
 }
 
 async function obtenerProductos() {
