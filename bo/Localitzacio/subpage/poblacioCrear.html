@@ -21,6 +21,7 @@
     <script src="../../../apiAccess/crud.js"></script>
     <script src="../js/common.js"></script>
     <script src="../js/poblacio.js"></script>
+    <script src="../../js/logout.js"></script>
     
     <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/f653e778a0.js" crossorigin="anonymous"></script>
@@ -39,11 +40,11 @@
                 <div id="sessioUsuari">
                     <div class="headerUsuari">
                         <img src="../img/foto_persona.png" alt="No s'ha pogut carregar l'imatge">
-                        <span>Manolo Garibolo</span>
+                        <span id="usuariNom"></span>
                         <span class="separador">&nbsp;</span>
                     </div>
                     <div class="tancarSessio">
-                        <a href="../../login.html">
+                        <a id="botoTancarSessio" href="#">
                             <i class="fa-solid fa-arrow-right-from-bracket iconaTancarSessio"></i>
                         </a>
                     </div>

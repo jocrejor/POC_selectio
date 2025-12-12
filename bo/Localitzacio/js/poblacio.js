@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    main();
+    main1();
 });
 
 // Variables globals
@@ -17,8 +17,8 @@ let paginaActual = 1;
 const itemsPerPagina = 10;
 
 // Funció principal que s'executa quan es carrega la pàgina
-async function main() {
-    console.log("DEBUG: Iniciant main()");
+async function main1() {
+    console.log("DEBUG: Iniciant main1()");
 
     // Detectar pàgina actual de forma més robusta
     const formCrear = $('#form-crear');
@@ -42,6 +42,15 @@ async function main() {
     } else {
         console.warn("DEBUG: No s'ha pogut identificar la pàgina.");
     }
+
+    // Configurar botó de tancar sessió DESPRÉS de configurar la pàgina
+    setTimeout(() => {
+        try {
+            botonsTancarSessio("../login.html");
+        } catch (error) {
+            console.warn("No s'ha trobat el botó de tancar sessió:", error);
+        }
+    }, 100);
 }
 
 // --- CONFIGURACIÓ DE PÀGINES ---
