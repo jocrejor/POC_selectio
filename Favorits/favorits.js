@@ -7,8 +7,8 @@ document.addEventListener("DOMContentLoaded", main);
 // CONFIGURACIÓ DE L'API
 // ============================
 const API_BASE = "https://api.serverred.es/";
-const USER_ID = 5;
-
+const USER_ID = JSON.parse(localStorage.getItem("currentUser")).id;
+console.log(USER_ID);
 // Variables globals per a les dades
 let totesImatges = [];
 let totesFamilies = [];
@@ -20,12 +20,11 @@ let totsProductAtributs = [];
 // ============================
 async function carregarTotesDades() {
     try {
-        // Carregar totes les dades necessàries per a la comparació
         const [imatges, families, atributs, productAtributs] = await Promise.all([
-            fetch(`${API_BASE}/Productimage`).then(r => r.json()),
-            fetch(`${API_BASE}/family`).then(r => r.json()),
-            fetch(`${API_BASE}/attribute`).then(r => r.json()),
-            fetch(`${API_BASE}/productattribute`).then(r => r.json())
+            getData(API_BASE, "/Productimage"),
+            getData(API_BASE, "/family"),
+            getData(API_BASE, "/attribute"),
+            getData(API_BASE, "/productattribute")
         ]);
 
         totesImatges = imatges;
@@ -37,6 +36,7 @@ async function carregarTotesDades() {
         console.error("Error carregant dades:", error);
     }
 }
+
 
 // ============================
 // OBTINDRE IMATGE D'UN PRODUCTE
@@ -273,14 +273,25 @@ async function pintarComparadors(comparadors) {
         const title = document.createElement("h3");
         title.appendChild(document.createTextNode(comp.name || "Comparador sense nom"));
 
+
+
         titleContainer.appendChild(expandBtn);
         titleContainer.appendChild(title);
         header.appendChild(titleContainer);
-
         const productesContainer = document.createElement("div");
         productesContainer.classList.add("productes-container");
         productesContainer.style.display = "none";
         productesContainer.id = `productes-${comp.id}`;
+
+        // Botó eliminar
+        const btnEliminar = document.createElement("button");
+        btnEliminar.className = "btnEliminar";
+        btnEliminar.textContent = "✖";
+        btnEliminar.addEventListener("click", async () => {
+        btnEliminar.setAttribute("onclick", `borrarFavorit(${comp.id}); return false;`);
+            console.log("DAD");
+        });
+        titleContainer.appendChild(btnEliminar);
 
         const loading = document.createElement("div");
         loading.classList.add("loading");
@@ -292,6 +303,26 @@ async function pintarComparadors(comparadors) {
         container.appendChild(card);
     }
 }
+
+// Elimina favorits después de confirmación
+async function borrarFavorit(id) {
+
+    const ok = confirm("Esteu segur que voleu eliminar aquest element? Aquesta acció no es pot desfer");
+    if (!ok) return;
+
+    try {
+        // DELETE de la API
+        await deleteData(url, "Comparator", id);
+        window.location.reload();
+    } catch (error) {
+        console.error("Error eliminando favorit:", error);
+        alert("Error al eliminar la familia.");
+    }
+}
+
+
+
+
 
 // ============================
 // TOGGLE EXPANDIR/COL·LAPSAR COMPARADOR
@@ -379,6 +410,9 @@ function afegirScrollButtons(container) {
         updateScrollButtons(tableContainer, scrollLeftBtn, scrollRightBtn);
     }
 }
+
+
+
 
 function updateScrollButtons(container, btnLeft, btnRight) {
     const scrollLeft = container.scrollLeft;

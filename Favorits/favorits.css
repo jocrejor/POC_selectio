@@ -22,6 +22,17 @@
     align-items: center;
     gap: 12px;
     flex: 1;
+    justify-content: space-between;
+}
+
+.btnEliminar{
+background:#dc3545;
+color:white;
+border:none;
+display: flex;
+padding:5px 10px;
+border-radius:5px;
+cursor:pointer;
 }
 
 .expand-btn {
