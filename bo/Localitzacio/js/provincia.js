@@ -519,7 +519,7 @@ function mostrarLlista(array) {
         const poblacions = $('<a>')
             .addClass('icon-visualitzar')
             .attr('href', `poblacio.html?country_id=${countryId}&country=${encodeURIComponent(countryName)}&province_id=${provincia.id}&province=${encodeURIComponent(provincia.name)}`)
-            .html('<i class="fa-solid fa-city"></i>');
+            .html('<i class="fa-solid fa-building-circle-arrow-right"></i>');
 
         // Icona editar
         const editar = $('<a>')
