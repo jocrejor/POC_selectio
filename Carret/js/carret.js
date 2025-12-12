@@ -262,14 +262,13 @@ async function mostrarCarret() {
 
         // Preu total
         const spanTotal = document.createElement("span");
-        spanTotal.style.cssText = "min-width:80px;text-align:right;font-weight:bold;";
+        spanTotal.className = "preuTotal";
         spanTotal.textContent = `${(d.price * d.quantity).toFixed(2)} €`;
         div.appendChild(spanTotal);
 
         // Botó eliminar
         const btnEliminar = document.createElement("button");
         btnEliminar.className = "btnEliminar";
-        btnEliminar.style.cssText = "background:#dc3545;color:white;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;";
         btnEliminar.textContent = "✖";
         btnEliminar.addEventListener("click", async () => {
             await deleteData(url, "Cartdetail", d.id);

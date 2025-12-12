@@ -88,7 +88,6 @@ button {
 button:hover {
     background-color: var(--color-secundari);
     color: var(--color-quaternari);
-    transform: scale(1.05);
 }
 
 /* Contenidor de productes */
@@ -187,10 +186,21 @@ hr {
     background-color: var(--color-primari) !important;
     color: var(--color-quinari) !important;
 }
+.preuTotal{
+min-width:80px;
+text-align:right;
+font-weight:bold;
+}
 
 .btnEliminar {
     background-color: #dc3545 !important;
     color: white !important;
+    background:#dc3545;
+    color:white;
+    border:none;
+    padding:5px 10px;
+    border-radius:5px;
+    cursor:pointer;
 }
 
 .element-carret button:hover,
@@ -202,12 +212,10 @@ hr {
 
 /* Mòbil 360px */
 @media only screen and (max-width: 768px) {
-    .element-carret {
+        .item-carret {
         flex-direction: column;
+        align-items: center;
         text-align: center;
     }
-    
-    #productes-container {
-        grid-template-columns: 1fr;
-    }
+
 }
