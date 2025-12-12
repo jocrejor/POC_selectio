@@ -1,0 +1,41 @@
+/* Taula de detalls dins del modal */
+.taula-detalls {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    color: #000000;
+}
+
+.taula-detalls thead {
+    background-color: #f1f3f5;
+}
+
+.taula-detalls th {
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    color: #000000;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.taula-detalls td {
+    padding: 12px;
+    border-bottom: 1px solid #e9ecef;
+    color: #000000;
+}
+
+.taula-detalls tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.taula-detalls tfoot tr {
+    background-color: #f1f3f5;
+    font-weight: bold;
+}
+
+.taula-detalls tfoot td {
+    padding: 15px 12px;
+    border-top: 2px solid #dee2e6;
+    border-bottom: none;
+    color: #000000;
+}
