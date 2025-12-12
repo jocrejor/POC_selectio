@@ -492,7 +492,7 @@ function mostrarLlista(array) {
         const provincies = $('<a>')
             .addClass('icon-visualitzar')
             .attr('href', `provincia.html?id=${pais.id}&country=${encodeURIComponent(pais.name)}`)
-            .html('<i class="fa-solid fa-city"></i>');
+            .html('<i class="fa-solid fa-building-circle-arrow-right"></i>');
 
         // Icona editar
         const editar = $('<a>')
