@@ -5,8 +5,8 @@ class Attribute {
         this._type = type;
     }
 
-    static async carregarAtributs(apiUrl) {
-        let data = await getData(apiUrl, 'Attribute');
+    static async carregarAtributs() {
+        let data = await getData(url, 'Attribute');
         
         // Si data és un array d'arrays, agafar el primer array
         if (Array.isArray(data) && data.length > 0 && Array.isArray(data[0])) {

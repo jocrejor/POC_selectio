@@ -32,13 +32,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Carregar totes les dades des de l'API
     try {
-
-        const apiUrl = Product.apiUrl;
-        productes = await Product.carregarProductes(apiUrl);
-        families = await Family.carregarFamilies(apiUrl);
-        atributs = await Attribute.carregarAtributs(apiUrl);
-        productAtributs = await ProductAttribute.carregarProductAtributs(apiUrl);
-        productImages = await ProductImage.carregarProductImages(apiUrl);
+        productes = await Product.carregarProductes();
+        families = await Family.carregarFamilies();
+        atributs = await Attribute.carregarAtributs();
+        productAtributs = await ProductAttribute.carregarProductAtributs();
+        productImages = await ProductImage.carregarProductImages();
         
     } catch (error) {
         console.error('Error carregant dades:', error);

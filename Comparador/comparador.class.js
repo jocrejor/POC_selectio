@@ -155,7 +155,7 @@ class Comparador {
             );
             
             // Carregar els productes complets
-            const totsElsProductes = await Product.carregarProductes(apiUrl);
+            const totsElsProductes = await Product.carregarProductes();
             const productesDelComparador = totsElsProductes.filter(p => 
                 comparatorProducts.some(cp => cp.product_id === p.id)
             );
@@ -358,7 +358,7 @@ class Comparador {
     
     // Carregar tots els comparadors de l'API
     static async carregarComparatorsAPI(apiUrl) {
-        let data = await getData(apiUrl, 'Comparator');
+        let data = await getData(url, 'Comparator');
 
         // Normalitzar si ve com array d'arrays
         if (Array.isArray(data) && data.length > 0 && Array.isArray(data[0])) {
@@ -377,7 +377,7 @@ class Comparador {
             name: name
         };
 
-        const result = await postData(apiUrl, 'Comparator', data);
+        const result = await postData(url, 'Comparator', data);
         
         if (!result) {
             throw new Error('Error creant el comparador');
@@ -388,7 +388,7 @@ class Comparador {
 
     // Obtenir un comparador per ID
     static async obtenirComparatorAPI(apiUrl, id) {
-        const result = await getIdData(apiUrl, 'Comparator', id);
+        const result = await getIdData(url, 'Comparator', id);
         
         if (!result) {
             throw new Error('Comparador no trobat');
@@ -406,7 +406,7 @@ class Comparador {
             name: name
         };
 
-        const result = await updateId(apiUrl, 'Comparator', id, data);
+        const result = await updateId(url, 'Comparator', id, data);
 
         if (!result) {
             throw new Error('Error actualitzant el comparador');
@@ -417,7 +417,7 @@ class Comparador {
 
     // Eliminar un comparador
     static async eliminarComparatorAPI(apiUrl, id) {
-        await deleteData(apiUrl, 'Comparator', id);
+        await deleteData(url, 'Comparator', id);
         return true;
     }
 }
