@@ -358,8 +358,7 @@ class Comparador {
     
     // Carregar tots els comparadors de l'API
     static async carregarComparatorsAPI(apiUrl) {
-        const resp = await fetch(`${apiUrl}/Comparator`);
-        let data = await resp.json();
+        let data = await getData(apiUrl, 'Comparator');
 
         // Normalitzar si ve com array d'arrays
         if (Array.isArray(data) && data.length > 0 && Array.isArray(data[0])) {
@@ -378,30 +377,24 @@ class Comparador {
             name: name
         };
 
-        const resp = await fetch(`${apiUrl}/Comparator`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        });
-
-        if (!resp.ok) {
+        const result = await postData(apiUrl, 'Comparator', data);
+        
+        if (!result) {
             throw new Error('Error creant el comparador');
         }
 
-        return await resp.json();
+        return result;
     }
 
     // Obtenir un comparador per ID
     static async obtenirComparatorAPI(apiUrl, id) {
-        const resp = await fetch(`${apiUrl}/Comparator/${id}`);
+        const result = await getIdData(apiUrl, 'Comparator', id);
         
-        if (!resp.ok) {
+        if (!result) {
             throw new Error('Comparador no trobat');
         }
 
-        return await resp.json();
+        return result;
     }
 
     // Actualitzar un comparador
@@ -413,31 +406,18 @@ class Comparador {
             name: name
         };
 
-        const resp = await fetch(`${apiUrl}/Comparator/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        });
+        const result = await updateId(apiUrl, 'Comparator', id, data);
 
-        if (!resp.ok) {
+        if (!result) {
             throw new Error('Error actualitzant el comparador');
         }
 
-        return await resp.json();
+        return result;
     }
 
     // Eliminar un comparador
     static async eliminarComparatorAPI(apiUrl, id) {
-        const resp = await fetch(`${apiUrl}/Comparator/${id}`, {
-            method: 'DELETE'
-        });
-
-        if (!resp.ok) {
-            throw new Error('Error eliminant el comparador');
-        }
-
+        await deleteData(apiUrl, 'Comparator', id);
         return true;
     }
 }

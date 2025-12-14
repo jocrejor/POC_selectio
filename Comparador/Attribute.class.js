@@ -6,8 +6,7 @@ class Attribute {
     }
 
     static async carregarAtributs(apiUrl) {
-        const resp = await fetch(`${apiUrl}/Attribute`);
-        let data = await resp.json();
+        let data = await getData(apiUrl, 'Attribute');
         
         // Si data és un array d'arrays, agafar el primer array
         if (Array.isArray(data) && data.length > 0 && Array.isArray(data[0])) {

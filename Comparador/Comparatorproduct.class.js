@@ -25,8 +25,7 @@ class ComparatorProduct {
 
     // Carregar tots els ComparatorProduct de l'API
     static async carregarComparatorProducts(apiUrl) {
-        const resp = await fetch(`${apiUrl}/Comparatorproduct`);
-        let data = await resp.json();
+        let data = await getData(apiUrl, 'Comparatorproduct');
 
         // Normalitzar si ve com array d'arrays
         if (Array.isArray(data) && data.length > 0 && Array.isArray(data[0])) {
@@ -46,19 +45,12 @@ class ComparatorProduct {
             product_id: product_id
         };
 
-        const resp = await fetch(`${apiUrl}/Comparatorproduct`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        });
+        const result = await postData(apiUrl, 'Comparatorproduct', data);
 
-        if (!resp.ok) {
+        if (!result) {
             throw new Error('Error creant la relació comparator-product');
         }
 
-        const result = await resp.json();
         return new ComparatorProduct(
             result.comparator_id,
             result.product_id
@@ -67,8 +59,7 @@ class ComparatorProduct {
 
     // Obtenir productes d'un comparador
     static async obtenirProductesDeComparator(apiUrl, comparator_id) {
-        const resp = await fetch(`${apiUrl}/Comparatorproduct?comparator_id=${comparator_id}`);
-        let data = await resp.json();
+        let data = await getData(apiUrl, `Comparatorproduct?comparator_id=${comparator_id}`);
 
         // Normalitzar si ve com array d'arrays
         if (Array.isArray(data) && data.length > 0 && Array.isArray(data[0])) {
@@ -83,14 +74,7 @@ class ComparatorProduct {
 
     // Eliminar una relació específica
     static async eliminarComparatorProduct(apiUrl, comparator_id, product_id) {
-        const resp = await fetch(`${apiUrl}/Comparatorproduct/${comparator_id}/${product_id}`, {
-            method: 'DELETE'
-        });
-
-        if (!resp.ok) {
-            throw new Error('Error eliminant la relació comparator-product');
-        }
-
+        await deleteData(apiUrl, `Comparatorproduct/${comparator_id}`, product_id);
         return true;
     }
 

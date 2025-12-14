@@ -14,8 +14,7 @@ class Product{
     
 
     static async carregarProductes(apiUrl) {
-        const resp = await fetch(`${apiUrl}/Product`);
-        let data = await resp.json();
+        let data = await getData(apiUrl, 'Product');
 
         // Si data és un array d'arrays, agafar el primer array
         if (Array.isArray(data) && data.length > 0 && Array.isArray(data[0])) {
