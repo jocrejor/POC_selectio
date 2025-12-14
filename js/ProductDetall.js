@@ -1,26 +1,8 @@
 document.addEventListener("DOMContentLoaded", main)
 
-// Inicialitzar el comparador globalment
-let comparador = null;
-
-// Funció per inicialitzar el comparador des de la API
-async function inicialitzarComparador() {
-  const apiUrl = 'https://api.serverred.es';
-  const comparatorId = sessionStorage.getItem('currentComparatorId');
-  comparador = new Comparador();
-  
-  if (comparatorId) {
-    try {
-      await comparador.carregarDesDeAPI(apiUrl, comparatorId);
-    } catch (error) {
-      console.warn('No es pot carregar comparador existent, creant-ne un de nou');
-    }
-  }
-}
-
 async function main () {
   // Inicialitzar el comparador
-  await inicialitzarComparador();
+  const comparador = await window.inicialitzarComparador();
   // Obtenir els paràmetres de la URL
   const params = new URLSearchParams(window.location.search);
   const productId = parseInt(params.get("id"));
@@ -338,12 +320,10 @@ async function main () {
 // Funció per afegir producte al comparador
 async function afegirAlComparador(producte) {
   try {
-    if (!comparador) {
-      await inicialitzarComparador();
-    }
+    let comparador = window.comparadorGlobal || await window.inicialitzarComparador();
+    window.comparadorGlobal = comparador;
     
-    const apiUrl = 'https://api.serverred.es';
-    const afegit = await comparador.afegirProducte(producte, apiUrl);
+    const afegit = await comparador.afegirProducte(producte, url);
     
     if (afegit && comparador.comparatorApiId) {
       sessionStorage.setItem('currentComparatorId', comparador.comparatorApiId);

@@ -1,4 +1,3 @@
-const apiUrl = 'https://api.serverred.es';
 let comparadorGlobal = null; // Instancia global del comparador
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -19,7 +18,7 @@ async function carregarComparador() {
             // Carregar comparador existent des de l'API
             console.log('Carregant comparador existent:', comparatorId);
             comparadorGlobal = new Comparador();
-            await comparadorGlobal.carregarDesDeAPI(apiUrl, comparatorId);
+            await comparadorGlobal.carregarDesDeAPI(url, comparatorId);
         } else {
             // Crear nou comparador
             console.log('Creant nou comparador');
@@ -212,7 +211,7 @@ function crearTargetaProducte(producte, productImages) {
             }
             
             // Afegir el nou producte (ara guarda automàticament a l'API)
-            const afegit = await comparadorGlobal.afegirProducte(producte, apiUrl);
+            const afegit = await comparadorGlobal.afegirProducte(producte, url);
             
             if (afegit && comparadorGlobal.comparatorApiId) {
                 // Guardar l'ID a sessionStorage
@@ -327,7 +326,7 @@ function carregarNomComparador() {
                     comparadorGlobal = new Comparador();
                     comparadorGlobal.nom = nouNom;
                     comparadorGlobal.productes = productesCopia;
-                    await comparadorGlobal.guardarAPI(apiUrl);
+                    await comparadorGlobal.guardarAPI(url);
                     sessionStorage.setItem('currentComparatorId', comparadorGlobal.comparatorApiId);
                     console.log('Nou comparador creat amb nom:', nouNom);
                 } else {
@@ -338,7 +337,7 @@ function carregarNomComparador() {
                 // Actualitzar el nom i guardar a l'API
                 comparadorGlobal.nom = nouNom;
                 if (comparadorGlobal.comparatorApiId) {
-                    await comparadorGlobal.guardarAPI(apiUrl);
+                    await comparadorGlobal.guardarAPI(url);
                 }
             }
         });
@@ -355,7 +354,7 @@ async function guardarComparadorAPI() {
             return;
         }
 
-        await comparadorGlobal.guardarAPI(apiUrl);
+        await comparadorGlobal.guardarAPI(url);
         
         if (comparadorGlobal.comparatorApiId) {
             sessionStorage.setItem('currentComparatorId', comparadorGlobal.comparatorApiId);
@@ -392,7 +391,7 @@ async function carregarComparadorsAnteriors() {
             const userId = JSON.parse(currentUser).id;
             
             // Carregar tots els comparadors de l'API
-            const totsComparadors = await Comparador.carregarComparatorsAPI(apiUrl);
+            const totsComparadors = await Comparador.carregarComparatorsAPI(url);
             
             // Filtrar només els del usuari actual
             comparadors = totsComparadors.filter(c => c.client_id === userId);
@@ -401,7 +400,7 @@ async function carregarComparadorsAnteriors() {
             const sessionId = sessionStorage.getItem('currentSessionId') || generarSessionId();
             sessionStorage.setItem('currentSessionId', sessionId);
             
-            const totsComparadors = await Comparador.carregarComparatorsAPI(apiUrl);
+            const totsComparadors = await Comparador.carregarComparatorsAPI(url);
             comparadors = totsComparadors.filter(c => c.session_id === sessionId);
         }
         
@@ -427,7 +426,7 @@ async function carregarComparadorsAnteriors() {
             // Obtenir el número de productes d'aquest comparador
             let numProductes = 0;
             try {
-                const productes = await ComparatorProduct.obtenirProductesDeComparator(apiUrl, comp.id);
+                const productes = await ComparatorProduct.obtenirProductesDeComparator(url, comp.id);
                 numProductes = productes.length;
             } catch (error) {
                 console.error('Error obtenint productes del comparador:', error);
@@ -462,7 +461,7 @@ async function carregarComparadorsAnteriors() {
             btnEliminar.onclick = async () => {
                 if (confirm(`Segur que vols eliminar "${comp.name || 'aquest comparador'}"?`)) {
                     try {
-                        await Comparador.eliminarComparatorAPI(apiUrl, comp.id);
+                        await Comparador.eliminarComparatorAPI(url, comp.id);
                         await carregarComparadorsAnteriors();
                         
                         // Si era el comparador actual, crear un de nou

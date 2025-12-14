@@ -226,8 +226,7 @@ class Comparador {
             closeBtn.innerHTML = "<i class=\"fa-solid fa-xmark\"></i>";
             closeBtn.className = "product-close";
             closeBtn.onclick = async () => {
-                const apiUrl = 'https://api.serverred.es';
-                await this.eliminarProducte(p.id, apiUrl);
+                await this.eliminarProducte(p.id, url);
                 await carregarComparador();
                 await carregarCarrusel();
             };

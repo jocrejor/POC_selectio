@@ -6,18 +6,22 @@ let productAtributs = [];
 let productImages = [];
 let comparador = null;
 
-// Inicialitzar comparador
-async function inicialitzarComparador() {
+// Inicialitzar comparador - Funció global disponible per a totes les pàgines
+window.inicialitzarComparador = async function() {
     const comparatorId = sessionStorage.getItem('currentComparatorId');
-    comparador = new Comparador();
+    const comp = new Comparador();
     
     if (comparatorId) {
         try {
-            await comparador.carregarDesDeAPI(Product.apiUrl, comparatorId);
+            await comp.carregarDesDeAPI(url, comparatorId);
         } catch (error) {
             console.warn('No es pot carregar comparador existent, creant-ne un de nou');
         }
     }
+    
+    // Guardar en variable global
+    window.comparadorGlobal = comp;
+    return comp;
 }
 
 // ---------- CARREGAR DADES ----------
@@ -28,7 +32,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     taula.innerHTML = '<tr><td colspan="5">Carregant productes...</td></tr>';
 
     // Inicialitzar comparador
-    await inicialitzarComparador();
+    comparador = await window.inicialitzarComparador();
 
     // Carregar totes les dades des de l'API
     try {
@@ -71,7 +75,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     await inicialitzarComparador();
                 }
                 
-                const afegit = await comparador.afegirProducte(producte, Product.apiUrl);
+                const afegit = await comparador.afegirProducte(producte, url);
                 
                 if (afegit && comparador.comparatorApiId) {
                     sessionStorage.setItem('currentComparatorId', comparador.comparatorApiId);
