@@ -25,7 +25,7 @@ class ComparatorProduct {
 
     // Carregar tots els ComparatorProduct de l'API
     static async carregarComparatorProducts(apiUrl) {
-        let data = await getData(apiUrl, 'Comparatorproduct');
+        let data = await getData(url, 'Comparatorproduct');
 
         // Normalitzar si ve com array d'arrays
         if (Array.isArray(data) && data.length > 0 && Array.isArray(data[0])) {
@@ -45,7 +45,7 @@ class ComparatorProduct {
             product_id: product_id
         };
 
-        const result = await postData(apiUrl, 'Comparatorproduct', data);
+        const result = await postData(url, 'Comparatorproduct', data);
 
         if (!result) {
             throw new Error('Error creant la relació comparator-product');
@@ -59,7 +59,7 @@ class ComparatorProduct {
 
     // Obtenir productes d'un comparador
     static async obtenirProductesDeComparator(apiUrl, comparator_id) {
-        let data = await getData(apiUrl, `Comparatorproduct?comparator_id=${comparator_id}`);
+        let data = await getData(url, `Comparatorproduct?comparator_id=${comparator_id}`);
 
         // Normalitzar si ve com array d'arrays
         if (Array.isArray(data) && data.length > 0 && Array.isArray(data[0])) {
@@ -74,7 +74,22 @@ class ComparatorProduct {
 
     // Eliminar una relació específica
     static async eliminarComparatorProduct(apiUrl, comparator_id, product_id) {
-        await deleteData(apiUrl, `Comparatorproduct/${comparator_id}`, product_id);
+        // Primer, obtenir totes les relacions del comparador per trobar l'ID correcte
+        let data = await getData(url, `Comparatorproduct?comparator_id=${comparator_id}&product_id=${product_id}`);
+        
+        // Normalitzar si ve com array d'arrays
+        if (Array.isArray(data) && data.length > 0 && Array.isArray(data[0])) {
+            data = data[0];
+        }
+        
+        if (data && data.length > 0) {
+            // Si l'API retorna un ID únic per la relació, usar-lo
+            const record = data[0];
+            if (record.id) {
+                await deleteData(url, 'Comparatorproduct', record.id);
+            }
+        }
+        
         return true;
     }
 

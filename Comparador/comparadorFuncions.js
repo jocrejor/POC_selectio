@@ -43,9 +43,9 @@ async function dibuixarTaulaComparador(contenidorId = 'comparadorContingut') {
         comparadorGlobal = new Comparador();
     }
     
-    const attributes = await Attribute.carregarAtributs(apiUrl);
-    const productAttributes = await ProductAttribute.carregarProductAtributs(apiUrl);
-    const productImages = await ProductImage.carregarProductImages(apiUrl);
+    const attributes = await Attribute.carregarAtributs();
+    const productAttributes = await ProductAttribute.carregarProductAtributs();
+    const productImages = await ProductImage.carregarProductImages();
 
     const taula = comparadorGlobal.generarTaula(productAttributes, attributes, productImages);
     
@@ -124,8 +124,8 @@ async function carregarCarrusel() {
             comparadorGlobal = new Comparador();
         }
         
-        const productes = await Product.carregarProductes(apiUrl);
-        const productImages = await ProductImage.carregarProductImages(apiUrl);
+        const productes = await Product.carregarProductes();
+        const productImages = await ProductImage.carregarProductImages();
         
         const productesComparador = comparadorGlobal.obtenirProductes();
         if (productesComparador.length === 0) {

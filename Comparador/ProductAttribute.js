@@ -6,8 +6,8 @@ class ProductAttribute {
         this._value = value;
     }
 
-    static async carregarProductAtributs(apiUrl) {
-        let data = await getData(apiUrl, 'Productattribute');
+    static async carregarProductAtributs() {
+        let data = await getData(url, 'Productattribute');
         
         return data.map(pa => new ProductAttribute(
             pa.id,

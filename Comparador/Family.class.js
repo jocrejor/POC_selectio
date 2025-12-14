@@ -5,8 +5,8 @@ class Family {
         this._active = active;
     }
 
-    static async carregarFamilies(apiUrl) {
-        let data = await getData(apiUrl, 'Family');
+    static async carregarFamilies() {
+        let data = await getData(url, 'Family');
         
         // Si data és un array d'arrays, agafar el primer array
         if (Array.isArray(data) && data.length > 0 && Array.isArray(data[0])) {

@@ -13,8 +13,8 @@ class Product{
 
     
 
-    static async carregarProductes(apiUrl) {
-        let data = await getData(apiUrl, 'Product');
+    static async carregarProductes() {
+        let data = await getData(url, 'Product');
 
         // Si data és un array d'arrays, agafar el primer array
         if (Array.isArray(data) && data.length > 0 && Array.isArray(data[0])) {
