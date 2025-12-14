@@ -7,8 +7,7 @@ class ProductAttribute {
     }
 
     static async carregarProductAtributs(apiUrl) {
-        const resp = await fetch(`${apiUrl}/Productattribute`);
-        let data = await resp.json();
+        let data = await getData(apiUrl, 'Productattribute');
         
         return data.map(pa => new ProductAttribute(
             pa.id,

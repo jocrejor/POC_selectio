@@ -8,8 +8,7 @@ class ProductImage {
     }
 
     static async carregarProductImages(apiUrl) {
-        const resp = await fetch(`${apiUrl}/Productimage`);
-        let data = await resp.json();
+        let data = await getData(apiUrl, 'Productimage');
         
         // Si data és un array d'arrays, agafar el primer array
         if (Array.isArray(data) && data.length > 0 && Array.isArray(data[0])) {
