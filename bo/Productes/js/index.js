@@ -15,13 +15,13 @@ let estadoGlobal = null;
 function main() {
     thereIsUser("../login.html");
     botonsTancarSessio("../login.html");
-    
+
     // Verificar si hay estado global guardado para restaurar
     const estadoGuardado = sessionStorage.getItem('estadoGlobal');
     if (estadoGuardado) {
         try {
             estadoGlobal = JSON.parse(estadoGuardado);
-            
+
             // Verificar que el estado no sea muy viejo (máximo 5 minutos)
             const ahora = Date.now();
             if (ahora - estadoGlobal.timestamp < 300000) { // 5 minutos en milisegundos
@@ -32,7 +32,7 @@ function main() {
                 // El estado es viejo, limpiarlo
                 estadoGlobal = null;
             }
-            
+
             // Limpiar el estado global después de usarlo
             sessionStorage.removeItem('estadoGlobal');
         } catch (error) {
@@ -89,7 +89,7 @@ function inicializarFiltros() {
             aplicarFiltros();
         }, 0);
     });
-    
+
     // NO llamar a aplicarFiltros() aquí - ya se llama desde cargarDatosCompletos()
 }
 
@@ -103,14 +103,14 @@ async function cargarDatosCompletos() {
         ]);
 
         llenarSelectorFamilias();
-        
+
         // Si hay estado global, restaurar filtros inmediatamente
         if (estadoGlobal && estadoGlobal.filtros) {
             $('#searchName').val(estadoGlobal.filtros.nombre || '');
             $('#filterFamily').val(estadoGlobal.filtros.familia || 'all');
             $('#filterStatus').val(estadoGlobal.filtros.estado || 'all');
             $('#filterSort').val(estadoGlobal.filtros.orden || 'id_asc');
-            
+
             // Aplicar filtros inmediatamente con los valores restaurados
             aplicarFiltrosConEstado();
         } else {
@@ -183,10 +183,10 @@ function aplicarFiltrosConEstado() {
     });
 
     productesFiltrats = productosFiltrados;
-    
+
     // Cargar el array en el sistema de paginación
     carregarArray(productesFiltrats);
-    
+
     // Usar la página del estado global si existe
     if (paginaTemporal !== null) {
         paginaActual = paginaTemporal;
@@ -195,9 +195,9 @@ function aplicarFiltrosConEstado() {
         // Si hay estado global, usar esa página
         paginaActual = estadoGlobal.pagina;
     }
-    
+
     actualitzarDades();
-    
+
     // Limpiar estado global después de usarlo
     estadoGlobal = null;
 }
@@ -250,18 +250,18 @@ function aplicarFiltros() {
     });
 
     productesFiltrats = productosFiltrados;
-    
+
     // Cargar el array en el sistema de paginación
     carregarArray(productesFiltrats);
-    
+
     // Solo ir a página 1 si hay filtros activos y no es una operación temporal
     const hayFiltros = filtroNombre || filtroFamilia !== 'all' || filtroEstado !== 'all';
     if (hayFiltros && !paginaTemporal) {
         paginaActual = 1;
     }
-    
+
     actualitzarDades();
-    
+
     // Si había una página temporal guardada, restaurarla
     if (paginaTemporal !== null) {
         paginaActual = paginaTemporal;
@@ -283,7 +283,7 @@ function actualitzarDades() {
         td.classList.add('error-message');
         tr.appendChild(td);
         tbody.appendChild(tr);
-        
+
         // Ocultar la paginación si no hay datos
         const paginacio = document.getElementsByClassName('paginacio')[0];
         if (paginacio) {
@@ -294,9 +294,9 @@ function actualitzarDades() {
 
     // Usar aplicarPaginacio del sistema de paginación
     const productosPagina = aplicarPaginacio(arrayElements);
-    
+
     actualizarTablaConProductos(productosPagina);
-    
+
     // LLAMAR A LA FUNCIÓN DEL SISTEMA DE PAGINACIÓN
     creaPagines();
 }
@@ -361,6 +361,7 @@ function actualizarTablaConProductos(productosPagina) {
         linkImagenes.textContent = `Imatges (${numImagenes})`;
         linkImagenes.classList.add("link-images");
         linkImagenes.setAttribute("data-id", producto.id);
+        linkImagenes.setAttribute("title", "Gestió d'imatges");
 
         if (numImagenes === 0) {
             linkImagenes.classList.add("link-no-images");
@@ -377,18 +378,33 @@ function actualizarTablaConProductos(productosPagina) {
         linkAtributos.textContent = "Atributs";
         linkAtributos.classList.add("link-attributes");
         linkAtributos.setAttribute("data-id", producto.id);
+        linkAtributos.setAttribute("title", "Gestió d'atributs");
         tdAtributos.setAttribute("data-cell", "Característiques: ");
         tdAtributos.appendChild(linkAtributos);
         tr.appendChild(tdAtributos);
-
+        
         // Actiu/Inactiu
         const tdToggle = document.createElement("td");
-        const btnToggle = document.createElement("button");
-        btnToggle.textContent = producto.active ? 'Activat' : 'Desactivat';
-        btnToggle.classList.add("btn", "btn-toggle");
-        btnToggle.setAttribute("data-id", producto.id);
+        const iconToggle = document.createElement("span");
+        iconToggle.classList.add("btn-toggle");
+        iconToggle.setAttribute("data-id", producto.id);
         tdToggle.setAttribute("data-cell", "Estat: ");
-        tdToggle.appendChild(btnToggle);
+
+        // Añadir icono según estado
+        if (producto.active) {
+            // Icono de check para activo
+            const iToggle = document.createElement("i");
+            iToggle.classList.add("fa-solid", "fa-circle-check", "estado-activo");
+            iconToggle.appendChild(iToggle);
+            iconToggle.setAttribute("title", "Activat - Clic per desactivar");
+        } else {
+            // Icono de círculo para inactivo
+            const iToggle = document.createElement("i");
+            iToggle.classList.add("fa-solid", "fa-circle", "estado-inactivo");
+            iconToggle.appendChild(iToggle);
+            iconToggle.setAttribute("title", "Desactivat - Clic per activar");
+        }
+        tdToggle.appendChild(iconToggle);
         tr.appendChild(tdToggle);
 
         // Accions
@@ -480,7 +496,7 @@ function asignarEventListeners() {
             window.location.href = `AtributAssignar.html?id=${id}`;
         });
     });
-    
+
     document.querySelectorAll(".icon-borrar").forEach(icon => {
         icon.addEventListener("click", () => {
             const id = parseInt(icon.getAttribute("data-id"));
@@ -506,7 +522,7 @@ function guardarEstadoGlobal(productId, accion) {
         accion: accion,
         timestamp: Date.now()
     };
-    
+
     console.log("Estado guardado:", estadoGlobal);
     sessionStorage.setItem('estadoGlobal', JSON.stringify(estadoGlobal));
 }
@@ -551,7 +567,7 @@ async function toggleActivo(id) {
     try {
         // Guardar página actual antes de la operación
         paginaTemporal = paginaActual;
-        
+
         const producto = await getIdData(url, "Product", id);
         if (producto) {
             const nuevoEstado = !producto.active;
@@ -563,7 +579,7 @@ async function toggleActivo(id) {
                 obtenerImagenes(),
                 obtenerAtributos()
             ]);
-            
+
             // Aplicar filtros manteniendo la página
             aplicarFiltros();
         }
@@ -578,7 +594,7 @@ async function borrarProducto(id) {
     try {
         // Guardar página actual antes de la operación
         paginaTemporal = paginaActual;
-        
+
         for (const imagen of imagenesCompletas) {
             if (imagen.product_id === id) {
                 await deleteData(url, "Productimage", imagen.id);
@@ -599,7 +615,7 @@ async function borrarProducto(id) {
             obtenerImagenes(),
             obtenerAtributos()
         ]);
-        
+
         // Aplicar filtros manteniendo la página
         aplicarFiltros();
 
